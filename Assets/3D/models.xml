@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<models name="object">
+  <group name="agrm">
+    <group name="screws_TOP">
+      <model name="screw_TOP" />
+    </group>
+    <group name="screws_FRONT">
+        <model name="screw_FRONT" />
+    </group>
+  </group> 
+</models>

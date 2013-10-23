@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ShaderMaterials>
+	<ShaderMaterial name="red">
+		<Type>
+			solid
+		</Type>
+		<Pass>
+			<VertexShader filename="vert.glsl" />
+			<FragmentShader filename="fragRED.glsl" />
+		</Pass>
+	</ShaderMaterial>
+    
+    <ShaderMaterial name="green">
+		<Type>
+			solid
+		</Type>
+		<Pass>
+			<VertexShader filename="vert.glsl" />
+			<FragmentShader filename="fragGREEN.glsl" />
+		</Pass>
+	</ShaderMaterial>    
+    
+</ShaderMaterials>
