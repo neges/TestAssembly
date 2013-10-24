@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<models name="object">
-  <group name="agrm">
-    <group name="screws_TOP">
-      <model name="screw_TOP" />
-    </group>
-    <group name="screws_FRONT">
-        <model name="screw_FRONT" />
-    </group>
-  </group> 
-</models>
+	<model name="agrm">
+		<object name="frontcover" />
+		<object name="backcover" />
+		<object name="sealing" />
+		<group name="screws_TOP">
+			<object name="screw_TOP" />
+			<object name="screw_TOP1" />
+			<object name="screw_TOP2" />
+			<object name="screw_TOP3" />
+			<object name="nut" />
+			<object name="nut1" />
+			<object name="nut2" />
+			<object name="nut3" />
+		</group>
+		<group name="screws_FRONT">
+			<object name="screw_FRONT" />
+			<object name="screw_FRONT1" />
+			<object name="screw_FRONT2" />
+			<object name="screw_FRONT3" />
+			<group name="Parts">
+				<object name="grid_TOP" />
+				<object name="tube" />
+				<object name="cover_TOP" />
+				<object name="cover_BOTTOM" />
+			</group>
+		</group>
+	</model>

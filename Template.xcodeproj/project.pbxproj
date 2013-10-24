@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04075D291819860A008AC8B4 /* metaioContentCreation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 04075D281819860A008AC8B4 /* metaioContentCreation.mm */; };
 		04F329E8172FCE8000910751 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E7172FCE8000910751 /* UIKit.framework */; };
 		04F329EA172FCE8000910751 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E9172FCE8000910751 /* Foundation.framework */; };
 		04F329EC172FCE8000910751 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329EB172FCE8000910751 /* CoreGraphics.framework */; };
@@ -45,6 +46,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0405D6E518193CF0004D99DB /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
+		04075D271819860A008AC8B4 /* metaioContentCreation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metaioContentCreation.h; sourceTree = SOURCE_ROOT; };
+		04075D281819860A008AC8B4 /* metaioContentCreation.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = metaioContentCreation.mm; sourceTree = SOURCE_ROOT; };
 		04F329E4172FCE8000910751 /* itmAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = itmAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F329E7172FCE8000910751 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		04F329E9172FCE8000910751 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -73,7 +77,6 @@
 		04F32A1D172FCEEF00910751 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		04F32A1F172FCEFE00910751 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		04F32A21172FCF0E00910751 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		8C64837718180E410092FC31 /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
 		8C64837818180E410092FC31 /* XMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLReader.m; sourceTree = "<group>"; };
 		8C64837D18182E850092FC31 /* _empty_.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = _empty_.obj; sourceTree = "<group>"; };
 		8C7754291811982700CFC082 /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
@@ -166,6 +169,8 @@
 		04F329ED172FCE8000910751 /* Template */ = {
 			isa = PBXGroup;
 			children = (
+				04075D271819860A008AC8B4 /* metaioContentCreation.h */,
+				04075D281819860A008AC8B4 /* metaioContentCreation.mm */,
 				04F329F6172FCE8000910751 /* AppDelegate.h */,
 				04F329F7172FCE8000910751 /* AppDelegate.mm */,
 				04F329FF172FCE8000910751 /* ViewController.h */,
@@ -206,7 +211,7 @@
 		8C64837A18180E450092FC31 /* XMLReader */ = {
 			isa = PBXGroup;
 			children = (
-				8C64837718180E410092FC31 /* XMLReader.h */,
+				0405D6E518193CF0004D99DB /* XMLReader.h */,
 				8C64837818180E410092FC31 /* XMLReader.m */,
 			);
 			name = XMLReader;
@@ -297,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04F329F4172FCE8000910751 /* main.m in Sources */,
+				04075D291819860A008AC8B4 /* metaioContentCreation.mm in Sources */,
 				8CF18B6F180AE58C00723F91 /* MetaioSDKViewController.mm in Sources */,
 				04F329F8172FCE8000910751 /* AppDelegate.mm in Sources */,
 				04F32A01172FCE8000910751 /* ViewController.mm in Sources */,

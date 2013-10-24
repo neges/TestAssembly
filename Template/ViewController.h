@@ -6,23 +6,21 @@
 //  Copyright (c) 2013 itm. All rights reserved.
 //
 
+
 #import <UIKit/UIKit.h>
 #import "EAGLView.h"
 #import "MetaioSDKViewController.h"
-#import "XMLReader.h"
+
+#import "metaioContentCreation.h"
+
 
 @interface ViewController : MetaioSDKViewController
 {
     metaio::IGeometry* theLoadedModel; //Temporär aktuelle Geometry
 	
-    
     bool highlightOn; //Variable wenn etwas selektiert wurde
 	bool setHighlight; //Variable wenn der Highlight-Shader aktiv ist
-	
-    
-    NSDictionary *structur; //Struktur der Baugruppe aus XML
 
-	
     
 }
 

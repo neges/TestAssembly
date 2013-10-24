@@ -130,12 +130,12 @@ NSString *const kXMLReaderTextNodeKey = @"text";
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
-{	
+{
 	string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
 	// Build the text value
     [textInProgress appendString:string];
-
+	
 }
 
 @end
