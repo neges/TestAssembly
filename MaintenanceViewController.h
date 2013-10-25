@@ -10,6 +10,7 @@
 #import "EAGLView.h"
 #import "MetaioSDKViewController.h"
 #import "TBXML.h"
+#import "TBXMLFunctions.h"
 
 @interface MaintenanceViewController : MetaioSDKViewController
 {

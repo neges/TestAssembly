@@ -11,6 +11,7 @@
 		043E1330181A9C080016649A /* MaintenanceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043E132E181A9C080016649A /* MaintenanceViewController.xib */; };
 		043E1404181AC1C30016649A /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1403181AC1C30016649A /* TBXML.m */; };
 		043E1407181AC2590016649A /* saveMethodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1406181AC2590016649A /* saveMethodes.m */; };
+		043E140A181AC9A30016649A /* TBXMLFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1409181AC9A30016649A /* TBXMLFunctions.m */; };
 		04F329E8172FCE8000910751 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E7172FCE8000910751 /* UIKit.framework */; };
 		04F329EA172FCE8000910751 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E9172FCE8000910751 /* Foundation.framework */; };
 		04F329EC172FCE8000910751 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329EB172FCE8000910751 /* CoreGraphics.framework */; };
@@ -54,6 +55,8 @@
 		043E1402181AC1C30016649A /* TBXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXML.h; sourceTree = "<group>"; };
 		043E1403181AC1C30016649A /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXML.m; sourceTree = "<group>"; };
 		043E1406181AC2590016649A /* saveMethodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = saveMethodes.m; sourceTree = "<group>"; };
+		043E1408181AC9A30016649A /* TBXMLFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXMLFunctions.h; sourceTree = "<group>"; };
+		043E1409181AC9A30016649A /* TBXMLFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXMLFunctions.m; sourceTree = "<group>"; };
 		04F329E4172FCE8000910751 /* itmAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = itmAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F329E7172FCE8000910751 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		04F329E9172FCE8000910751 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -227,6 +230,8 @@
 				043E1402181AC1C30016649A /* TBXML.h */,
 				043E1403181AC1C30016649A /* TBXML.m */,
 				043E1406181AC2590016649A /* saveMethodes.m */,
+				043E1408181AC9A30016649A /* TBXMLFunctions.h */,
+				043E1409181AC9A30016649A /* TBXMLFunctions.m */,
 			);
 			name = TBXML;
 			sourceTree = "<group>";
@@ -323,6 +328,7 @@
 				04F329F8172FCE8000910751 /* AppDelegate.mm in Sources */,
 				04F32A01172FCE8000910751 /* ViewController.mm in Sources */,
 				8CF18B6E180AE58C00723F91 /* EAGLView.mm in Sources */,
+				043E140A181AC9A30016649A /* TBXMLFunctions.m in Sources */,
 				043E1404181AC1C30016649A /* TBXML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -85,15 +85,11 @@
 		NSLog(@"No structur file could be found or structur file i incorrect : %@", fullPath);
 		return;
 	}
-	
-	
 
-
-	
 	//Hauptbaugruppe als geometry laden
 	int cosID = 1;
 	
-	NSString* topModelName = [self getNameOfElement:rootElement];
+	NSString* topModelName = [TBXMLFunctions getNameOfElement:rootElement];
 	metaio::IGeometry* topModel = [self createGroupWithName:topModelName andParentObject:nil toCosID:cosID];
 	
 	//Sub elemente laden falls vorhanden
@@ -117,7 +113,7 @@
 		
 		
 		
-		NSString *objectName = [self getNameOfElement:oElement];
+		NSString *objectName = [TBXMLFunctions getNameOfElement:oElement];
 
 		
 		//Element hat Childs => Group
@@ -127,6 +123,7 @@
 			
 			metaio::IGeometry* groupModel = [self createGroupWithName:objectName andParentObject:pObject toCosID:oCos];
 			
+			//Rekursiv durchlaufen
 			[self loadObjectsFromElement: oElement->firstChild
 								 toCosID: oCos
 						withParentObject: groupModel
@@ -152,11 +149,6 @@
 {
 	// load content
 	NSString* emptyModel = [[NSBundle mainBundle] pathForResource:@"_empty_" ofType:@"obj"];
-	
-	if (!m_metaioSDK)
-	{
-		NSLog(@"Metaio Problem");
-	}
 	
 	theLoadedModel =  m_metaioSDK->createGeometry([emptyModel UTF8String]);
 	theLoadedModel->setName(*new std::string([oName UTF8String]));
@@ -494,111 +486,6 @@
 		[self unsetShaderToGeometry:theLoadedModel];
     }
 }
-
-
-
-
-
-#pragma mark -
-#pragma mark tbxml Methodes
-#pragma mark -
-
--(TBXMLElement*) getElement:(TBXMLElement*)element
-					 ByName:(NSString*) elementName
-{
-	
-	do{
-		
-		
-		TBXMLAttribute *attribute = element->firstAttribute;
-		
-		while (attribute)
-		{
-			if ([[TBXML attributeValue:attribute] isEqualToString:elementName])
-			{
-				return element;
-			}
-			
-			attribute = attribute->next;
-			
-		}
-		
-		if (element->firstChild)
-		{
-			TBXMLElement* tempElement = [self getElement:element->firstChild ByName:elementName];
-			if (tempElement) {
-				return tempElement;
-			}
-		}
-		
-		
-	}while ((element = element->nextSibling));
-	
-	return nil;
-	
-	
-}
-
--(void)getAllElements:(TBXMLElement*)element
-{
-	
-	
-	do{
-		
-		
-		TBXMLAttribute *attribute = element->firstAttribute;
-		
-		while (attribute)
-		{
-			//NSLog(@"%@ : %@ = %@", [TBXML elementName:element], [TBXML attributeName:attribute], [TBXML attributeValue:attribute]);
-			
-			NSLog(@"%@ = %@", [TBXML elementName:element], [TBXML attributeValue:attribute]);
-			
-			attribute = attribute->next;
-			
-		}
-		
-		if (element->firstChild)
-		{
-			[self getAllElements:element->firstChild];
-		}
-		
-		
-	}while ((element = element->nextSibling));
-	
-}
-
--(NSString*)getNameOfElement:(TBXMLElement*)element
-{
-	
-	do {
-		
-		TBXMLAttribute *attribute = element->firstAttribute;
-		
-		if ([[TBXML attributeName:attribute] isEqualToString:@"name"])
-		{
-			return [TBXML attributeValue:attribute];
-		}
-		
-		attribute = attribute->next;
-	}
-	
-	while (element->nextSibling);
-	
-	return @"";
-
-}
-
--(NSString*)getTypeOfElement:(TBXMLElement*)element
-{
-	
-	return [TBXML elementName:element];
-	
-}
-
-
-
-
 
 #pragma mark -
 #pragma mark @protocol metaioSDKDelegate
