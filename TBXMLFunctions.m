@@ -58,15 +58,20 @@
 	do{
 		
 		
-		TBXMLAttribute *attribute = element->firstAttribute;
-		
-		while (attribute)
+		if (element->firstAttribute)
 		{
-			//NSLog(@"%@ : %@ = %@", [TBXML elementName:element], [TBXML attributeName:attribute], [TBXML attributeValue:attribute]);
 			
-			NSLog(@"%@ = %@", [TBXML elementName:element], [TBXML attributeValue:attribute]);
+			TBXMLAttribute *attribute = element->firstAttribute;
 			
-			attribute = attribute->next;
+			while (attribute)
+			{
+				//NSLog(@"%@ : %@ = %@", [TBXML elementName:element], [TBXML attributeName:attribute], [TBXML attributeValue:attribute]);
+				
+				NSLog(@"%@ = %@", [TBXML elementName:element], [TBXML attributeValue:attribute]);
+				
+				attribute = attribute->next;
+				
+			}
 			
 		}
 		
@@ -79,6 +84,52 @@
 	}while ((element = element->nextSibling));
 	
 }
+
++(void)getAllElements:(TBXMLElement*)element
+		   withGroups:(bool)wGroups
+			  toArray:(NSMutableArray *)elementArray
+{
+	
+	
+	do
+	{
+		
+		if (element->firstAttribute)
+		{
+		
+			TBXMLAttribute *attribute = element->firstAttribute;
+			
+			while (attribute)
+			{
+				if (wGroups) {
+					[elementArray addObject: [TBXML attributeValue:attribute]];
+					
+				}else{
+					if (!element->firstChild)
+					{
+						[elementArray addObject: [TBXML attributeValue:attribute]];
+					}
+					
+					
+				}
+				//NSLog(@"%@ : %@ = %@", [TBXML elementName:element], [TBXML attributeName:attribute], [TBXML attributeValue:attribute]);
+				
+				attribute = attribute->next;
+				
+			}
+			
+		}
+		
+		if (element->firstChild)
+		{
+			[self getAllElements:element->firstChild withGroups:wGroups toArray:elementArray];
+		}
+		
+		
+	}while ((element = element->nextSibling));
+	
+}
+
 
 +(NSString*)getNameOfElement:(TBXMLElement*)element
 {

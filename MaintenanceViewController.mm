@@ -42,6 +42,7 @@
 	[self loadObjectsInFolder:@"3D" forCosID:1];
 	
 	
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -78,7 +79,7 @@
 	
 	
 	//xml laden falls vorhanden
-	TBXML* tbxml = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	tbxml = [TBXML newTBXMLWithXMLString:theContents error:nil];
 	TBXMLElement* rootElement = tbxml.rootXMLElement;
 	
 	if (!tbxml) {
@@ -99,6 +100,9 @@
 	
 		loadedModels = m_metaioSDK->getLoadedGeometries();
 	}
+	
+	
+
 	
 	
 }
@@ -232,15 +236,6 @@
 - (metaio::IGeometry *)modelForObjectname: (NSString *)objectname
 {
 	
-	// Wenn der Modelname eine Endung hat
-	if( ! [ objectname hasSuffix: @".obj" ] )
-	{
-		
-		// .obj hinzufügen
-		objectname = [ objectname stringByAppendingString: @".obj" ];
-		
-	}
-	
 	
 	for ( std::vector<metaio::IGeometry*>::iterator modelItr = loadedModels.begin(); modelItr != loadedModels.end(); ++modelItr )
 	{
@@ -289,6 +284,24 @@
 	
 }
 
+
+#pragma mark -
+#pragma mark Object Interaction
+#pragma mark -
+
+-(void)setObjectsFromArray:(NSArray*)oArray
+					toShow: (bool) show
+{
+	for (NSString* oName in oArray)
+	{
+		
+		metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+		tempModel->setVisible(show);
+		
+	}
+	
+	
+}
 
 
 #pragma mark -
@@ -339,7 +352,7 @@
 		
 		theLoadedModel = model;
 		setHighlight = true;
-		[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(myHighlightTimer:) userInfo:nil repeats:YES];
+		[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightTimerModel:) userInfo:nil repeats:YES];
 		
 		
 	}
@@ -369,11 +382,30 @@
 -(IBAction)test:(id)sender
 {
 	
-	theLoadedModel = [self modelForObjectname:@"Parts"];
 	
-	theLoadedModel->setVisible(false);
+	TBXMLElement* rootElement = tbxml.rootXMLElement;
+	
+	TBXMLElement* testElement = [TBXMLFunctions getElement:rootElement ByName:@"screws_FRONT"];
+	selectedModels = [[NSMutableArray alloc]init];
+	
+	[TBXMLFunctions getAllElements:testElement withGroups:false toArray:selectedModels];
+	
+	//[self setObjectsFromArray:testArray toShow:false];
+	
+	
+	if ( setHighlight == false)
+	{
+		
+		setHighlight = true;
+		[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightTimerGroup:) userInfo:nil repeats:YES];
+		
+		
+	}
+	
 	
 }
+
+
 
 
 
@@ -460,7 +492,16 @@
     
 }
 
--(void)myHighlightTimer:(NSTimer *)timer
+
+
+
+
+
+#pragma mark -
+#pragma mark Timer
+#pragma mark -
+
+-(void)HighlightTimerModel:(NSTimer *)timer
 {
     if(setHighlight)
     {
@@ -486,6 +527,52 @@
 		[self unsetShaderToGeometry:theLoadedModel];
     }
 }
+
+
+-(void)HighlightTimerGroup:(NSTimer *)timer
+{
+    if(setHighlight)
+    {
+		if (highlightOn == false)
+		{
+			
+			highlightOn = true;
+			
+			for (NSString* oName in selectedModels)
+			{
+				
+				metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+				[self applyShader:@"red" toGeometry:tempModel];
+				
+			}
+			
+			
+		}else{
+			
+			highlightOn = false;
+			
+			for (NSString* oName in selectedModels)
+			{
+				
+				metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+				[self unsetShaderToGeometry:tempModel];
+				
+			}
+			
+			
+		}
+		
+		
+		
+    }
+    else
+    {
+        [timer invalidate]; //to stop and invalidate the timer.
+		[self unsetShaderToGeometry:theLoadedModel];
+    }
+}
+
+
 
 #pragma mark -
 #pragma mark @protocol metaioSDKDelegate

@@ -17,6 +17,10 @@
 
 +(void)getAllElements:(TBXMLElement*)element;
 
++(void)getAllElements:(TBXMLElement*)element
+		   withGroups:(bool)wGroups
+			  toArray:(NSMutableArray *)elementArray;
+
 
 +(NSString*)getNameOfElement:(TBXMLElement*)element;
 
