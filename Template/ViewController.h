@@ -11,15 +11,11 @@
 #import "EAGLView.h"
 #import "MetaioSDKViewController.h"
 
-#import "metaioContentCreation.h"
+#import "MaintenanceViewController.h"
 
 
 @interface ViewController : MetaioSDKViewController
 {
-    metaio::IGeometry* theLoadedModel; //Temporär aktuelle Geometry
-	
-    bool highlightOn; //Variable wenn etwas selektiert wurde
-	bool setHighlight; //Variable wenn der Highlight-Shader aktiv ist
 
     
 }
