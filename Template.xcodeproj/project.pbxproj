@@ -131,6 +131,7 @@
 		043E1331181A9C0E0016649A /* MaintenenceController */ = {
 			isa = PBXGroup;
 			children = (
+				8C64837D18182E850092FC31 /* _empty_.obj */,
 				043E132C181A9C080016649A /* MaintenanceViewController.h */,
 				043E132D181A9C080016649A /* MaintenanceViewController.mm */,
 				043E132E181A9C080016649A /* MaintenanceViewController.xib */,
@@ -142,7 +143,6 @@
 			isa = PBXGroup;
 			children = (
 				043E1331181A9C0E0016649A /* MaintenenceController */,
-				8C64837D18182E850092FC31 /* _empty_.obj */,
 				8C7754291811982700CFC082 /* Assets */,
 				8C64837A18180E450092FC31 /* TBXML */,
 				04F32A27172FD05400910751 /* Metaio */,

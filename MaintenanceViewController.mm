@@ -8,12 +8,15 @@
 
 #import "MaintenanceViewController.h"
 
+
 @interface MaintenanceViewController ()
 
 @end
 
+
 @implementation MaintenanceViewController
 
+@synthesize structurTableView;
 
 #pragma mark -
 #pragma mark View
@@ -40,9 +43,6 @@
 	
 	
 	[self loadObjectsInFolder:@"3D" forCosID:1];
-	
-	
-
 }
 
 - (void)didReceiveMemoryWarning
@@ -53,6 +53,90 @@
 
 
 
+
+
+#pragma mark -
+#pragma mark table View
+#pragma mark -
+
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    NSString* header = [NSString stringWithFormat:@"%@ - %i", [TBXMLFunctions getNameOfElement:selectedElement],[tableModels count] ];
+    
+    return header;
+    
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [tableModels count];
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"modelCell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (indexPath.row == 0)
+    {
+
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        
+        NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+        
+        // Configure the cell...
+        cell.textLabel.text = [tempArray objectAtIndex:1];
+        
+        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    }
+    else
+    {
+        
+
+        if (cell == nil) {
+          cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+
+        NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+        
+        // Configure the cell...
+        cell.textLabel.text = [tempArray objectAtIndex:1];
+        
+        //ist eine Group als Pfeile hinzufügen
+        if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
+        {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }else{
+            
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+    
+    }
+    
+    return cell;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+    
+    if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
+    {
+        selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+        [tableModels removeAllObjects];
+        [TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
+        [tableView reloadData];
+        
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 
 
@@ -99,10 +183,16 @@
 		[self loadObjectsFromElement:rootElement->firstChild toCosID:cosID withParentObject:topModel fromFolder:pathString];
 	
 		loadedModels = m_metaioSDK->getLoadedGeometries();
+        
+        //Werte für die tableView holen
+        selectedElement = rootElement;
+        tableModels = [[NSMutableArray alloc]init];
+        [TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
 	}
 	
 	
-
+    
+    
 	
 	
 }

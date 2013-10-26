@@ -21,6 +21,9 @@
 		   withGroups:(bool)wGroups
 			  toArray:(NSMutableArray *)elementArray;
 
++(void)getAllTableViewElements:(TBXMLElement*)element
+                       toArray:(NSMutableArray *)elementArray;
+
 
 +(NSString*)getNameOfElement:(TBXMLElement*)element;
 

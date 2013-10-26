@@ -8,7 +8,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MaintenanceViewController">
             <connections>
                 <outlet property="glView" destination="bag-dl-obz" id="eb8-FV-J84"/>
-                <outlet property="view" destination="0bd-wD-cPv" id="O6I-C9-Eac"/>
+                <outlet property="structurTableView" destination="w6k-jj-gIl" id="JI3-ex-e1h"/>
+                <outlet property="view" destination="0bd-wD-cPv" id="C0j-c3-1En"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -30,6 +31,15 @@
                                 <action selector="test:" destination="-1" eventType="touchUpInside" id="15W-Az-Xc5"/>
                             </connections>
                         </button>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="w6k-jj-gIl" userLabel="structurTableView">
+                            <rect key="frame" x="763" y="0.0" width="261" height="358"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="yAW-wS-yKy"/>
+                                <outlet property="delegate" destination="-1" id="kwp-aK-dUf"/>
+                            </connections>
+                        </tableView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
