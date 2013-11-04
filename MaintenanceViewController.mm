@@ -76,36 +76,41 @@
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"modelCell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell;
     
     if (indexPath.row == 0)
     {
 
         if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"topObject"];
         }
         
         NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
         
-        // Configure the cell...
-        cell.textLabel.text = [tempArray objectAtIndex:1];
+        NSString *topObjectText = [NSString stringWithFormat:@"%@", [tempArray objectAtIndex:1]];
         
-        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        // Configure the cell...
+        cell.textLabel.text = topObjectText;
+        
+        UIColor* topBackColor = [UIColor colorWithRed:0.960553 green:0.960524 blue:0.960540 alpha:1.0000];
+        
+        cell.backgroundColor = topBackColor;
     }
     else
     {
         
 
         if (cell == nil) {
-          cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+          cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"subObject"];
         }
 
         NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
         
+        NSString* subObjectText = [NSString stringWithFormat:@"   ├ %@", [tempArray objectAtIndex:1]];
+        
         // Configure the cell...
-        cell.textLabel.text = [tempArray objectAtIndex:1];
+        cell.textLabel.text = subObjectText;
         
         //ist eine Group als Pfeile hinzufügen
         if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
@@ -188,6 +193,7 @@
         selectedElement = rootElement;
         tableModels = [[NSMutableArray alloc]init];
         [TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
+        
 	}
 	
 	
