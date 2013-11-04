@@ -223,6 +223,9 @@
 	
 	do {
 		
+		if (!element) 
+			return @"";
+		
 		TBXMLAttribute *attribute = element->firstAttribute;
 		
 		if ([[TBXML attributeName:attribute] isEqualToString:@"name"])
@@ -246,6 +249,36 @@
 	
 }
 
++(NSMutableArray*)getAllParentElementsFrom:(TBXMLElement*)element
+
+{
+	NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+	
+	
+	TBXMLElement *tempElement = element;
+	
+	if (tempElement) {
+		
+		[tempArray addObject:[TBXMLFunctions getNameOfElement:tempElement]];
+		
+		while (tempElement->parentElement)
+		{
+			
+			tempElement = tempElement->parentElement;
+			
+			[tempArray addObject:[TBXMLFunctions getNameOfElement:tempElement]];
+						
+		}
+		
+	}
+	
+	NSMutableArray* reversedArray = [[NSMutableArray alloc] initWithArray:[[[[NSArray alloc] initWithArray: tempArray] reverseObjectEnumerator] allObjects]];
+	
+	return reversedArray;
+	
+	
+	
+}
 
 
 

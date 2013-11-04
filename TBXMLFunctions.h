@@ -30,5 +30,7 @@
 
 +(NSString*)getTypeOfElement:(TBXMLElement*)element;
 
++(NSMutableArray*)getAllParentElementsFrom:(TBXMLElement*)element;
+
 
 @end

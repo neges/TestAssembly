@@ -27,7 +27,9 @@
 	
 	TBXML* tbxml;
     TBXMLElement *selectedElement;
-    
+	
+	NSMutableArray* parentElements;
+	
     IBOutlet UILabel* test;
     
 

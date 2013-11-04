@@ -43,6 +43,8 @@
 	
 	
 	[self loadObjectsInFolder:@"3D" forCosID:1];
+	
+	parentElements = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -60,17 +62,11 @@
 #pragma mark -
 
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    NSString* header = [NSString stringWithFormat:@"%@ - %i", [TBXMLFunctions getNameOfElement:selectedElement],[tableModels count] ];
-    
-    return header;
-    
-}
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+	
+	parentElements = [TBXMLFunctions getAllParentElementsFrom:selectedElement];
+	
     return [tableModels count];
 }
 
@@ -79,16 +75,14 @@
     
     UITableViewCell *cell;
     
-    if (indexPath.row == 0)
+    if (indexPath.row <= [parentElements count]-1)
     {
 
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"topObject"];
         }
-        
-        NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
-        
-        NSString *topObjectText = [NSString stringWithFormat:@"%@", [tempArray objectAtIndex:1]];
+	
+        NSString *topObjectText = [NSString stringWithFormat:@"%@", [parentElements objectAtIndex:indexPath.row]];
         
         // Configure the cell...
         cell.textLabel.text = topObjectText;
@@ -126,21 +120,46 @@
     return cell;
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
-    
-    if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
-    {
-        selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
-        [tableModels removeAllObjects];
-        [TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
-        [tableView reloadData];
-        
-    }
+	
+	
+	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+	
+		
+	//Obergruppe wurde selektiert => eine Ebene zurück
+	if ([[cell reuseIdentifier] isEqualToString:@"topObject"])
+	{
+		
+		selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[parentElements objectAtIndex:indexPath.row]];
+		
+		//Wenn eine Element darüber dann neu Laden eine Ebene darüber
+		if (selectedElement)
+		{
+			[tableModels removeAllObjects];
+			[TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
+			[tableView reloadData];
+			
+		}
+		
+		
+	}else{
+
+		NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+		
+		if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
+		{
+			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+			[tableModels removeAllObjects];
+			[TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
+			[tableView reloadData];
+			
+		}
+		
+	}
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
 }
 
 
