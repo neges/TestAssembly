@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "253"
             endingLineNumber = "253"
-            landmarkName = "-modelForObjectname:"
+            landmarkName = "-createGroupWithName:andParentObject:toCosID:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "400"
             endingLineNumber = "400"
-            landmarkName = "-test:"
+            landmarkName = "-setObjectsFromArray:toShow:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

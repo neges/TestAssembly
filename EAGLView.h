@@ -1,5 +1,6 @@
 //
 //  EAGLView.h
+//  metaio SDK
 //
 // Copyright 2007-2013 metaio GmbH. All rights reserved.
 //
@@ -25,6 +26,7 @@
     GLint framebufferWidth;
     GLint framebufferHeight;
     
+    // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view.
     GLuint depthRenderbuffer;
     
     BOOL supportAntialiasing;
@@ -33,9 +35,7 @@
     GLuint msaaFramebuffer;
     GLuint msaaRenderBuffer;
     GLuint msaaDepthBuffer;
-
 @public
-    // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view.
     GLuint defaultFramebuffer, colorRenderbuffer;
     
 }
@@ -44,10 +44,7 @@
 
 - (void)setFramebuffer;
 - (BOOL)presentFramebuffer;
-- (BOOL)enableAntialiasing;
-// Depricated use requestScreenshot
-//- (UIImage*) getScreenshotImage;
-
+- (BOOL)deviceSupportsAntialiasing;
 
 
 @end

@@ -1,16 +1,14 @@
 //
 //  MetaioSDKViewController.m
-//  metaioSDK
+//  metaio SDK
 //
 // Copyright 2007-2013 metaio GmbH. All rights reserved.
 //
 
 #import <QuartzCore/QuartzCore.h>
-#import <mach/mach_host.h>
 #import <metaioSDK/IGeometry.h>
 #import "EAGLView.h"
 #import "MetaioSDKViewController.h"
-
 
 
 @interface MetaioSDKViewController ()
@@ -21,6 +19,7 @@
 
 
 @implementation MetaioSDKViewController
+@synthesize closeButton;
 @synthesize glView;
 @synthesize animating, context, displayLink;
 
@@ -33,13 +32,13 @@
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
     
-    // delete SDK instance
+    // delete sdk instance
     if( m_metaioSDK )
     {
         delete m_metaioSDK;
         m_metaioSDK = NULL;
     }
-
+    
     // delete our sensors component
     if( m_sensors )
     {
@@ -47,6 +46,10 @@
         m_sensors = NULL;
     }
     
+    [context release];
+    
+    [glView release];
+    [super dealloc];
 }
 
 
@@ -65,6 +68,7 @@
             NSLog(@"Failed to set ES context current");
         
         self.context = aContext;
+        [aContext release];
     }
     
     
@@ -73,9 +77,26 @@
     [glView setFramebuffer];
     animating = FALSE;
     self.displayLink = nil;
+
+	// In case you need a transparent GL view, e.g. with the SDK's see-through mode, uncomment the
+	// following lines:
+	// glView.opaque = false;
+	// glView.backgroundColor = [UIColor clearColor];
     
     // limit OpenGL framerate to 30FPS, as the camera has a maximum of 30FPS anyway
     animationFrameInterval = 2;
+    
+    
+	// Get the license string from the plist file
+    NSString* sdkLicense = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MetaioLicenseString"];
+
+    // Create metaio SDK instance
+    m_metaioSDK = metaio::CreateMetaioSDKIOS([sdkLicense UTF8String]);
+    if( !m_metaioSDK )
+    {
+        NSLog(@"SDK instance could not be created. Please verify the signature string");
+        return;
+    }
 
 	// Listen to app pause/resume events because in those events we have to pause/resume the SDK
 	[[NSNotificationCenter defaultCenter]
@@ -88,40 +109,28 @@
 	 selector:@selector(onApplicationDidBecomeActive:)
 	 name:UIApplicationDidBecomeActiveNotification
 	 object:nil];
-    
-    // get the license string from the plist file
-    NSString* SDKLicense = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MetaioLicenseString"];
-    // create SDK instance
-    m_metaioSDK = metaio::CreateMetaioSDKIOS([SDKLicense UTF8String]);
-    if( !m_metaioSDK )
+
+    m_sensors = metaio::CreateSensorsComponent();
+    if( !m_sensors )
     {
-        NSLog(@"SDK instance could not be created. Please verify the signature string");
+        NSLog(@"Could not create the sensors interface.");
         return;
     }
-    
-    m_sensors = metaio::CreateSensorsComponent();
     m_metaioSDK->registerSensorsComponent( m_sensors );
 
-	if ([self shouldEnableBackgroundProcessing])
-		m_metaioSDK->enableBackgroundProcessing();
-
-    // Create our SDK instance
+    // initialize rendered for our sdk instance
     float scaleFactor = [UIScreen mainScreen].scale;
     metaio::Vector2d screenSize;
     screenSize.x = self.glView.bounds.size.width * scaleFactor;
     screenSize.y = self.glView.bounds.size.height * scaleFactor;
 
-	m_metaioSDK->initializeRenderer(
-		screenSize.x,
-		screenSize.y,
-		metaio::getScreenRotationForInterfaceOrientation(self.interfaceOrientation),
-		metaio::ERENDER_SYSTEM_OPENGL_ES_2_0,
-		(__bridge  void*)context);
+    m_metaioSDK->initializeRenderer(screenSize.x, screenSize.y, metaio::getScreenRotationForInterfaceOrientation(self.interfaceOrientation), metaio::ERENDER_SYSTEM_OPENGL_ES_2_0, context);
     
     // register our callback method for animations
     m_metaioSDK->registerDelegate(self);
-    
+        
 }
+
 
 
 - (void)viewWillAppear:(BOOL)animated
@@ -132,7 +141,7 @@
     [self startAnimation]; 
     if( m_metaioSDK )
     {
-        m_metaioSDK->startCamera(0, 640, 480);
+        m_metaioSDK->startCamera(0, 480, 360);
     }
     
     
@@ -140,6 +149,7 @@
     UIInterfaceOrientation interfaceOrientation = self.interfaceOrientation;    
     [self willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:0];
 }
+
 
 
 - (void) viewDidAppear:(BOOL)animated
@@ -164,6 +174,11 @@
 
 - (void)viewDidUnload
 {
+    // Release any retained subviews of the main view.
+    [self setGlView:nil];
+    [self setCloseButton:nil];
+    [self setGlView:nil];
+
 	[[NSNotificationCenter defaultCenter]
 	 removeObserver:self
 	 name:UIApplicationWillResignActiveNotification
@@ -173,8 +188,6 @@
 	 name:UIApplicationDidBecomeActiveNotification
 	 object:nil];
 
-    // Release any retained subviews of the main view.
-    [self setGlView:nil];
     [super viewDidUnload];
 }
 
@@ -213,6 +226,7 @@
 // pre-iOS 6
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    // allow rotation in all directions
     return [self shouldAutorotate] && ([self supportedInterfaceOrientations] & (1 << toInterfaceOrientation));
 }
 
@@ -239,7 +253,7 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     // adjust the rotation based on the interface orientation
-    m_metaioSDK->setScreenRotation( metaio::getScreenRotationForInterfaceOrientation(interfaceOrientation) );
+    m_metaioSDK->setScreenRotation( metaio::getScreenRotationForInterfaceOrientation(interfaceOrientation) ); 
     
     // on ios5, we handle this in didLayoutSubView
 	float version = [[[UIDevice currentDevice] systemVersion] floatValue];
@@ -248,7 +262,6 @@
 		float scale = [UIScreen mainScreen].scale;
 		m_metaioSDK->resizeRenderer(self.glView.bounds.size.width*scale, self.glView.bounds.size.height*scale);
 	}
-
 }
 
 
@@ -259,7 +272,6 @@
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     // Implement if you need to handle touches
-
 }
 
 - (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -272,101 +284,59 @@
     // Implement if you need to handle touches
 }
 
-
-
-
-#pragma mark - Metaio SDK specifics
-
-// Overwrite this to choose by yourself whether multithreading should be used
-- (BOOL)shouldEnableBackgroundProcessing
-{
-	host_basic_info_data_t info;
-	mach_msg_type_number_t infoCount = HOST_BASIC_INFO_COUNT;
-
-	if (host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&info, &infoCount) != KERN_SUCCESS)
-	{
-		NSLog(@"Failed to determine number of CPU cores, will disable multithreading");
-		return NO;
-	}
-
-	return info.logical_cpu_max > 1;
-}
-
-
-
-
-#pragma mark - @protocol metaioSDKDelegate
-
-- (void) onSDKReady
-{
-    // Implement if reaction to SDK initialization is needed
-    // Please implement in the subclass-->template.mm
-}
+#pragma mark - @protocol MetaioSDKDelegate
 
 - (void) onAnimationEnd: (metaio::IGeometry*) geometry  andName:(NSString*) animationName
 {
-    // Implement if reaction to animation termination is needed
-    // Please implement in the subclass-->template.mm
+    // Implement if you want to react to animation callbacks
 }
 
-- (void) onMovieEnd:(metaio::IGeometry *)geometry andName:(NSString *)movieName
+- (void) onSDKReady
 {
-    // Implement if reaction to movie termination is needed
-    // Please implement in the subclass-->template.mm
+    // implement if there's a need to react when the SDK is ready
 }
+
 
 - (void) onNewCameraFrame:(metaio::ImageStruct *)cameraFrame
 {
-    // Implement if camera image is needed
-    // Please implement in the subclass-->template.mm
+    // implement if you want to react to this event
+    // (request an image using m_metaioSDK->requestCameraImage)
 }
 
-- (void) onCameraImageSaved:(NSString *)filepath
+- (void) onCameraImageSaved: (NSString*) filepath
 {
-    // Implement if camera image (filename and path) is needed
-    // Please implement in the subclass-->template.mm
 }
 
-- (void) onScreenshotImage:(metaio::ImageStruct *)image
+- (void) onRenderEvent:(metaio::IGeometry*)geometry renderEvent:(const metaio::RenderEvent&)renderEvent
 {
-    // Implement if screenshot image is needed
-    // Please implement in the subclass-->template.mm
+    // Implement if you want to handle render events
+}
+
+-(void) onScreenshot:(NSString*) filepath
+{
 }
 
 - (void) onScreenshotImageIOS:(UIImage *)image
 {
-    // Implement if screenshot image is needed
-    // Please implement in the subclass-->template.mm
-}
-
-- (void) onScreenshot:(NSString *)filepath
-{
-    // Implemenmt if screenshot image file is needed
-    // Please implement in the subclass-->template.mm
 }
 
 - (void) onTrackingEvent:(const metaio::stlcompat::Vector<metaio::TrackingValues>&)trackingValues
 {
-    // Implement if new poses are needed
-    // Please implement in the subclass-->template.mm
 }
 
 - (void) onInstantTrackingEvent:(bool)success file:(NSString*)file
 {
-    // Implement if reaction to instant 3D tracking is needed
-    // Please implement in the subclass-->template.mm
+    
 }
 
-- (void) onVisualSearchResult:(bool)success error:(NSString *)errorMsg response:(std::vector<metaio::VisualSearchResponse>)response
+- (void) onVisualSearchResult:(const metaio::stlcompat::Vector<metaio::VisualSearchResponse>&)response errorCode:(int)errorCode
 {
-    // Implement if visual search result is needed
-    // Please implement in the subclass-->template.mm
+    
 }
 
 - (void) onVisualSearchStatusChanged:(metaio::EVISUAL_SEARCH_STATE)state
 {
-    // Implement if reaction to visual search state change is needed
-    // Please implement in the subclass-->template.mm
+    
 }
 
 #pragma mark - OpenGL related
@@ -420,13 +390,21 @@
 {
     [glView setFramebuffer];
     
-    // tell SDK to render
+    // tell sdk to render
     if( m_metaioSDK )
     {
         m_metaioSDK->render();    
     }
     
     [glView presentFramebuffer];
+}
+
+
+
+
+- (IBAction)onBtnClosePushed:(id)sender 
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

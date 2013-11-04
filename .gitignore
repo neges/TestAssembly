@@ -1,2 +1,22 @@
 
-metaioSDK.framework/metaioSDK
+metaioSDK.framework/*
+
+metaioSDK.framework/Headers/GeometryExtension.h
+
+metaioSDK.framework/Headers/IGeometry.h
+
+metaioSDK.framework/Headers/IGeometry.h
+
+metaioSDK.framework/Headers/IMetaioSDKCallback.h
+
+metaioSDK.framework/Headers/IMetaioSDKIOS.h
+
+metaioSDK.framework/Headers/MetaioCloudPlugin/LiveViewInterfaceController.h
+
+metaioSDK.framework/Headers/MetaioCloudPlugin/LiveViewInterfaceController.h
+
+metaioSDK.framework/Headers/MobileStructs.h
+
+metaioSDK.framework/Headers/STLCompatibility.h
+
+metaioSDK.framework/Headers/STLCompatibility.h

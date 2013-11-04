@@ -42,8 +42,8 @@
 		8CD9B0031812F8CC00430299 /* fragGREEN.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8CD9B0011812F8CC00430299 /* fragGREEN.glsl */; };
 		8CD9B0041812F8CC00430299 /* fragRED.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8CD9B0021812F8CC00430299 /* fragRED.glsl */; };
 		8CF18B67180ADF9B00723F91 /* metaioSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF18B66180ADF9B00723F91 /* metaioSDK.framework */; };
-		8CF18B6E180AE58C00723F91 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8CF18B6B180AE58C00723F91 /* EAGLView.mm */; };
-		8CF18B6F180AE58C00723F91 /* MetaioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8CF18B6D180AE58C00723F91 /* MetaioSDKViewController.mm */; };
+		8CF18B6E180AE58C00723F91 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8CF18B6B180AE58C00723F91 /* EAGLView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8CF18B6F180AE58C00723F91 /* MetaioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8CF18B6D180AE58C00723F91 /* MetaioSDKViewController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C5F2467F177C38DA00EB88A8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F2467E177C38DA00EB88A8 /* Security.framework */; };
 		C5F24681177C38F300EB88A8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F24680177C38F300EB88A8 /* CFNetwork.framework */; };
 /* End PBXBuildFile section */
