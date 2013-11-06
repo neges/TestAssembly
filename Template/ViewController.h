@@ -8,13 +8,10 @@
 
 
 #import <UIKit/UIKit.h>
-#import "EAGLView.h"
-#import "MetaioSDKViewController.h"
-
 #import "MaintenanceViewController.h"
 
 
-@interface ViewController : MetaioSDKViewController
+@interface ViewController : UIViewController
 {
 
     

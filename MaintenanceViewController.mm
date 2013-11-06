@@ -44,7 +44,8 @@
 	
 	[self loadObjectsInFolder:@"3D" forCosID:1];
 	
-	parentElements = [[NSMutableArray alloc]init];
+	tableParents = [[NSMutableArray alloc]init];
+	tableModels = [[NSMutableArray alloc]init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,48 +66,57 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	
-	parentElements = [TBXMLFunctions getAllParentElementsFrom:selectedElement];
+	tableParents = [TBXMLFunctions getAllParentElementsFrom:selectedElement];
 	
-    return [tableModels count];
+	tableModels = [TBXMLFunctions getAllTableViewSubElements:selectedElement];
+	
+	
+    return [tableModels count] + [tableParents count];
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    UITableViewCell *cell;
+	static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	
+	if (cell == nil) {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+	}
     
-    if (indexPath.row <= [parentElements count]-1)
+	NSArray* tempArray;
+	
+    if (indexPath.row < [tableParents count])
     {
 
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"topObject"];
-        }
-	
-        NSString *topObjectText = [NSString stringWithFormat:@"%@", [parentElements objectAtIndex:indexPath.row]];
+		tempArray = [tableParents objectAtIndex:indexPath.row];
+        
+        NSString *topObjectText = [NSString stringWithFormat:@"   %@", [tempArray objectAtIndex:1]];
         
         // Configure the cell...
         cell.textLabel.text = topObjectText;
-        
+		
+        cell.accessoryType = UITableViewCellAccessoryNone;
+		
         UIColor* topBackColor = [UIColor colorWithRed:0.960553 green:0.960524 blue:0.960540 alpha:1.0000];
         
         cell.backgroundColor = topBackColor;
+		
     }
     else
     {
-        
 
-        if (cell == nil) {
-          cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"subObject"];
-        }
-
-        NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+        tempArray = [tableModels objectAtIndex:indexPath.row - [tableParents count]];
         
         NSString* subObjectText = [NSString stringWithFormat:@"   ├ %@", [tempArray objectAtIndex:1]];
         
         // Configure the cell...
         cell.textLabel.text = subObjectText;
+
+		cell.imageView.frame.size = CGSizeMake(cell.frame.size.height, cell.frame.size.height);
+		
         
-        //ist eine Group als Pfeile hinzufügen
+        //ist eine Group also Pfeile hinzufügen
         if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
         {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -116,6 +126,26 @@
         }
     
     }
+	
+	//unsichtbaren Button für clickEvent erzeigen
+	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	[button addTarget: self
+			   action: @selector(buttonPressed:withEvent:)
+     forControlEvents: UIControlEventTouchDown];
+	
+	button.frame = CGRectMake(3, (cell.frame.size.height - 20) / 2 ,20,20);
+	[button setBackgroundImage: [UIImage imageNamed:@"checked.png"] forState:UIControlStateSelected];
+	[button setBackgroundImage: [UIImage imageNamed:@"unchecked.png"] forState:UIControlStateNormal];
+	
+	if ([[tempArray objectAtIndex:2] isEqualToString:@"true"])
+	{
+		[button setSelected:true];
+	}else{
+		[button setSelected:false];
+	}
+	
+	[cell addSubview:button];
+	
     
     return cell;
 }
@@ -124,20 +154,16 @@
 {
 	
 	
-	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-	
-		
 	//Obergruppe wurde selektiert => eine Ebene zurück
-	if ([[cell reuseIdentifier] isEqualToString:@"topObject"])
+	if (indexPath.row < [tableParents count])
 	{
+		NSArray* tempArray = [tableParents objectAtIndex:indexPath.row ];
 		
-		selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[parentElements objectAtIndex:indexPath.row]];
+		selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 		
 		//Wenn eine Element darüber dann neu Laden eine Ebene darüber
 		if (selectedElement)
 		{
-			[tableModels removeAllObjects];
-			[TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
 			[tableView reloadData];
 			
 		}
@@ -145,13 +171,11 @@
 		
 	}else{
 
-		NSArray* tempArray = [tableModels objectAtIndex:indexPath.row];
+		NSArray* tempArray = [tableModels objectAtIndex:(indexPath.row - [tableParents count]) ];
 		
 		if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
 		{
 			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
-			[tableModels removeAllObjects];
-			[TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
 			[tableView reloadData];
 			
 		}
@@ -161,13 +185,6 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 }
-
-
-
-
-
-
-
 
 #pragma mark -
 #pragma mark load 3D content
@@ -198,8 +215,10 @@
 	//Hauptbaugruppe als geometry laden
 	int cosID = 1;
 	
-	NSString* topModelName = [TBXMLFunctions getNameOfElement:rootElement];
-	metaio::IGeometry* topModel = [self createGroupWithName:topModelName andParentObject:nil toCosID:cosID];
+	NSString* topModelName = [TBXMLFunctions getAttribute:@"name" OfElement:rootElement];
+	BOOL visible = [[TBXMLFunctions getAttribute:@"visible" OfElement:rootElement] boolValue];
+	
+	metaio::IGeometry* topModel = [self createGroupWithName:topModelName andParentObject:nil toCosID:cosID isVisible:visible];
 	
 	//Sub elemente laden falls vorhanden
 	if (rootElement->firstChild)
@@ -210,8 +229,6 @@
         
         //Werte für die tableView holen
         selectedElement = rootElement;
-        tableModels = [[NSMutableArray alloc]init];
-        [TBXMLFunctions getAllTableViewElements:selectedElement toArray:tableModels];
         
 	}
 	
@@ -232,15 +249,16 @@
 		
 		
 		
-		NSString *objectName = [TBXMLFunctions getNameOfElement:oElement];
-
+		NSString *objectName = [TBXMLFunctions getAttribute:@"name" OfElement:oElement];
+		BOOL visible = [[TBXMLFunctions getAttribute:@"visible" OfElement:oElement]boolValue];
+		
 		
 		//Element hat Childs => Group
 		if (oElement->firstChild)
 		{
 			//leere geometrie laden als parent
 			
-			metaio::IGeometry* groupModel = [self createGroupWithName:objectName andParentObject:pObject toCosID:oCos];
+			metaio::IGeometry* groupModel = [self createGroupWithName:objectName andParentObject:pObject toCosID:oCos isVisible:visible];
 			
 			//Rekursiv durchlaufen
 			[self loadObjectsFromElement: oElement->firstChild
@@ -252,7 +270,8 @@
 		else //Element ist ein Object
 		{
 			
-			[self loadObjectFromFolder:oFolder withName:objectName andParentObject:pObject toCosID:oCos];
+			[self loadObjectFromFolder:oFolder withName:objectName andParentObject:pObject toCosID:oCos isVisible:visible];
+			
 		}
 		
 		
@@ -264,6 +283,8 @@
 -(metaio::IGeometry*)   createGroupWithName:(NSString*) oName
 							andParentObject: (metaio::IGeometry*) pObject
 									toCosID: (int) oCos
+								  isVisible:(bool)visible
+
 
 {
 	// load content
@@ -272,12 +293,13 @@
 	theLoadedModel =  m_metaioSDK->createGeometry([emptyModel UTF8String]);
 	theLoadedModel->setName(*new std::string([oName UTF8String]));
 	theLoadedModel->setCoordinateSystemID(oCos);
+	theLoadedModel->setVisible(visible);
 	
 	if (pObject) {
 		theLoadedModel->setParentGeometry(pObject);
-		NSLog(@"Create Group : %@ with Parent : %s",oName, pObject->getName().c_str());
+		//NSLog(@"Create Group : %@ with Parent : %s",oName, pObject->getName().c_str());
 	}else{
-		NSLog(@"Create Top Model : %@",oName);
+		//NSLog(@"Create Top Model : %@",oName);
 	}
 	
 	
@@ -291,7 +313,14 @@
 									withName: (NSString*) oName
 							andParentObject: (metaio::IGeometry*) pObject
 									toCosID: (int) oCos
+								  isVisible: (bool)visible
 {
+	
+	
+	//laden beschleunigen in dem kein 3D object herrangezogen wird
+	return nil;
+	
+	
 	// load content
 	NSString* objModel = [NSString stringWithFormat:@"%@/%@.obj",oFolder,oName];
 	
@@ -314,9 +343,11 @@
 			
 			theLoadedModel->setCoordinateSystemID(oCos);
 			
+			theLoadedModel->setVisible(visible);
+			
 			if (pObject) {
 				theLoadedModel->setParentGeometry(pObject);
-				NSLog(@"Load : %@ with Parent : %s",oName, pObject->getName().c_str());
+				//NSLog(@"Load : %@ with Parent : %s",oName, pObject->getName().c_str());
 			}
 			
 			
@@ -336,12 +367,6 @@
 	
 	return nil;
 }
-
-
-
-
-
-
 
 
 #pragma mark -
@@ -493,6 +518,44 @@
     
     
 }
+
+-(void)setVisibleForElementNamed:(NSString*)eName
+{
+
+	NSLog(@"touch at %@", eName);
+	
+}
+
+- (void) buttonPressed: (id) sender withEvent: (UIEvent *) event
+{
+	
+    UITouch * touch = [[event allTouches] anyObject];
+    CGPoint location = [touch locationInView: self.structurTableView];
+    NSIndexPath * indexPath = [self.structurTableView indexPathForRowAtPoint: location];
+    
+	NSLog(@"Row %i", indexPath.row);
+	
+	NSArray* tempArray;
+	
+	if (indexPath.row < [tableParents count])
+		tempArray = [tableParents objectAtIndex:indexPath.row ];
+	else
+		tempArray = [tableModels objectAtIndex:(indexPath.row - [tableParents count]) ];
+
+	selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+	
+	//VisibelAttribute umsetzen!!
+	UIButton* senderButton = sender;
+	
+	if (senderButton.selected == true)
+	{
+		
+	}else{
+		
+	}
+	
+}
+
 
 -(IBAction)test:(id)sender
 {
@@ -772,6 +835,12 @@
         NSLog(@"Visual search is currently communicating with the server");
     }
 }
+
+
+
+
+
+
 
 
 @end

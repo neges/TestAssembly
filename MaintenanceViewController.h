@@ -19,7 +19,7 @@
 	
 	NSMutableArray* selectedModels; //Array in dem die betroffenen Models und Groups abgelegt sind
     NSMutableArray* tableModels; //Array für die jeweilige TableView
-	
+	NSMutableArray* tableParents; //Array für die jeweiligen TopElemente der TableView
 
     bool highlightOn; //Variable wenn etwas selektiert wurde
 	bool setHighlight; //Variable wenn der Highlight-Shader aktiv ist
@@ -28,7 +28,7 @@
 	TBXML* tbxml;
     TBXMLElement *selectedElement;
 	
-	NSMutableArray* parentElements;
+	
 	
     IBOutlet UILabel* test;
     
@@ -38,9 +38,6 @@
 @property (nonatomic, strong) IBOutlet UITableView *structurTableView;
 
 - (void)loadObjectsInFolder:(NSString *)oFolder forCosID:(int)oCos;
-
-
--(IBAction)test:(id)sender;
 
 
 

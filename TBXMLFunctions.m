@@ -138,44 +138,13 @@
 	
 }
 
-+(void)getAllTableViewElements:(TBXMLElement*)topElement
-			  toArray:(NSMutableArray *)elementArray
++(NSMutableArray*)getAllTableViewSubElements:(TBXMLElement*)topElement
 {
 
-    
-    
-     NSMutableArray* topArray = [[NSMutableArray alloc]init];
-    
-    
-    //eigenschaften des Top holen
-    if (topElement->firstAttribute)
-    {
-        
-        TBXMLAttribute *attribute = topElement->firstAttribute;
-        
-        [topArray addObject:[TBXML elementName:topElement]];
-        
-        
-        while (attribute)
-        {
-            
-            if ([[TBXML attributeName:attribute] isEqualToString:@"name"])
-            {
-                [topArray addObject:[TBXML attributeValue:attribute]];
-            }
-            
-            
-            attribute = attribute->next;
-            
-        }
-        
-        [elementArray addObject: topArray];
-        
-    }
-    
+    NSMutableArray* elementArray = [[NSMutableArray alloc]init];
     
     if (!topElement->firstChild)
-        return;
+        return elementArray;
     
     
     //Eigenschaften der Unterobjekte holen
@@ -183,14 +152,15 @@
     
         do
         {
-            
+            NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+			
             if (element->firstAttribute)
             {
                 
                 
                 TBXMLAttribute *attribute = element->firstAttribute;
                 
-                NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+                
                 
                 [tempArray addObject:[TBXML elementName:element]];
                 
@@ -198,10 +168,7 @@
                 while (attribute)
                 {
                     
-                    if ([[TBXML attributeName:attribute] isEqualToString:@"name"])
-                    {
-                        [tempArray addObject:[TBXML attributeValue:attribute]];
-                    }
+					[tempArray addObject:[TBXML attributeValue:attribute]];
                     
                     
                     attribute = attribute->next;
@@ -215,28 +182,33 @@
             
         }while ((element = element->nextSibling));
 	
+		
+	 return elementArray;
+	
 }
 
 
-+(NSString*)getNameOfElement:(TBXMLElement*)element
++(NSString*)getAttribute:(NSString*)attrib
+			   OfElement:(TBXMLElement*)element
 {
+	if (!element)
+		return @"";
 	
-	do {
+	if (!element->firstAttribute)
+		return @"";
+	
+	TBXMLAttribute *attribute = element->firstAttribute;
+	
+	while (attribute)
+	{
 		
-		if (!element) 
-			return @"";
-		
-		TBXMLAttribute *attribute = element->firstAttribute;
-		
-		if ([[TBXML attributeName:attribute] isEqualToString:@"name"])
+		if ([[TBXML attributeName:attribute] isEqualToString:attrib])
 		{
 			return [TBXML attributeValue:attribute];
 		}
 		
 		attribute = attribute->next;
 	}
-	
-	while (element->nextSibling);
 	
 	return @"";
 	
@@ -252,27 +224,79 @@
 +(NSMutableArray*)getAllParentElementsFrom:(TBXMLElement*)element
 
 {
-	NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+	NSMutableArray* elementArray = [[NSMutableArray alloc]init];
 	
 	
 	TBXMLElement *tempElement = element;
 	
 	if (tempElement) {
 		
-		[tempArray addObject:[TBXMLFunctions getNameOfElement:tempElement]];
+            NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+			
+            if (tempElement->firstAttribute)
+            {
+                
+                
+                TBXMLAttribute *attribute = tempElement->firstAttribute;
+                
+                
+                
+                [tempArray addObject:[TBXML elementName:tempElement]];
+                
+                
+                while (attribute)
+                {
+                    
+					[tempArray addObject:[TBXML attributeValue:attribute]];
+                    
+                    
+                    attribute = attribute->next;
+                    
+                }
+                
+                [elementArray addObject: tempArray];
+                
+            }
+        
 		
 		while (tempElement->parentElement)
 		{
 			
 			tempElement = tempElement->parentElement;
 			
-			[tempArray addObject:[TBXMLFunctions getNameOfElement:tempElement]];
+			NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+			
+			if (tempElement->firstAttribute)
+			{
+				
+				
+				TBXMLAttribute *attribute = tempElement->firstAttribute;
+				
+				
+				
+				[tempArray addObject:[TBXML elementName:tempElement]];
+				
+				
+				while (attribute)
+				{
+					
+					[tempArray addObject:[TBXML attributeValue:attribute]];
+					
+					
+					attribute = attribute->next;
+					
+				}
+				
+				[elementArray addObject: tempArray];
+				
+			}
+				
 						
 		}
 		
 	}
 	
-	NSMutableArray* reversedArray = [[NSMutableArray alloc] initWithArray:[[[[NSArray alloc] initWithArray: tempArray] reverseObjectEnumerator] allObjects]];
+	NSMutableArray* reversedArray = [[NSMutableArray alloc] initWithArray:[[[[NSArray alloc] initWithArray: elementArray] reverseObjectEnumerator] allObjects]];
 	
 	return reversedArray;
 	
@@ -286,8 +310,32 @@
 
 
 
+
 #pragma mark -
-#pragma mark save
+#pragma mark save in tbxml
+#pragma mark -
+
+
++(bool)saveAttributForName:(NSString*)aName
+				 withValue:(NSString*)aValue
+				 toElement:(TBXMLElement*)aElement
+{
+
+
+
+	//TBXMLAttribute* aAttribute = [TBXML next]
+
+
+
+
+	return true;
+
+}
+
+
+
+#pragma mark -
+#pragma mark archiv
 #pragma mark -
 
 -(void)getLogAllElements:(TBXMLElement*) rootElement

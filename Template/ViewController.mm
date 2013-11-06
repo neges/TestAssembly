@@ -22,13 +22,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    
-    if( !m_metaioSDK )
-    {
-        NSLog(@"SDK instance is 0x0. Please check the license string");
-        return;
-    }
-    
 }
 
 -(void)viewDidAppear:(BOOL)animated
