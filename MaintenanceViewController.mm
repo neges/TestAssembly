@@ -15,6 +15,8 @@
 
 
 @implementation MaintenanceViewController
+	const NSInteger UNIQUE_TAG = 11111;
+
 
 @synthesize structurTableView;
 
@@ -46,6 +48,9 @@
 	
 	tableParents = [[NSMutableArray alloc]init];
 	tableModels = [[NSMutableArray alloc]init];
+	isBtoEnable = true;
+	
+	
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,9 +84,34 @@
     
 	static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+
 	
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+		
+		
+
+	}
+	
+	//Button für clickEvent erzeigen
+	UIButton *button = (UIButton *)[cell viewWithTag:UNIQUE_TAG];
+	
+	if (!button)
+	{
+		
+		button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		button.tag = UNIQUE_TAG;
+		
+		[button addTarget: self
+				   action: @selector(buttonPressed:withEvent:)
+		 forControlEvents: UIControlEventTouchDown];
+		
+		
+		button.frame = CGRectMake(3, (cell.frame.size.height - 20) / 2 ,20,20);
+		[button setBackgroundImage: [UIImage imageNamed:@"checked.png"] forState:UIControlStateSelected];
+		[button setBackgroundImage: [UIImage imageNamed:@"unchecked.png"] forState:UIControlStateNormal];
+		
+		[cell addSubview:button];
 	}
     
 	NSArray* tempArray;
@@ -101,6 +131,7 @@
         UIColor* topBackColor = [UIColor colorWithRed:0.960553 green:0.960524 blue:0.960540 alpha:1.0000];
         
         cell.backgroundColor = topBackColor;
+
 		
     }
     else
@@ -124,34 +155,32 @@
             
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
-    
+		
+		
+		//Button deaktivieren wenn Überbaugruppe nicht sichtbar
+		[button setEnabled:isBtoEnable];
+		
     }
 	
-	//unsichtbaren Button für clickEvent erzeigen
-	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	[button addTarget: self
-			   action: @selector(buttonPressed:withEvent:)
-     forControlEvents: UIControlEventTouchDown];
-	
-	button.frame = CGRectMake(3, (cell.frame.size.height - 20) / 2 ,20,20);
-	[button setBackgroundImage: [UIImage imageNamed:@"checked.png"] forState:UIControlStateSelected];
-	[button setBackgroundImage: [UIImage imageNamed:@"unchecked.png"] forState:UIControlStateNormal];
-	
+		
 	if ([[tempArray objectAtIndex:2] isEqualToString:@"true"])
 	{
 		[button setSelected:true];
 	}else{
 		[button setSelected:false];
 	}
-	
-	[cell addSubview:button];
-	
+
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	
+	//Celle holen
+	UITableViewCell *Cell = (UITableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+	//Button aus  Celle holen
+	UIButton *Button = (UIButton *)[Cell viewWithTag:UNIQUE_TAG];
 	
 	
 	//Obergruppe wurde selektiert => eine Ebene zurück
@@ -164,6 +193,16 @@
 		//Wenn eine Element darüber dann neu Laden eine Ebene darüber
 		if (selectedElement)
 		{
+
+			if (Button)
+			{
+				if (Button.isEnabled && Button.isSelected)
+					isBtoEnable = true;
+				else
+					isBtoEnable = false;
+			}else
+				isBtoEnable = true;
+			
 			[tableView reloadData];
 			
 		}
@@ -175,14 +214,40 @@
 		
 		if ([[tempArray objectAtIndex:0] isEqualToString:@"group"])
 		{
+
+			if (Button)
+			{
+				if (Button.isEnabled && Button.isSelected)
+					isBtoEnable = true;
+				else
+					isBtoEnable = false;
+			}else
+				isBtoEnable = true;
+			
+			
 			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 			[tableView reloadData];
 			
 		}
+		else //object also selektieren in grün
+		{
+
+				//alten Timer löschen und Cell nicht mehr selektieren
+				if (theSelectedModel)
+				{
+					[highlightTimer invalidate]; //to stop and invalidate the timer.
+					[self unsetShaderToGeometry:theSelectedModel];
+					[tableView deselectRowAtIndexPath:indexPath animated:YES];
+					theSelectedModel->setVisible(saveVisibleBeforSelection);
+					theSelectedModel = nil;
+				}else
+				{
+					[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green"];
+				}
+			
+		}
 		
 	}
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 }
 
@@ -318,7 +383,7 @@
 	
 	
 	//laden beschleunigen in dem kein 3D object herrangezogen wird
-	return nil;
+	//return nil;
 	
 	
 	// load content
@@ -366,6 +431,30 @@
 	}
 	
 	return nil;
+}
+
+
+
+
+
+
+
+#pragma mark -
+#pragma mark Content Setter
+#pragma mark -
+
+-(bool)setObjectWithName:(NSString *)sName
+				 visible:(bool)visible
+{
+
+	metaio::IGeometry *sObject = [self modelForObjectname:sName];
+	
+	if (sObject)
+	{
+		sObject->setVisible(visible);
+		return true;
+	}else
+		return false;
 }
 
 
@@ -429,19 +518,34 @@
 #pragma mark Object Interaction
 #pragma mark -
 
--(void)setObjectsFromArray:(NSArray*)oArray
-					toShow: (bool) show
+-(void)select3dContentWithName:(NSString*)content
+				   withUIColor:(NSString*)sColor
 {
-	for (NSString* oName in oArray)
+	
+	//alten Timer löschen
+	if (highlightTimer)
 	{
-		
-		metaio::IGeometry* tempModel = [self modelForObjectname:oName];
-		tempModel->setVisible(show);
-		
+		[highlightTimer invalidate]; //to stop and invalidate the timer.
+		[self unsetShaderToGeometry:theSelectedModel];
 	}
+	
+	//neues Selektiertes Object holen
+	theSelectedModel = [self modelForObjectname:content];
+	saveVisibleBeforSelection = theSelectedModel->isVisible();
+	theSelectedModel->setVisible(true);
+	
+	if ([sColor isEqualToString:@"green"])
+		highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushGreen) userInfo:nil repeats:YES];
+	else
+		highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushRed) userInfo:nil repeats:YES];
+		
+		
 	
 	
 }
+
+
+
 
 
 #pragma mark -
@@ -528,60 +632,46 @@
 
 - (void) buttonPressed: (id) sender withEvent: (UIEvent *) event
 {
-	
+	//Touchposition als Indexpath
     UITouch * touch = [[event allTouches] anyObject];
     CGPoint location = [touch locationInView: self.structurTableView];
     NSIndexPath * indexPath = [self.structurTableView indexPathForRowAtPoint: location];
     
-	NSLog(@"Row %i", indexPath.row);
-	
 	NSArray* tempArray;
 	
-	if (indexPath.row < [tableParents count])
+	if (indexPath.row == [tableParents count]-1) //Letzte Top element
 		tempArray = [tableParents objectAtIndex:indexPath.row ];
-	else
+	else if((indexPath.row > [tableParents count] - 1)) //Subelement
 		tempArray = [tableModels objectAtIndex:(indexPath.row - [tableParents count]) ];
+	else //Parent des letzten Top elements also mach nix
+		return;
 
-	selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 	
 	//VisibelAttribute umsetzen!!
 	UIButton* senderButton = sender;
 	
 	if (senderButton.selected == true)
 	{
+		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"false" toElement:[TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		senderButton.selected = false;
+		isBtoEnable = false;
 		
 	}else{
-		
-	}
-	
-}
-
-
--(IBAction)test:(id)sender
-{
-	
-	
-	TBXMLElement* rootElement = tbxml.rootXMLElement;
-	
-	TBXMLElement* testElement = [TBXMLFunctions getElement:rootElement ByName:@"screws_FRONT"];
-	selectedModels = [[NSMutableArray alloc]init];
-	
-	[TBXMLFunctions getAllElements:testElement withGroups:false toArray:selectedModels];
-	
-	//[self setObjectsFromArray:testArray toShow:false];
-	
-	
-	if ( setHighlight == false)
-	{
-		
-		setHighlight = true;
-		[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightTimerGroup:) userInfo:nil repeats:YES];
-		
-		
+		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"true" toElement:[TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		senderButton.selected = true;
+		isBtoEnable = true;
 	}
 	
 	
+	//3D Object umschalten
+	[self setObjectWithName:[tempArray objectAtIndex:1] visible:senderButton.selected];
+	
+	//Neuladen wenn es ein Top Element ist
+	if (indexPath.row < [tableParents count])
+		[structurTableView reloadData];
+
 }
+
 
 
 
@@ -679,33 +769,41 @@
 #pragma mark Timer
 #pragma mark -
 
--(void)HighlightTimerModel:(NSTimer *)timer
+-(void)HighlightWithFlushGreen
 {
-    if(setHighlight)
-    {
 		if (highlightOn == false)
 		{
 			
 			highlightOn = true;
-			[self applyShader:@"red" toGeometry:theLoadedModel];
+			[self applyShader:@"green" toGeometry:theSelectedModel];
 			
 		}else{
 			
 			highlightOn = false;
-			[self unsetShaderToGeometry:theLoadedModel];
+			[self unsetShaderToGeometry:theSelectedModel];
 			
 		}
 		
 		
-		
-    }
-    else
-    {
-        [timer invalidate]; //to stop and invalidate the timer.
-		[self unsetShaderToGeometry:theLoadedModel];
-    }
 }
 
+-(void)HighlightWithFlushRed
+{
+	if (highlightOn == false)
+	{
+		
+		highlightOn = true;
+		[self applyShader:@"red" toGeometry:theSelectedModel];
+		
+	}else{
+		
+		highlightOn = false;
+		[self unsetShaderToGeometry:theSelectedModel];
+		
+	}
+	
+
+}
 
 -(void)HighlightTimerGroup:(NSTimer *)timer
 {

@@ -33,4 +33,9 @@
 +(NSMutableArray*)getAllParentElementsFrom:(TBXMLElement*)element;
 +(NSMutableArray *)getAllTableViewSubElements:(TBXMLElement*)element;
 
+
++(bool)saveAttributForName:(NSString*)aName
+				 withValue:(char*)aValue
+				 toElement:(TBXMLElement*)aElement;
+
 @end

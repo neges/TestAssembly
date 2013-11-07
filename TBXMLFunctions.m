@@ -317,13 +317,28 @@
 
 
 +(bool)saveAttributForName:(NSString*)aName
-				 withValue:(NSString*)aValue
+				 withValue:(char*) aValue
 				 toElement:(TBXMLElement*)aElement
 {
 
 
-
-	//TBXMLAttribute* aAttribute = [TBXML next]
+	TBXMLAttribute *attribute = aElement->firstAttribute;
+	
+	while (attribute)
+	{
+		
+		if ([[TBXML attributeName:attribute] isEqualToString:aName])
+		{
+			
+			attribute->value = aValue;
+			
+			return true;
+		}
+		
+		attribute = attribute->next;
+	}
+	
+	return false;
 
 
 
