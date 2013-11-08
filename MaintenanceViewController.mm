@@ -74,7 +74,7 @@
 	tableParents = [TBXMLFunctions getAllParentElementsFrom:selectedElement];
 	
 	tableModels = [TBXMLFunctions getAllTableViewSubElements:selectedElement];
-	
+
 	
     return [tableModels count] + [tableParents count];
 }
@@ -248,7 +248,22 @@
 		}
 	}
 	
+  	[tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[tableParents count] inSection:indexPath.section]
+					 atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
 }
+
+
+-(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	/*
+    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+		[tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[tableParents count]-1 inSection:indexPath.section]
+						 atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+	 */
+}
+
+
 
 #pragma mark -
 #pragma mark load 3D content
@@ -540,7 +555,8 @@
 		}
 	}
 	
-
+	if (!content)
+		return;
 
 	if (theSelectedModel)
 	{
