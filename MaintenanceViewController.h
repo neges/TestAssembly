@@ -19,7 +19,7 @@
 	bool saveVisibleBeforSelection; //Speicher ob das Object vorher sichtbar war
 	std::vector<metaio::IGeometry*> loadedModels; //Pointer zu allen geladenen models
 	
-	NSMutableArray* selectedModels; //Array in dem die betroffenen Models und Groups abgelegt sind
+	NSMutableArray* selectedModels; //Array in dem die selektierten Models und Groups abgelegt sind
     NSMutableArray* tableModels; //Array für die jeweilige TableView
 	NSMutableArray* tableParents; //Array für die jeweiligen TopElemente der TableView
 

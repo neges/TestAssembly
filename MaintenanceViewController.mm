@@ -188,25 +188,36 @@
 	{
 		NSArray* tempArray = [tableParents objectAtIndex:indexPath.row ];
 		
-		selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
-		
 		//Wenn eine Element darüber dann neu Laden eine Ebene darüber
-		if (selectedElement)
+		if (indexPath.row < [tableParents count] - 1)
 		{
-
-			if (Button)
-			{
-				if (Button.isEnabled && Button.isSelected)
-					isBtoEnable = true;
-				else
-					isBtoEnable = false;
-			}else
-				isBtoEnable = true;
+			//mögliche selektierung löschen
+			[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
 			
-			[tableView reloadData];
+			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+			
+			if (selectedElement)
+			{
+
+				if (Button)
+				{
+					if (Button.isEnabled && Button.isSelected)
+						isBtoEnable = true;
+					else
+						isBtoEnable = false;
+				}else
+					isBtoEnable = true;
+				
+				[tableView reloadData];
+			}
 			
 		}
-		
+		else //letzte Top element also 3D selektieren
+		{
+			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:true	];
+			if (!theSelectedModel)
+				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+		}
 		
 	}else{
 
@@ -229,24 +240,12 @@
 			[tableView reloadData];
 			
 		}
-		else //object also selektieren in grün
+		else
 		{
-
-				//alten Timer löschen und Cell nicht mehr selektieren
-				if (theSelectedModel)
-				{
-					[highlightTimer invalidate]; //to stop and invalidate the timer.
-					[self unsetShaderToGeometry:theSelectedModel];
-					[tableView deselectRowAtIndexPath:indexPath animated:YES];
-					theSelectedModel->setVisible(saveVisibleBeforSelection);
-					theSelectedModel = nil;
-				}else
-				{
-					[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green"];
-				}
-			
+			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:false];
+			if (!theSelectedModel)
+				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		}
-		
 	}
 	
 }
@@ -520,26 +519,61 @@
 
 -(void)select3dContentWithName:(NSString*)content
 				   withUIColor:(NSString*)sColor
+					   toGroup:(bool)group
 {
 	
 	//alten Timer löschen
 	if (highlightTimer)
 	{
 		[highlightTimer invalidate]; //to stop and invalidate the timer.
+		highlightTimer = nil;
 		[self unsetShaderToGeometry:theSelectedModel];
+		
+		if (selectedModels)
+		{
+			for (NSString* oName in selectedModels)
+			{
+				metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+				[self unsetShaderToGeometry:tempModel];
+				selectedModels = nil;
+			}
+		}
 	}
 	
-	//neues Selektiertes Object holen
-	theSelectedModel = [self modelForObjectname:content];
-	saveVisibleBeforSelection = theSelectedModel->isVisible();
-	theSelectedModel->setVisible(true);
-	
-	if ([sColor isEqualToString:@"green"])
-		highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushGreen) userInfo:nil repeats:YES];
+
+
+	if (theSelectedModel)
+	{
+		theSelectedModel->setVisible(saveVisibleBeforSelection);
+		theSelectedModel = nil;
+	}
 	else
-		highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushRed) userInfo:nil repeats:YES];
+	{
+
+		//neues Selektiertes Object holen
+		theSelectedModel = [self modelForObjectname:content];
+		saveVisibleBeforSelection = theSelectedModel->isVisible();
+		theSelectedModel->setVisible(true);
 		
-		
+		if (group == true)
+		{
+			selectedModels = [[NSMutableArray alloc]init];
+			
+			[TBXMLFunctions getAllElements:selectedElement withGroups:false toArray:selectedModels];
+			
+			if ([sColor isEqualToString:@"green"])
+				highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightGroupWithFlushGreen) userInfo:nil repeats:YES];
+			else
+				highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightGroupWithFlushRed) userInfo:nil repeats:YES];
+		}
+		else
+		{
+			if ([sColor isEqualToString:@"green"])
+				highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushGreen) userInfo:nil repeats:YES];
+			else
+				highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightWithFlushRed) userInfo:nil repeats:YES];
+		}
+	}
 	
 	
 }
@@ -805,47 +839,63 @@
 
 }
 
--(void)HighlightTimerGroup:(NSTimer *)timer
+-(void)HighlightGroupWithFlushGreen
 {
-    if(setHighlight)
-    {
-		if (highlightOn == false)
+	if (highlightOn == false)
+	{
+		
+		highlightOn = true;
+		
+		for (NSString* oName in selectedModels)
 		{
 			
-			highlightOn = true;
+			metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+			[self applyShader:@"green" toGeometry:tempModel];
 			
-			for (NSString* oName in selectedModels)
-			{
-				
-				metaio::IGeometry* tempModel = [self modelForObjectname:oName];
-				[self applyShader:@"red" toGeometry:tempModel];
-				
-			}
+		}
+
+	}else{
+		
+		highlightOn = false;
+		
+		for (NSString* oName in selectedModels)
+		{
 			
+			metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+			[self unsetShaderToGeometry:tempModel];
 			
-		}else{
+		}
+	}
+}
+
+-(void)HighlightGroupWithFlushRed
+{
+	if (highlightOn == false)
+	{
+		
+		highlightOn = true;
+		
+		for (NSString* oName in selectedModels)
+		{
 			
-			highlightOn = false;
-			
-			for (NSString* oName in selectedModels)
-			{
-				
-				metaio::IGeometry* tempModel = [self modelForObjectname:oName];
-				[self unsetShaderToGeometry:tempModel];
-				
-			}
-			
+			metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+			[self applyShader:@"red" toGeometry:tempModel];
 			
 		}
 		
 		
+	}else{
 		
-    }
-    else
-    {
-        [timer invalidate]; //to stop and invalidate the timer.
-		[self unsetShaderToGeometry:theLoadedModel];
-    }
+		highlightOn = false;
+		
+		for (NSString* oName in selectedModels)
+		{
+			
+			metaio::IGeometry* tempModel = [self modelForObjectname:oName];
+			[self unsetShaderToGeometry:tempModel];
+			
+		}
+	}
 }
 
 
