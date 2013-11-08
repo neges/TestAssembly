@@ -16,7 +16,9 @@
 
 @implementation MaintenanceViewController
 	const NSInteger UNIQUE_TAG = 11111;
-
+	static NSString *CellIdentifier = @"Cell";
+	static NSString *SubDivider = @"   ├ ";
+	static NSString *TopDivider = @"   ";
 
 @synthesize structurTableView;
 
@@ -82,7 +84,7 @@
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-	static NSString *CellIdentifier = @"Cell";
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
 	
@@ -121,7 +123,7 @@
 
 		tempArray = [tableParents objectAtIndex:indexPath.row];
         
-        NSString *topObjectText = [NSString stringWithFormat:@"   %@", [tempArray objectAtIndex:1]];
+        NSString *topObjectText = [NSString stringWithFormat:@"%@%@",TopDivider, [tempArray objectAtIndex:1]];
         
         // Configure the cell...
         cell.textLabel.text = topObjectText;
@@ -139,7 +141,7 @@
 
         tempArray = [tableModels objectAtIndex:indexPath.row - [tableParents count]];
         
-        NSString* subObjectText = [NSString stringWithFormat:@"   ├ %@", [tempArray objectAtIndex:1]];
+        NSString* subObjectText = [NSString stringWithFormat:@"%@%@",SubDivider, [tempArray objectAtIndex:1]];
         
         // Configure the cell...
         cell.textLabel.text = subObjectText;
@@ -640,29 +642,45 @@
 	// the 'true' flag tells sdk to actually use the vertices for a hit-test, instead of just the bounding box
 	metaio::IGeometry* model = m_metaioSDK->getGeometryFromScreenCoordinates(loc.x * scale, loc.y * scale, true);
 	
-	if ( model && setHighlight == false)
-	{
-		[self unsetShaderToGeometry:theLoadedModel];
-		
-		theLoadedModel = model;
-		setHighlight = true;
-		[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightTimerModel:) userInfo:nil repeats:YES];
-		
-		
-	}
-	else if (model && setHighlight == true)
+	if ( model )
 	{
 		
-		[self unsetShaderToGeometry:theLoadedModel];
+		//Strukur der Tabelle neu aufbauen:
+		//Namen holen
+		NSString* touchObjectsName = [self modelnameForModel:model];
+		//das tbxml element
+		TBXMLElement* touchElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:touchObjectsName];
+		//das parent davon
+		TBXMLElement* touchElementParent = touchElement->parentElement;
 		
-		theLoadedModel = model;
-		setHighlight = true;
+		if (touchElementParent)
+		{
+			//parent setzen und neu laden -> richtige tableview struktur
+			selectedElement = touchElementParent;
+			[structurTableView reloadData];
+		}
+		
+		//cell selektieren
+		for (NSInteger j = 0; j < [structurTableView numberOfRowsInSection:0]; ++j)
+		{
+			UITableViewCell * tempCell = [structurTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:0]];
+			
+
+			
+			if ([tempCell.textLabel.text isEqual:[NSString stringWithFormat:@"%@%@", SubDivider,touchObjectsName]])
+			{
+				[structurTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+			}
+		}
+		
 		
 	}
 	else
 	{
-		setHighlight = false;
+		[structurTableView deselectRowAtIndexPath:[structurTableView indexPathForSelectedRow] animated:YES];
+		[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
 	}
+
 	
 	
 }
@@ -673,12 +691,6 @@
     
 }
 
--(void)setVisibleForElementNamed:(NSString*)eName
-{
-
-	NSLog(@"touch at %@", eName);
-	
-}
 
 - (void) buttonPressed: (id) sender withEvent: (UIEvent *) event
 {
