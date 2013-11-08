@@ -9,6 +9,8 @@
             <connections>
                 <outlet property="glView" destination="bag-dl-obz" id="eb8-FV-J84"/>
                 <outlet property="structurTableView" destination="w6k-jj-gIl" id="JI3-ex-e1h"/>
+                <outlet property="structureTabBar" destination="bmZ-Fw-8jp" id="P31-zW-yOo"/>
+                <outlet property="tabBarView" destination="Ds9-jE-39Q" id="zCE-ry-f2y"/>
                 <outlet property="view" destination="0bd-wD-cPv" id="C0j-c3-1En"/>
             </connections>
         </placeholder>
@@ -20,25 +22,66 @@
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bag-dl-obz" userLabel="glView" customClass="EAGLView">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <subviews>
-                        <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="none" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="w6k-jj-gIl" userLabel="structurTableView">
-                            <rect key="frame" x="763" y="0.0" width="261" height="358"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <outlet property="dataSource" destination="-1" id="yAW-wS-yKy"/>
-                                <outlet property="delegate" destination="-1" id="kwp-aK-dUf"/>
-                            </connections>
-                        </tableView>
-                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C3Z-7R-1jS" userLabel="FullscreenButton">
+                    <rect key="frame" x="5" y="5" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <state key="normal" image="fullscreen.png">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="toogleScreen:" destination="-1" eventType="touchUpInside" id="Wcw-t4-O5e"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </view>
+        <view contentMode="scaleToFill" id="Ds9-jE-39Q" userLabel="tabBarView">
+            <rect key="frame" x="0.0" y="0.0" width="1024" height="309"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <tabBar contentMode="center" fixedFrame="YES" itemPositioning="centered" translatesAutoresizingMaskIntoConstraints="NO" id="bmZ-Fw-8jp">
+                    <rect key="frame" x="0.0" y="0.0" width="250" height="49"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <items>
+                        <tabBarItem title="work" image="maintenance.png" id="SPZ-kC-xrR"/>
+                        <tabBarItem tag="1" title="report" image="report.png" id="bXJ-da-uIM"/>
+                        <tabBarItem tag="2" title="structure" image="structure.png" id="Hh5-JM-Iex"/>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="khU-iD-L8B"/>
+                    </connections>
+                </tabBar>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bU5-ga-Mkq">
+                    <rect key="frame" x="0.0" y="49" width="1032" height="260"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+        </view>
+        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="w6k-jj-gIl" userLabel="structurTableView">
+            <rect key="frame" x="0.0" y="0.0" width="260" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="dataSource" destination="-1" id="yAW-wS-yKy"/>
+                <outlet property="delegate" destination="-1" id="kwp-aK-dUf"/>
+            </connections>
+        </tableView>
     </objects>
+    <resources>
+        <image name="fullscreen.png" width="64" height="64"/>
+        <image name="maintenance.png" width="60" height="60"/>
+        <image name="report.png" width="60" height="60"/>
+        <image name="structure.png" width="60" height="60"/>
+    </resources>
 </document>

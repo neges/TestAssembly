@@ -39,7 +39,9 @@
 {
     [super viewDidLoad];
 	
-	[self initTrackingDate];
+	
+	
+	[self initTrackingData];
 	
 	
 	[self initLight];
@@ -52,6 +54,8 @@
 	tableModels = [[NSMutableArray alloc]init];
 	isBtoEnable = true;
 	
+	[self initViews];
+	
 	
 }
 
@@ -62,7 +66,18 @@
 }
 
 
-
+-(void)initViews
+{
+	
+	
+	[tabBarView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds ].size.width - 49 - 20 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	[glView	addSubview:tabBarView];
+	
+	[structurTableView setFrame:CGRectMake([[UIScreen mainScreen] bounds ].size.height + 1, 0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
+	[glView addSubview:structurTableView];
+	
+	
+}
 
 
 #pragma mark -
@@ -265,6 +280,95 @@
 	 */
 }
 
+
+
+
+
+
+
+#pragma mark -
+#pragma mark tab bar
+#pragma mark -
+
+
+
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+
+	switch (item.tag) {
+		case 0:
+			NSLog(@"work");
+			tabBarTag = 0;
+			[self slideTabBarIn:true];
+			[self slideTableIn:false];
+			
+			break;
+		case 1:
+			NSLog(@"report");
+			tabBarTag = 0;
+			[self slideTabBarIn:true];
+			[self slideTableIn:false];
+			
+			break;
+		case 2:
+			NSLog(@"structure");
+			
+			[self slideTabBarIn:false];
+			[self slideTableIn:true];
+			
+			
+			break;
+		default:
+			
+			
+			break;
+	}
+
+
+	
+	
+}
+
+-(void)slideTabBarIn:(bool)ingoing
+{
+
+	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height - 20;
+	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49 - 20;
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:1.0];
+	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
+	
+	if (ingoing == true)
+		[tabBarView setFrame:CGRectMake(0, showY ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	else
+		[tabBarView setFrame:CGRectMake(0,hideY ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	
+	[UIView commitAnimations];
+
+}
+
+
+-(void)slideTableIn:(bool)ingoing
+{
+	
+	NSInteger showX = [[UIScreen mainScreen] bounds ].size.height - structurTableView.frame.size.width;
+	NSInteger hideX = [[UIScreen mainScreen] bounds ].size.height;
+	
+	//UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f,460.0f,320.0f,260.0f)];
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:1.0];
+	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
+	
+	if (ingoing == true)
+		[structurTableView setFrame:CGRectMake(showX,0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
+	else
+		[structurTableView setFrame:CGRectMake(hideX,0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
+	
+	[UIView commitAnimations];
+	
+}
 
 
 #pragma mark -
@@ -604,7 +708,7 @@
 #pragma mark Tracking Data
 #pragma mark -
 
--(void)initTrackingDate
+-(void)initTrackingData
 {
 	
     // load our tracking configuration
@@ -735,6 +839,54 @@
 }
 
 
+- (IBAction)toogleScreen:(id)sender
+{
+
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:1.0];
+	
+	//toggle taBarView
+	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
+	
+	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height - 20;
+	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49 - 20;
+	
+	//get Position
+	CGPoint tabBarPoint = [tabBarView convertPoint:tabBarView.bounds.origin toView:glView];
+	CGPoint tablePoint = [structurTableView convertPoint:structurTableView.bounds.origin toView:glView];
+	
+	NSLog(@"%f", [[UIScreen mainScreen] bounds ].size.width);
+	
+	if (tabBarPoint.y == 800)//war eingelappt
+	{
+		[tabBarView setFrame:CGRectMake(0, hideY ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+		//da zu begin kein tab selektier wurde ist die tableView noch auf 1025
+		if (tablePoint.x == [[UIScreen mainScreen] bounds ].size.height) {
+			[self slideTableIn:true];
+		}
+		
+	}
+	else if (tabBarPoint.y == 900)//war ausgeklappt
+	{
+		[tabBarView setFrame:CGRectMake(0,showY ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	}
+	else if (tabBarPoint.y == showY)//ist ausgeklappt
+	{
+		[tabBarView setFrame:CGRectMake(0,900 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	}
+	else if (tabBarPoint.y == hideY)//ist eingeklappt
+	{
+		[tabBarView setFrame:CGRectMake(0,800 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+		if (tablePoint.x == [[UIScreen mainScreen] bounds ].size.height - structurTableView.frame.size.width) {
+			[self slideTableIn:false];
+		}
+	}
+	
+	
+	
+	[UIView commitAnimations];
+		
+}
 
 
 
