@@ -48,13 +48,14 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <tabBar contentMode="center" fixedFrame="YES" itemPositioning="centered" translatesAutoresizingMaskIntoConstraints="NO" id="bmZ-Fw-8jp">
-                    <rect key="frame" x="0.0" y="0.0" width="250" height="49"/>
+                    <rect key="frame" x="0.0" y="0.0" width="331" height="49"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <items>
                         <tabBarItem title="work" image="maintenance.png" id="SPZ-kC-xrR"/>
                         <tabBarItem tag="1" title="report" image="report.png" id="bXJ-da-uIM"/>
                         <tabBarItem tag="2" title="structure" image="structure.png" id="Hh5-JM-Iex"/>
+                        <tabBarItem tag="3" systemItem="featured" id="LNe-67-Glb"/>
                     </items>
                     <connections>
                         <outlet property="delegate" destination="-1" id="khU-iD-L8B"/>

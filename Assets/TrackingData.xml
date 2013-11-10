@@ -12,7 +12,7 @@
 			<SensorCOS>
 				<SensorCosID>Patch1</SensorCosID>
 				<Parameters>
-					<referenceImage widthMM="100" heightMM="100">metaioman_target.png</referenceImage>
+					<referenceImage widthMM="200" heightMM="200">metaioman_target.png</referenceImage>
 				</Parameters>
 			</SensorCOS>
             

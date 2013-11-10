@@ -75,7 +75,9 @@
 	
 	[structurTableView setFrame:CGRectMake([[UIScreen mainScreen] bounds ].size.height + 1, 0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
 	[glView addSubview:structurTableView];
-	
+    
+    savedCosID = 1;
+	tabBarTag = 0;
 	
 }
 
@@ -298,29 +300,35 @@
 
 	switch (item.tag) {
 		case 0:
-			NSLog(@"work");
 			tabBarTag = 0;
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
 			
 			break;
 		case 1:
-			NSLog(@"report");
-			tabBarTag = 0;
+			tabBarTag = 1;
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
 			
 			break;
 		case 2:
-			NSLog(@"structure");
-			
+			tabBarTag = 2;
 			[self slideTabBarIn:false];
 			[self slideTableIn:true];
 			
 			
 			break;
-		default:
+        case 3:
 			
+            NSString* tempName = [[tableParents objectAtIndex:0] objectAtIndex:1];
+            
+            if (offlineMode)
+               offlineMode = [self setObjectWithName:tempName toCosID:savedCosID];
+            else
+                offlineMode = [self setObjectWithName:tempName toCosID:0];
+            
+            //altes TabItem wieder selktieren
+            [tabBar setSelectedItem:[tabBar.items objectAtIndex:tabBarTag]];
 			
 			break;
 	}
@@ -518,11 +526,9 @@
 		{
 			// scale it a bit up
 			
-			CGFloat scale = 0.5;
+            theLoadedModel->setTranslation (metaio::Vector3d(0,0,0)); //0,5,-70
 			
-			theLoadedModel->setTranslation (metaio::Vector3d(0,0,0)); //0,5,-70
-			
-			theLoadedModel->setScale(metaio::Vector3d(scale,scale,scale));
+			//theLoadedModel->setScale(metaio::Vector3d(0.5,0.5,0.5));
 			
 			theLoadedModel->setName(*new std::string([oName UTF8String]));
 			
@@ -575,6 +581,129 @@
 		return true;
 	}else
 		return false;
+}
+
+-(bool)setObjectWithName:(NSString *)sName
+				 toCosID:(NSInteger)sCos
+{
+
+    //igeometry holen
+	metaio::IGeometry *sObject = [self modelForObjectname:sName];
+	
+	if (sObject)
+	{
+        //alte cosid speichern wenn nicht 0
+        if (sObject->getCoordinateSystemID() > 0)
+            savedCosID = sObject->getCoordinateSystemID();
+        //Neue CosID setzen
+		sObject->setCoordinateSystemID(sCos);
+
+		
+        //neu skalieren und zurückgeben ob offline oder online
+        if (sCos == 0)
+        {
+            //sObject->setScale(metaio::Vector3d(0.5,0.5,0.5));
+            CGFloat transZ = [self fitObjectWithName:sName toMaxScreenSize:[[UIScreen mainScreen] bounds ].size];
+            sObject->setTranslation(metaio::Vector3d(0,0,-transZ));
+            
+            return true;
+        }
+        else
+        {
+            
+            //sObject->setScale(metaio::Vector3d(1,1,1));
+            sObject->setTranslation(metaio::Vector3d(0,0,0));
+            return false;
+        }
+	}else
+		return false;
+}
+
+-(CGFloat)fitObjectWithName:(NSString*)oName
+    toMaxScreenSize:(CGSize)sSize
+{
+    NSMutableArray *allSubElements = [[NSMutableArray alloc]init];
+    
+    TBXMLElement *topElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:oName];
+    [TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
+    
+    CGFloat maxX;
+    CGFloat maxY;
+    CGFloat minY;
+    CGFloat minX;
+    
+    
+    //Alle geladen Objecte druchlaufen
+    for ( std::vector<metaio::IGeometry*>::iterator modelItr = loadedModels.begin(); modelItr != loadedModels.end(); ++modelItr )
+	{
+		
+		// Abfragen des i-ten Models
+		metaio::IGeometry *model = *modelItr;
+		
+		// Wir fragen den Namen des Models ab und wandeln diesen in einen NSString um
+		NSString *modelname = [ NSString stringWithUTF8String: model->getName().c_str() ];
+		
+        
+		// Wenn der Name des Objektes übereinstimmt mit einem Object aus der Liste
+        for (int i = 0; i < [allSubElements count] ;i++)
+        {
+            
+            if( [ modelname isEqualToString: [allSubElements objectAtIndex:i ]] )
+            {
+                
+                
+                metaio::BoundingBox objectBounding = model->getBoundingBox(true);
+                metaio::Vector3d    maxObjectBounding = objectBounding.max;
+
+                //Wenn Bounding größer als der aktuelle Wert dann speichern
+                if (maxObjectBounding.x > maxX)
+                    maxX = maxObjectBounding.x;
+                else if (maxObjectBounding.x < minX)
+                    minX = maxObjectBounding.x;
+   
+                if (maxObjectBounding.y > maxY)
+                    maxY = maxObjectBounding.y;
+                else if (maxObjectBounding.y < minY)
+                    minY = maxObjectBounding.y ;
+                
+                 NSLog(@"X %f - %f", maxX, minX);
+                NSLog(@"Y %f - %f  : %f", maxY , minY,maxObjectBounding.y);
+                
+                break;
+                
+            }
+        
+        
+        
+        }
+
+		
+	}
+    
+    //Screen Größe von Pixel im MM umrechnen
+    
+    
+    
+    
+    //Werte mit Screen Größe vergleichen
+    NSLog(@"Y %f - %f", maxY , minY);
+    
+    CGFloat scaleX;
+    CGFloat scaleY;
+    
+    scaleX = (maxX - minX) / 197; //iPadDisplay in mm
+    scaleY = (maxY - minY) / 147; //iPadDisplay in mm
+    
+
+    
+    if (scaleX > scaleY)
+        return scaleX * (maxX - minX);
+    else
+        return scaleY * (maxY - minY);
+
+    
+
+    
 }
 
 

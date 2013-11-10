@@ -18,6 +18,10 @@
 	metaio::IGeometry* theSelectedModel; //Temporär selektierte Geometry
 	bool saveVisibleBeforSelection; //Speicher ob das Object vorher sichtbar war
 	std::vector<metaio::IGeometry*> loadedModels; //Pointer zu allen geladenen models
+    
+    NSInteger savedCosID; //zum speichern der CosID wenn auf 0 gestzt wird
+    bool offlineMode; //zum speichern des aktuellen modus (trackin an/aus)
+    
 	
 	TBXML* tbxml; //tbxml
 	
@@ -42,7 +46,7 @@
 	
 	//tabBar
 	IBOutlet UITabBar *structureTabBar;
-	bool tabBarTag; //speichert die akutelle tabBar selektion
+	NSInteger tabBarTag; //speichert die akutelle tabBar selektion
 	IBOutlet UIView *tabBarView;
 
 }
