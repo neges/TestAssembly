@@ -7,7 +7,8 @@
 //
 
 #import "MaintenanceViewController.h"
-
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface MaintenanceViewController ()
 
@@ -21,6 +22,9 @@
 	static NSString *TopDivider = @"   ";
 
 @synthesize structurTableView;
+
+
+
 
 #pragma mark -
 #pragma mark View
@@ -41,7 +45,7 @@
 	
 	
 	
-	[self initTrackingData];
+	[self initTrackingDataFileName:@"TrackingData"];
 	
 	
 	[self initLight];
@@ -53,6 +57,7 @@
 	tableParents = [[NSMutableArray alloc]init];
 	tableModels = [[NSMutableArray alloc]init];
 	isBtoEnable = true;
+	offlineMode = false;
 	
 	[self initViews];
 	
@@ -320,13 +325,40 @@
 			break;
         case 3:
 			
-            NSString* tempName = [[tableParents objectAtIndex:0] objectAtIndex:1];
-            
-            if (offlineMode)
-               offlineMode = [self setObjectWithName:tempName toCosID:savedCosID];
-            else
-                offlineMode = [self setObjectWithName:tempName toCosID:0];
-            
+            metaio::IGeometry* tempModel = [self modelForObjectname:[[tableParents objectAtIndex:0]objectAtIndex:1]];
+
+            if (tempModel && offlineMode == false)
+			{
+                offlineMode = true;
+				metaio::TrackingValues holdedPose = m_metaioSDK->getTrackingValues(tempModel->getCoordinateSystemID());
+				
+				[self setModel:tempModel toCosID:0];
+				
+				//[self fitModel:tempModel toMaxScreenSize:[[UIScreen mainScreen] bounds].size];
+				
+				tempModel->setRotation(holdedPose.rotation);
+				tempModel->setTranslation(holdedPose.translation);
+				
+				[item setTitle:@"TrackingOff"];
+				[item setImage:[UIImage imageNamed:@"camOFF.png"]];
+				
+								
+            }
+			else if (tempModel && offlineMode == true)
+			{
+				
+                offlineMode = false;
+				
+				[self setModel:tempModel toCosID:savedCosID];
+				
+				tempModel->setRotation(metaio::Rotation(0,0,0));
+				tempModel->setTranslation(metaio::Vector3d(0,0,0));
+				
+				[item setTitle:@"TrackingOn"];
+				[item setImage:[UIImage imageNamed:@"camON.png"]];
+				
+            }
+
             //altes TabItem wieder selktieren
             [tabBar setSelectedItem:[tabBar.items objectAtIndex:tabBarTag]];
 			
@@ -404,19 +436,16 @@
 		NSLog(@"No structur file could be found or structur file i incorrect : %@", fullPath);
 		return;
 	}
-
-	//Hauptbaugruppe als geometry laden
-	int cosID = 1;
 	
 	NSString* topModelName = [TBXMLFunctions getAttribute:@"name" OfElement:rootElement];
 	BOOL visible = [[TBXMLFunctions getAttribute:@"visible" OfElement:rootElement] boolValue];
 	
-	metaio::IGeometry* topModel = [self createGroupWithName:topModelName andParentObject:nil toCosID:cosID isVisible:visible];
+	metaio::IGeometry* topModel = [self createGroupWithName:topModelName andParentObject:nil toCosID:oCos isVisible:visible];
 	
 	//Sub elemente laden falls vorhanden
 	if (rootElement->firstChild)
 	{
-		[self loadObjectsFromElement:rootElement->firstChild toCosID:cosID withParentObject:topModel fromFolder:pathString];
+		[self loadObjectsFromElement:rootElement->firstChild toCosID:oCos withParentObject:topModel fromFolder:pathString];
 	
 		loadedModels = m_metaioSDK->getLoadedGeometries();
         
@@ -569,7 +598,7 @@
 #pragma mark Content Setter
 #pragma mark -
 
--(bool)setObjectWithName:(NSString *)sName
+-(bool)setModelWithName:(NSString *)sName
 				 visible:(bool)visible
 {
 
@@ -583,12 +612,10 @@
 		return false;
 }
 
--(bool)setObjectWithName:(NSString *)sName
+-(bool)setModel:(metaio::IGeometry*) sObject
 				 toCosID:(NSInteger)sCos
 {
 
-    //igeometry holen
-	metaio::IGeometry *sObject = [self modelForObjectname:sName];
 	
 	if (sObject)
 	{
@@ -599,113 +626,90 @@
 		sObject->setCoordinateSystemID(sCos);
 
 		
-        //neu skalieren und zurückgeben ob offline oder online
-        if (sCos == 0)
-        {
-            //sObject->setScale(metaio::Vector3d(0.5,0.5,0.5));
-            CGFloat transZ = [self fitObjectWithName:sName toMaxScreenSize:[[UIScreen mainScreen] bounds ].size];
-            sObject->setTranslation(metaio::Vector3d(0,0,-transZ));
-            
-            return true;
-        }
-        else
-        {
-            
-            //sObject->setScale(metaio::Vector3d(1,1,1));
-            sObject->setTranslation(metaio::Vector3d(0,0,0));
-            return false;
-        }
-	}else
-		return false;
-}
-
--(CGFloat)fitObjectWithName:(NSString*)oName
-    toMaxScreenSize:(CGSize)sSize
-{
-    NSMutableArray *allSubElements = [[NSMutableArray alloc]init];
-    
-    TBXMLElement *topElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:oName];
-    [TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
-    
-    CGFloat maxX;
-    CGFloat maxY;
-    CGFloat minY;
-    CGFloat minX;
-    
-    
-    //Alle geladen Objecte druchlaufen
-    for ( std::vector<metaio::IGeometry*>::iterator modelItr = loadedModels.begin(); modelItr != loadedModels.end(); ++modelItr )
-	{
-		
-		// Abfragen des i-ten Models
-		metaio::IGeometry *model = *modelItr;
-		
-		// Wir fragen den Namen des Models ab und wandeln diesen in einen NSString um
-		NSString *modelname = [ NSString stringWithUTF8String: model->getName().c_str() ];
-		
-        
-		// Wenn der Name des Objektes übereinstimmt mit einem Object aus der Liste
-        for (int i = 0; i < [allSubElements count] ;i++)
-        {
-            
-            if( [ modelname isEqualToString: [allSubElements objectAtIndex:i ]] )
-            {
-                
-                
-                metaio::BoundingBox objectBounding = model->getBoundingBox(true);
-                metaio::Vector3d    maxObjectBounding = objectBounding.max;
-
-                //Wenn Bounding größer als der aktuelle Wert dann speichern
-                if (maxObjectBounding.x > maxX)
-                    maxX = maxObjectBounding.x;
-                else if (maxObjectBounding.x < minX)
-                    minX = maxObjectBounding.x;
-   
-                if (maxObjectBounding.y > maxY)
-                    maxY = maxObjectBounding.y;
-                else if (maxObjectBounding.y < minY)
-                    minY = maxObjectBounding.y ;
-                
-                 NSLog(@"X %f - %f", maxX, minX);
-                NSLog(@"Y %f - %f  : %f", maxY , minY,maxObjectBounding.y);
-                
-                break;
-                
-            }
-        
-        
-        
-        }
-
-		
 	}
-    
-    //Screen Größe von Pixel im MM umrechnen
-    
-    
-    
-    
-    //Werte mit Screen Größe vergleichen
-    NSLog(@"Y %f - %f", maxY , minY);
-    
-    CGFloat scaleX;
-    CGFloat scaleY;
-    
-    scaleX = (maxX - minX) / 197; //iPadDisplay in mm
-    scaleY = (maxY - minY) / 147; //iPadDisplay in mm
-    
-
-    
-    if (scaleX > scaleY)
-        return scaleX * (maxX - minX);
-    else
-        return scaleY * (maxY - minY);
-
-    
-
-    
+	
+	if (sCos == 0)
+		return true;
+	else
+		return false;
+	
 }
 
+
+-(void)fitModel:(metaio::IGeometry*) oModel
+toMaxScreenSize:(CGSize)sSize
+{
+	
+	
+		NSMutableArray *allSubElements = [[NSMutableArray alloc]init];
+		
+		TBXMLElement *topElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[self modelnameForModel:oModel]];
+		[TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
+		
+		NSMutableArray *xBoundingBox = [[NSMutableArray alloc]init];
+		NSMutableArray *yBoundingBox = [[NSMutableArray alloc]init];
+		
+		
+		//Alle geladen Objecte druchlaufen
+		for ( std::vector<metaio::IGeometry*>::iterator modelItr = loadedModels.begin(); modelItr != loadedModels.end(); ++modelItr )
+		{
+			
+			// Abfragen des i-ten Models
+			metaio::IGeometry *model = *modelItr;
+			
+			// Wir fragen den Namen des Models ab und wandeln diesen in einen NSString um
+			NSString *modelname = [ NSString stringWithUTF8String: model->getName().c_str() ];
+			
+			
+			// Wenn der Name des Objektes übereinstimmt mit einem Object aus der Liste
+			for (int i = 0; i < [allSubElements count] ;i++)
+			{
+				
+				if( [ modelname isEqualToString: [allSubElements objectAtIndex:i ]] )
+				{
+					
+					
+					metaio::BoundingBox objectBounding = model->getBoundingBox(true);
+					metaio::Vector3d objectBoundingMax = objectBounding.max;
+
+					[xBoundingBox addObject:[NSNumber numberWithFloat:objectBoundingMax.x] ];
+					[yBoundingBox addObject:[NSNumber numberWithFloat:objectBoundingMax.y] ];
+					
+					break;
+					
+				}
+			
+			
+			
+			}
+
+			
+		}
+		
+		//Min und Max des Arrays und alles Zahlen positiv machen
+		CGFloat xBouncing = [[xBoundingBox valueForKeyPath:@"@max.self"] floatValue] - [[xBoundingBox valueForKeyPath:@"@min.self"] floatValue];
+		CGFloat yBouncing = [[yBoundingBox valueForKeyPath:@"@max.self"] floatValue] - [[yBoundingBox valueForKeyPath:@"@min.self"] floatValue];
+
+		
+		//Werte mit Screen Größe vergleichen
+		
+		CGFloat transZ;
+
+		if (xBouncing / 197 > yBouncing / 147) //iPadDisplay in mm
+			transZ = xBouncing*2 ;
+		else
+			transZ = yBouncing*2 ;
+		
+		//Verschieben
+		
+		CGFloat transX = [[xBoundingBox valueForKeyPath:@"@max.self"] floatValue] - xBouncing/2;
+		CGFloat transY = [[yBoundingBox valueForKeyPath:@"@max.self"] floatValue] - yBouncing/2;
+		
+		
+		//setzen
+		oModel->setTranslation(metaio::Vector3d(transX,transY,-transZ));
+
+}
 
 #pragma mark -
 #pragma mark Content Getter
@@ -837,11 +841,11 @@
 #pragma mark Tracking Data
 #pragma mark -
 
--(void)initTrackingData
+-(void)initTrackingDataFileName:(NSString*)trackingDataFileName
 {
 	
     // load our tracking configuration
-    NSString* trackingDataFile = [[NSBundle mainBundle] pathForResource:@"TrackingData" ofType:@"xml" inDirectory:@"Assets"];
+    NSString* trackingDataFile = [[NSBundle mainBundle] pathForResource:trackingDataFileName ofType:@"xml" inDirectory:@"Assets"];
 	if(trackingDataFile)
 	{
 		bool success = m_metaioSDK->setTrackingConfiguration([trackingDataFile UTF8String]);
@@ -849,13 +853,10 @@
 			NSLog(@"No success loading the tracking configuration");
 	}
 	
+	NSLog(@"Loaded Cos Count : %i",m_metaioSDK->getNumberOfDefinedCoordinateSystems());
+	
+	
 }
-
-
-
-
-
-
 
 #pragma mark -
 #pragma mark Touches & Actions
@@ -868,6 +869,7 @@
 	UITouch *touch = [touches anyObject];
 	CGPoint loc = [touch locationInView:glView];
 	
+	
     // get the scale factor (will be 2 for retina screens)
     float scale = glView.contentScaleFactor;
     
@@ -877,6 +879,8 @@
 	
 	if ( model )
 	{
+		//Speicher, das das Object berührt wurde
+		objectTouch = true;
 		
 		//Strukur der Tabelle neu aufbauen:
 		//Namen holen
@@ -910,8 +914,50 @@
 	}
 	else
 	{
+		//Kein Object getouched
+		objectTouch = false;
+		
 		[structurTableView deselectRowAtIndexPath:[structurTableView indexPathForSelectedRow] animated:YES];
 		[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
+		
+		
+		return;
+		
+		//--------Test for Exposure
+		NSArray *devices = [AVCaptureDevice devices];
+		
+		for (AVCaptureDevice *device in devices) {
+			
+			
+			
+			if ([device position] == AVCaptureDevicePositionBack) {
+				
+				
+				[device lockForConfiguration:nil];
+				if ([device exposureMode] == AVCaptureExposureModeContinuousAutoExposure)
+				{
+					[device setExposureMode:AVCaptureExposureModeLocked];
+					NSLog(@"AVCaptureExposureModeLocked");
+				}else{
+					
+					CGPoint expPoint;
+					expPoint.x = loc.x / [[UIScreen mainScreen] bounds ].size.height;
+					expPoint.y = loc.y / [[UIScreen mainScreen] bounds ].size.width;
+					
+					[device setExposurePointOfInterest:expPoint];
+					[device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+				
+				
+					NSLog(@"Exposure Point: %f / %f - %f / %f", expPoint.x, expPoint.y, loc.x, loc.y);
+				}
+						[device unlockForConfiguration];
+			}
+			
+			
+		}
+		
+		//-------
+		
 	}
 
 	
@@ -923,6 +969,56 @@
     
     
 }
+
+
+- (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	// Here's how to pick a geometry
+	UITouch *touch = [touches anyObject];
+	CGPoint loc = [touch locationInView:glView];
+	
+	if ( !objectTouch )
+	{
+		
+		if (loc.x > 0)
+		{
+			
+			CGPoint lastLocationOfTouch = [touch previousLocationInView:glView];
+			loc = [touch locationInView:glView];
+			
+			
+			CGFloat tempRotationX;
+			CGFloat tempRotationY;
+			
+			tempRotationY = (lastLocationOfTouch.x - loc.x);
+			tempRotationX = (lastLocationOfTouch.y - loc.y);
+			
+			//get Top Element
+			NSString* tempName = [[tableParents objectAtIndex:0] objectAtIndex:1];
+			
+			//igeometry holen
+			metaio::IGeometry *sObject = [self modelForObjectname:tempName];
+			
+			
+			//Rotation holen
+			metaio::Rotation xRot = sObject->getRotation();
+			
+			//umrechnen in Deg
+			metaio::Vector3d xRotDeg = xRot.getEulerAngleDegrees();
+			
+			//Rotation anpassen
+			xRotDeg.x = xRotDeg.x - tempRotationX;
+			xRotDeg.y = xRotDeg.y - tempRotationY;
+			
+			xRot.setFromEulerAngleDegrees(xRotDeg);
+			
+			sObject->setRotation(xRot);
+			
+		}
+	}
+}
+
+
 
 
 - (void) buttonPressed: (id) sender withEvent: (UIEvent *) event
@@ -959,7 +1055,7 @@
 	
 	
 	//3D Object umschalten
-	[self setObjectWithName:[tempArray objectAtIndex:1] visible:senderButton.selected];
+	[self setModelWithName:[tempArray objectAtIndex:1] visible:senderButton.selected];
 	
 	//Neuladen wenn es ein Top Element ist
 	if (indexPath.row < [tableParents count])

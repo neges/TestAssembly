@@ -21,6 +21,7 @@
     
     NSInteger savedCosID; //zum speichern der CosID wenn auf 0 gestzt wird
     bool offlineMode; //zum speichern des aktuellen modus (trackin an/aus)
+	bool objectTouch; //Speicher ob das Touchevent auf ein 3D Object liegt für späteren move
     
 	
 	TBXML* tbxml; //tbxml

@@ -55,7 +55,7 @@
                         <tabBarItem title="work" image="maintenance.png" id="SPZ-kC-xrR"/>
                         <tabBarItem tag="1" title="report" image="report.png" id="bXJ-da-uIM"/>
                         <tabBarItem tag="2" title="structure" image="structure.png" id="Hh5-JM-Iex"/>
-                        <tabBarItem tag="3" systemItem="featured" id="LNe-67-Glb"/>
+                        <tabBarItem tag="3" title="TrackingON" image="camON.png" id="LNe-67-Glb"/>
                     </items>
                     <connections>
                         <outlet property="delegate" destination="-1" id="khU-iD-L8B"/>
@@ -80,6 +80,7 @@
         </tableView>
     </objects>
     <resources>
+        <image name="camON.png" width="300" height="300"/>
         <image name="fullscreen.png" width="64" height="64"/>
         <image name="maintenance.png" width="60" height="60"/>
         <image name="report.png" width="60" height="60"/>

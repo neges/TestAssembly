@@ -12,6 +12,8 @@
 		043E1404181AC1C30016649A /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1403181AC1C30016649A /* TBXML.m */; };
 		043E1407181AC2590016649A /* saveMethodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1406181AC2590016649A /* saveMethodes.m */; };
 		043E140A181AC9A30016649A /* TBXMLFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 043E1409181AC9A30016649A /* TBXMLFunctions.m */; };
+		0464359C1834F77800550CA8 /* camOFF.png in Resources */ = {isa = PBXBuildFile; fileRef = 0464359A1834F77800550CA8 /* camOFF.png */; };
+		0464359D1834F77800550CA8 /* camON.png in Resources */ = {isa = PBXBuildFile; fileRef = 0464359B1834F77800550CA8 /* camON.png */; };
 		046B05AB182A90C200D0D541 /* checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 046B05A9182A90C200D0D541 /* checked.png */; };
 		046B05AC182A90C200D0D541 /* unchecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 046B05AA182A90C200D0D541 /* unchecked.png */; };
 		04DB844A182D30DC0020AB25 /* maintenance.png in Resources */ = {isa = PBXBuildFile; fileRef = 04DB8447182D30DC0020AB25 /* maintenance.png */; };
@@ -63,6 +65,8 @@
 		043E1406181AC2590016649A /* saveMethodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = saveMethodes.m; sourceTree = "<group>"; };
 		043E1408181AC9A30016649A /* TBXMLFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXMLFunctions.h; sourceTree = "<group>"; };
 		043E1409181AC9A30016649A /* TBXMLFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXMLFunctions.m; sourceTree = "<group>"; };
+		0464359A1834F77800550CA8 /* camOFF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camOFF.png; sourceTree = "<group>"; };
+		0464359B1834F77800550CA8 /* camON.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camON.png; sourceTree = "<group>"; };
 		046B05A9182A90C200D0D541 /* checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checked.png; sourceTree = "<group>"; };
 		046B05AA182A90C200D0D541 /* unchecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unchecked.png; sourceTree = "<group>"; };
 		04DB8447182D30DC0020AB25 /* maintenance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = maintenance.png; sourceTree = "<group>"; };
@@ -143,6 +147,8 @@
 		043E1331181A9C0E0016649A /* MaintenenceController */ = {
 			isa = PBXGroup;
 			children = (
+				0464359A1834F77800550CA8 /* camOFF.png */,
+				0464359B1834F77800550CA8 /* camON.png */,
 				04DB844D182D32F80020AB25 /* fullscreen.png */,
 				04DB8447182D30DC0020AB25 /* maintenance.png */,
 				04DB8448182D30DC0020AB25 /* report.png */,
@@ -325,9 +331,11 @@
 				04DB844A182D30DC0020AB25 /* maintenance.png in Resources */,
 				8CD9B0031812F8CC00430299 /* fragGREEN.glsl in Resources */,
 				04DB844B182D30DC0020AB25 /* report.png in Resources */,
+				0464359C1834F77800550CA8 /* camOFF.png in Resources */,
 				8C64837E18182E850092FC31 /* _empty_.obj in Resources */,
 				04F329FE172FCE8000910751 /* Default-568h@2x.png in Resources */,
 				043E1330181A9C080016649A /* MaintenanceViewController.xib in Resources */,
+				0464359D1834F77800550CA8 /* camON.png in Resources */,
 				04DB844C182D30DC0020AB25 /* structure.png in Resources */,
 				8CD9AFFF1812F3CC00430299 /* shader_materials.xml in Resources */,
 				04F32A04172FCE8000910751 /* ViewController_iPhone.xib in Resources */,

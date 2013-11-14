@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <TrackingData>
-	<Sensors>
+	<Sensors>		
 		<Sensor type="FeatureBasedSensorSource" subtype="fast">
 			<SensorID>FeatureTracking1</SensorID>
             
