@@ -141,7 +141,7 @@
     [self startAnimation]; 
     if( m_metaioSDK )
     {
-        m_metaioSDK->startCamera(0, 480, 360);
+        m_metaioSDK->startCamera(0, 640, 480);
     }
     
     
