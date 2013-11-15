@@ -22,6 +22,7 @@
 	static NSString *TopDivider = @"   ";
 
 @synthesize structurTableView;
+@synthesize workTableViewController;
 
 
 
@@ -34,7 +35,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+       workTableViewController = [[WorkTableViewController alloc]init];
     }
     return self;
 }
@@ -42,8 +43,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
-	
 	
 	[self initTrackingDataFileName:@"TrackingData"];
 	
@@ -59,7 +58,11 @@
 	isBtoEnable = true;
 	offlineMode = false;
 	
-	[self initViews];
+	[self initTabBar];
+	
+	[tabBarView addSubview:workView];
+	workView.frame = CGRectMake(0, 49, workView.frame.size.width, workView.frame.size.height);
+	
 	
 	
 }
@@ -68,22 +71,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-
--(void)initViews
-{
-	
-	
-	[tabBarView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds ].size.width - 49 - 20 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
-	[glView	addSubview:tabBarView];
-	
-	[structurTableView setFrame:CGRectMake([[UIScreen mainScreen] bounds ].size.height + 1, 0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
-	[glView addSubview:structurTableView];
-    
-    savedCosID = 1;
-	tabBarTag = 0;
-	
 }
 
 
@@ -151,10 +138,8 @@
         cell.textLabel.text = topObjectText;
 		
         cell.accessoryType = UITableViewCellAccessoryNone;
-		
-        UIColor* topBackColor = [UIColor colorWithRed:0.960553 green:0.960524 blue:0.960540 alpha:1.0000];
         
-        cell.backgroundColor = topBackColor;
+        cell.backgroundColor = [UIColor lightGrayColor];
 
 		
     }
@@ -169,6 +154,8 @@
         cell.textLabel.text = subObjectText;
 
 		cell.imageView.frame.size = CGSizeMake(cell.frame.size.height, cell.frame.size.height);
+		
+		cell.backgroundColor = [UIColor whiteColor];
 		
         
         //ist eine Group also Pfeile hinzufügen
@@ -297,7 +284,18 @@
 #pragma mark tab bar
 #pragma mark -
 
-
+- (void)initTabBar
+{
+	[tabBarView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds ].size.width - 49 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	[glView	addSubview:tabBarView];
+	
+	[structurTableView setFrame:CGRectMake([[UIScreen mainScreen] bounds ].size.height + 1, 0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
+	[glView addSubview:structurTableView];
+    
+    savedCosID = 1;
+	tabBarTag = 0;
+	
+}
 
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
@@ -308,6 +306,8 @@
 			tabBarTag = 0;
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
+
+		
 			
 			break;
 		case 1:
@@ -339,7 +339,7 @@
 				tempModel->setRotation(holdedPose.rotation);
 				tempModel->setTranslation(holdedPose.translation);
 				
-				[item setTitle:@"TrackingOff"];
+				[item setTitle:@"trackingOff"];
 				[item setImage:[UIImage imageNamed:@"camOFF.png"]];
 				
 								
@@ -354,7 +354,7 @@
 				tempModel->setRotation(metaio::Rotation(0,0,0));
 				tempModel->setTranslation(metaio::Vector3d(0,0,0));
 				
-				[item setTitle:@"TrackingOn"];
+				[item setTitle:@"trackingOn"];
 				[item setImage:[UIImage imageNamed:@"camON.png"]];
 				
             }
@@ -373,8 +373,8 @@
 -(void)slideTabBarIn:(bool)ingoing
 {
 
-	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height - 20;
-	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49 - 20;
+	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height;
+	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49;
 	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:1.0];
@@ -853,8 +853,6 @@ toMaxScreenSize:(CGSize)sSize
 			NSLog(@"No success loading the tracking configuration");
 	}
 	
-	NSLog(@"Loaded Cos Count : %i",m_metaioSDK->getNumberOfDefinedCoordinateSystems());
-	
 	
 }
 
@@ -977,7 +975,7 @@ toMaxScreenSize:(CGSize)sSize
 	UITouch *touch = [touches anyObject];
 	CGPoint loc = [touch locationInView:glView];
 	
-	if ( !objectTouch )
+	if ( !objectTouch && offlineMode )
 	{
 		
 		if (loc.x > 0)

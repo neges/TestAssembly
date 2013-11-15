@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<workinstruction>
+	<instuction name='Repaire frontcover'>
+		<model name="agrm"/>
+		
+		<step value="1">
+			<description>Das ist ein Test</description>
+			<part>frontcover</part>
+			<part>tube</part>
+		</step>
+		
+		<step value="2">
+			<description>Das ist ein besserer Test</description>
+			<part>backcover</part>
+		</step>
+		
+	</instuction>
+</workinstruction>

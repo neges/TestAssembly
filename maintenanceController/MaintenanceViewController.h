@@ -11,6 +11,7 @@
 #import "MetaioSDKViewController.h"
 #import "TBXML.h"
 #import "TBXMLFunctions.h"
+#import "WorkTableViewController.h"
 
 @interface MaintenanceViewController : MetaioSDKViewController <UITableViewDelegate, UITableViewDataSource, UITabBarDelegate>
 {
@@ -49,10 +50,16 @@
 	IBOutlet UITabBar *structureTabBar;
 	NSInteger tabBarTag; //speichert die akutelle tabBar selektion
 	IBOutlet UIView *tabBarView;
-
+	
+	IBOutlet UIView *workView;
+	IBOutlet UITableView *stepsTable;
+	IBOutlet UITableView *partsTable;
+	IBOutlet UITextView *descriptionTextView;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *structurTableView;
+@property (nonatomic, strong) IBOutlet WorkTableViewController* workTableViewController;
+
 
 - (void)loadObjectsInFolder:(NSString *)oFolder forCosID:(int)oCos;
 
