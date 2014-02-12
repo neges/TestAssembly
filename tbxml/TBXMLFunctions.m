@@ -137,6 +137,7 @@
 	
 }
 
+
 +(NSMutableArray*)getAllTableViewSubElements:(TBXMLElement*)topElement
 {
 
@@ -344,6 +345,85 @@
 
 	return true;
 
+}
+
+#
+
+
+
+
+
+#pragma mark -
+#pragma mark Steps
+#pragma mark -
+
++(void)getAllSteps:(TBXMLElement*)element
+		   toArray:(NSMutableArray *)elementArray
+{
+	TBXMLElement* steps = element->firstChild;
+	
+	if (steps)
+	{
+		do
+		{
+			[elementArray addObject: [TBXMLFunctions getAttribute:@"name" OfElement:steps]];
+			
+		}while ((steps = steps->nextSibling));
+	}
+	
+}
+
++(NSMutableArray*)getAllInfectedObjectsForWorkInstruction:(TBXMLElement*)topElement
+{
+	
+    NSMutableArray* elementArray = [[NSMutableArray alloc]init];
+    
+    if (!topElement->firstChild)
+        return elementArray;
+    
+    
+    //Eigenschaften der Unterobjekte holen
+    TBXMLElement* element = topElement->firstChild;
+    
+	do
+	{
+		NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+		
+		if (element->firstAttribute)
+		{
+			
+			
+			TBXMLAttribute *attribute = element->firstAttribute;
+			
+			
+			
+			[tempArray addObject:[TBXML elementName:element]];
+			
+			
+			while (attribute)
+			{
+				
+				[tempArray addObject:[TBXML attributeValue:attribute]];
+				
+				
+				attribute = attribute->next;
+				
+			}
+			
+			if ([tempArray count] > 2){
+				if ([[tempArray objectAtIndex:2] isEqualToString:@"visible"])
+					[elementArray addObject: tempArray];
+			}
+			
+			
+		}
+		
+		
+	}while ((element = element->nextSibling));
+	
+	
+	return elementArray;
+	
 }
 
 

@@ -36,6 +36,16 @@
 - (void) presentContentViewController: (UIViewController<MetaioViewControllerClosingCallback>*) contentViewController;
 
 
+/**
+ * Creates image for annotation billboard (used with AnnotatedGeometriesGroup)
+ * \param poi The POI
+ * \param image Thumbnail of the POI
+ * \param attributionImage Attribution image (can be NULL)
+ * \return Final image or nil in case of error
+ */
+- (UIImage*)getAnnotationImageForPOI:(const metaio::world::MetaioWorldPOI*)poi withThumbnail:(UIImage*)image  attributionImage:(UIImage*)attributionImage;
+
+
 /** Implementation to get a billboard image for a poi
  * \param poi the poi
  * \param image the thumbnail of the poi

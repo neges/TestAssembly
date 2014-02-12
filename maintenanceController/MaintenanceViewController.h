@@ -25,7 +25,7 @@
 	bool objectTouch; //Speicher ob das Touchevent auf ein 3D Object liegt für späteren move
     
 	
-	TBXML* tbxml; //tbxml
+	TBXML* structureXML; //structureXML
 	
 	//TableView
 	
@@ -52,9 +52,7 @@
 	IBOutlet UIView *tabBarView;
 	
 	IBOutlet UIView *workView;
-	IBOutlet UITableView *stepsTable;
-	IBOutlet UITableView *partsTable;
-	IBOutlet UITextView *descriptionTextView;
+
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *structurTableView;

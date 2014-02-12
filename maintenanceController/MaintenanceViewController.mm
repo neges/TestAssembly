@@ -205,7 +205,7 @@
 			//mögliche selektierung löschen
 			[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
 			
-			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+			selectedElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 			
 			if (selectedElement)
 			{
@@ -247,7 +247,7 @@
 				isBtoEnable = true;
 			
 			
-			selectedElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]];
+			selectedElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 			[tableView reloadData];
 			
 		}
@@ -429,10 +429,10 @@
 	
 	
 	//xml laden falls vorhanden
-	tbxml = [TBXML newTBXMLWithXMLString:theContents error:nil];
-	TBXMLElement* rootElement = tbxml.rootXMLElement;
+	structureXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	TBXMLElement* rootElement = structureXML.rootXMLElement;
 	
-	if (!tbxml) {
+	if (!structureXML) {
 		NSLog(@"No structur file could be found or structur file i incorrect : %@", fullPath);
 		return;
 	}
@@ -643,7 +643,7 @@ toMaxScreenSize:(CGSize)sSize
 	
 		NSMutableArray *allSubElements = [[NSMutableArray alloc]init];
 		
-		TBXMLElement *topElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[self modelnameForModel:oModel]];
+		TBXMLElement *topElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[self modelnameForModel:oModel]];
 		[TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
 		
 		NSMutableArray *xBoundingBox = [[NSMutableArray alloc]init];
@@ -883,8 +883,8 @@ toMaxScreenSize:(CGSize)sSize
 		//Strukur der Tabelle neu aufbauen:
 		//Namen holen
 		NSString* touchObjectsName = [self modelnameForModel:model];
-		//das tbxml element
-		TBXMLElement* touchElement = [TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:touchObjectsName];
+		//das structureXML element
+		TBXMLElement* touchElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:touchObjectsName];
 		//das parent davon
 		TBXMLElement* touchElementParent = touchElement->parentElement;
 		
@@ -1041,12 +1041,12 @@ toMaxScreenSize:(CGSize)sSize
 	
 	if (senderButton.selected == true)
 	{
-		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"false" toElement:[TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"false" toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
 		senderButton.selected = false;
 		isBtoEnable = false;
 		
 	}else{
-		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"true" toElement:[TBXMLFunctions getElement:[tbxml rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"true" toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
 		senderButton.selected = true;
 		isBtoEnable = true;
 	}

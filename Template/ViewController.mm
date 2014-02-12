@@ -8,7 +8,7 @@
 
 
 //-------------------
-//Template für metaio5.0 beta
+//Template für metaio5.2
 //-------------------
 
 

@@ -141,7 +141,13 @@
     [self startAnimation]; 
     if( m_metaioSDK )
     {
-        m_metaioSDK->startCamera(0, 640, 480);
+		std::vector<metaio::Camera> cameras = m_metaioSDK->getCameraList();
+		if(cameras.size()>0)
+		{
+			m_metaioSDK->startCamera(cameras[0]);
+		} else {
+			NSLog(@"No Camera Found");
+		}
     }
     
     

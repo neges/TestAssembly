@@ -21,7 +21,8 @@
 		   withGroups:(bool)wGroups
 			  toArray:(NSMutableArray *)elementArray;
 
-
++(void)getAllSteps:(TBXMLElement*)element
+		   toArray:(NSMutableArray *)elementArray;
 
 
 +(NSString*)getAttribute:(NSString*)attrib
@@ -32,6 +33,7 @@
 
 +(NSMutableArray*)getAllParentElementsFrom:(TBXMLElement*)element;
 +(NSMutableArray *)getAllTableViewSubElements:(TBXMLElement*)element;
++(NSMutableArray*)getAllInfectedObjectsForWorkInstruction:(TBXMLElement*)topElement;
 
 
 +(bool)saveAttributForName:(NSString*)aName

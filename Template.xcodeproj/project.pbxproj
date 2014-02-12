@@ -28,7 +28,7 @@
 		043C975018367CBD00445B73 /* unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974718367CBD00445B73 /* unchecked@2x.png */; };
 		043C976018367D5500445B73 /* MaintenanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C975C18367D5500445B73 /* MaintenanceViewController.mm */; };
 		043C976118367D5500445B73 /* MaintenanceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043C975D18367D5500445B73 /* MaintenanceViewController.xib */; };
-		043C9768183688D000445B73 /* WorkTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.m */; };
+		043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.mm */; };
 		04F329E8172FCE8000910751 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E7172FCE8000910751 /* UIKit.framework */; };
 		04F329EA172FCE8000910751 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E9172FCE8000910751 /* Foundation.framework */; };
 		04F329EC172FCE8000910751 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329EB172FCE8000910751 /* CoreGraphics.framework */; };
@@ -84,7 +84,7 @@
 		043C975C18367D5500445B73 /* MaintenanceViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MaintenanceViewController.mm; sourceTree = "<group>"; };
 		043C975D18367D5500445B73 /* MaintenanceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MaintenanceViewController.xib; sourceTree = "<group>"; };
 		043C9766183688D000445B73 /* WorkTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkTableViewController.h; sourceTree = "<group>"; };
-		043C9767183688D000445B73 /* WorkTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WorkTableViewController.m; sourceTree = "<group>"; };
+		043C9767183688D000445B73 /* WorkTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkTableViewController.mm; sourceTree = "<group>"; };
 		04F329E4172FCE8000910751 /* itmAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = itmAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F329E7172FCE8000910751 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		04F329E9172FCE8000910751 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -192,7 +192,7 @@
 				043C975C18367D5500445B73 /* MaintenanceViewController.mm */,
 				043C975D18367D5500445B73 /* MaintenanceViewController.xib */,
 				043C9766183688D000445B73 /* WorkTableViewController.h */,
-				043C9767183688D000445B73 /* WorkTableViewController.m */,
+				043C9767183688D000445B73 /* WorkTableViewController.mm */,
 			);
 			path = maintenanceController;
 			sourceTree = "<group>";
@@ -363,7 +363,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				043C9768183688D000445B73 /* WorkTableViewController.m in Sources */,
+				043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */,
 				043C973C18367C6C00445B73 /* TBXML.m in Sources */,
 				043C973B18367C6C00445B73 /* saveMethodes.m in Sources */,
 				043C971718367B6A00445B73 /* EAGLView.mm in Sources */,
