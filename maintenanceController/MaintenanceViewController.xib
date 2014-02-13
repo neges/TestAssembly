@@ -24,7 +24,7 @@
             <nil key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="descriptionTextView" destination="PGl-sf-Bmu" id="tWz-96-EtZ"/>
-                <outlet property="nameTextView" destination="5Ty-ND-9dD" id="Vez-m0-yag"/>
+                <outlet property="nameTextView" destination="ZUx-7j-Jm2" id="rz6-7a-8nN"/>
                 <outlet property="partsTable" destination="13A-FP-XBh" id="h6s-n2-zH1"/>
                 <outlet property="stepsTable" destination="bDU-3K-2D6" id="pXC-Sb-qxa"/>
             </connections>
@@ -101,7 +101,7 @@
                         <outlet property="delegate" destination="1X8-W2-4Vw" id="pRh-Xn-vlJ"/>
                     </connections>
                 </tableView>
-                <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="13A-FP-XBh" userLabel="partsTable">
+                <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="13A-FP-XBh" userLabel="partsTable">
                     <rect key="frame" x="764" y="5" width="260" height="255"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -117,8 +117,8 @@
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="Work Instruction Description" selectable="NO" id="5Ty-ND-9dD" userLabel="name Text View">
-                    <rect key="frame" x="265" y="5" width="494" height="34"/>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Maintenance Description" id="ZUx-7j-Jm2" userLabel="description Text View">
+                    <rect key="frame" x="265" y="5" width="494" height="33"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>

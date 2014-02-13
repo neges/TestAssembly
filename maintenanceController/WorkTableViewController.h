@@ -55,5 +55,11 @@
 -(bool)setModelWithName:(NSString *)sName
 				visible:(bool)visible;
 
+-(void)saveInXMLforObjectName:(NSString*)oName
+				  toAttribute:(NSString*)atr
+					withValue:(char*)val;
+
+-(void) reloadStructerTable;
+
 
 @end

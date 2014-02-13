@@ -275,7 +275,11 @@
 
 
 
+-(void) reloadStructerTable
+{
 
+	[structurTableView reloadData];
+}
 
 
 #pragma mark -
@@ -710,6 +714,13 @@ toMaxScreenSize:(CGSize)sSize
 
 }
 
+-(void)saveInXMLforObjectName:(NSString*)oName
+					  toAttribute:(NSString*)atr
+						withValue:(char*)val
+{
+	[TBXMLFunctions saveAttributForName:atr withValue:val toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:oName]];
+}
+
 #pragma mark -
 #pragma mark Content Getter
 #pragma mark -
@@ -1041,12 +1052,12 @@ toMaxScreenSize:(CGSize)sSize
 	
 	if (senderButton.selected == true)
 	{
-		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"false" toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		[self saveInXMLforObjectName:[tempArray objectAtIndex:1] toAttribute:@"visible" withValue:(char*)"false"];
 		senderButton.selected = false;
 		isBtoEnable = false;
 		
 	}else{
-		[TBXMLFunctions saveAttributForName:@"visible" withValue:(char*)"true" toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]]];
+		[self saveInXMLforObjectName:[tempArray objectAtIndex:1] toAttribute:@"visible" withValue:(char*)"true"];
 		senderButton.selected = true;
 		isBtoEnable = true;
 	}

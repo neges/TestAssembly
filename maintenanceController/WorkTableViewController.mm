@@ -233,8 +233,12 @@
 	for (PartsCounter = 0; PartsCounter < [hiddenParts count]; ++PartsCounter)
 	{
 		[delegate setModelWithName: [hiddenParts objectAtIndex:PartsCounter] visible:false];
+		[delegate saveInXMLforObjectName:[hiddenParts objectAtIndex:PartsCounter] toAttribute:@"visible" withValue:(char*)"false"];
 	
 	}
+	
+	//structerView neu laden
+	[delegate reloadStructerTable];
 	
 	
 	//infected Parts Table neu laden
@@ -289,6 +293,7 @@
 			for (PartsCounter = 0; PartsCounter < [hiddenParts count]; ++PartsCounter)
 			{
 				[delegate setModelWithName: [hiddenParts objectAtIndex:PartsCounter] visible:true];
+				[delegate saveInXMLforObjectName:[hiddenParts objectAtIndex:PartsCounter] toAttribute:@"visible" withValue:(char*)"true"];
 				
 			}
 		

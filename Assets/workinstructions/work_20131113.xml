@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <maintenance name="Remove tube from object">
-	<step name="Step 1">
+	<step name="Start">
 		<description>Start maintenance</description>
 		<object name="frontcover" state="visible"/>
 		<object name="tube" state="visible"/>
 	</step>
-	<step name="Step 2">
+	<step name="Step 1">
 		<description>Remove frontcover</description>
 		<object name="frontcover" state="highlighted"/>
 	</step>
-	<step name="Step 3">
+	<step name="Step 2">
 		<description>Remove tube from backcover</description>
 		<object name="frontcover" state="hidden"/>
 		<object name="tube" state="highlighted"/>
 		<object name="screws_FRONT" state="hidden"/>
 	</step>
-	<step name="Step 4">
+	<step name="Step 3">
 		<description>Maintenance done</description>
 		<object name="tube" state="hidden"/>
 	</step>
