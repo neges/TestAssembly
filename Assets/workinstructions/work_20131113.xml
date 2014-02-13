@@ -1,19 +1,24 @@
 <?xml version="1.0"?>
 <maintenance name="Remove tube from object">
-	<step name="Step 1" description="Start maintenance">
+	<step name="Step 1">
+		<description>Start maintenance</description>
 		<object name="frontcover" state="visible"/>
 		<object name="tube" state="visible"/>
 		<object name="backcover" state="hidden"/>
 		
 	</step>
-	<step name="Step 2" description="Remove frontcover">
+	<step name="Step 2">
+		<description>Remove frontcover</description>
 		<object name="frontcover" state="highlighted"/>
+		<object name="backcover" state="highlighted"/>
 	</step>
-	<step name="Step 3" description="Remove tube">
+	<step name="Step 3">
+		<description>Remove tube from backcover</description>
 		<object name="frontcover" state="hidden"/>
 		<object name="tube" state="highlighted"/>
 	</step>
-	<step name="Step 4" description="Maintenance done">
+	<step name="Step 4">
+		<description>Maintenance done</description>
 		<object name="tube" state="hidden"/>
 	</step>
 </maintenance>

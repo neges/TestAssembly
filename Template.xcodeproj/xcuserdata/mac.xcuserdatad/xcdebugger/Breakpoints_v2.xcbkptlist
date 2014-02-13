@@ -25,14 +25,58 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "maintenanceController/WorkTableViewController.mm"
-            timestampString = "413920837.277978"
+            filePath = "maintenanceController/MaintenanceViewController.mm"
+            timestampString = "413994749.245507"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
-            landmarkName = "-loadStep:"
+            startingLineNumber = "779"
+            endingLineNumber = "779"
+            landmarkName = "-select3dContentWithName:withUIColor:toGroup:withObjects:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
+                  timestampString = "413995077.576975"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "779"
+                  endingLineNumber = "779"
+                  offsetFromSymbolStart = "156">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
+                  timestampString = "413995077.577169"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "779"
+                  endingLineNumber = "779"
+                  offsetFromSymbolStart = "1978">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
+                  timestampString = "413995077.577369"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "779"
+                  endingLineNumber = "779"
+                  offsetFromSymbolStart = "2046">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

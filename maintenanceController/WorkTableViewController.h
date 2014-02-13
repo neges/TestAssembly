@@ -10,13 +10,14 @@
 #import "TBXML.h"
 #import "TBXMLFunctions.h"
 
+@protocol WorkTableViewControllerDelegate;
+
+
 @interface WorkTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 {
 
-
 	TBXML* workXML;
 	TBXMLElement* maintenance;
-	
 	
 	
 	NSMutableArray *steps ; //Array für die steps für die TableView
@@ -24,6 +25,8 @@
 	
 	NSInteger currentStepRow; //speichert die aktuelle row der stepstable
 
+	NSTimer *highlightTimer; //Timmer für das Blinken
+	
 	
 	
 	IBOutlet UITextView *descriptionTextView;
@@ -33,7 +36,20 @@
 
 }
 
+@property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
+
+
 - (IBAction)nextStep:(id)sender;
 - (IBAction)prevStep:(id)sender;
+
+@end
+
+@protocol WorkTableViewControllerDelegate
+
+- (void)select3dContentWithName:(NSString*)content
+					withUIColor:(NSString*)sColor
+						toGroup:(bool)group
+					withObjects:(NSMutableArray*)wObjects;
+
 
 @end

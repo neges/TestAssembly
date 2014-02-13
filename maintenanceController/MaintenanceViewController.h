@@ -13,8 +13,12 @@
 #import "TBXMLFunctions.h"
 #import "WorkTableViewController.h"
 
-@interface MaintenanceViewController : MetaioSDKViewController <UITableViewDelegate, UITableViewDataSource, UITabBarDelegate>
+@interface MaintenanceViewController : MetaioSDKViewController <UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, WorkTableViewControllerDelegate
+>
 {
+	
+	
+	
     metaio::IGeometry* theLoadedModel; //Temporär aktuelle Geometry
 	metaio::IGeometry* theSelectedModel; //Temporär selektierte Geometry
 	bool saveVisibleBeforSelection; //Speicher ob das Object vorher sichtbar war
@@ -62,5 +66,7 @@
 - (void)loadObjectsInFolder:(NSString *)oFolder forCosID:(int)oCos;
 
 - (IBAction)toogleScreen:(id)sender;
+
+
 
 @end

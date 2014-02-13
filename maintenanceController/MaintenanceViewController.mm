@@ -24,9 +24,6 @@
 @synthesize structurTableView;
 @synthesize workTableViewController;
 
-
-
-
 #pragma mark -
 #pragma mark View
 #pragma mark -
@@ -35,7 +32,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-       workTableViewController = [[WorkTableViewController alloc]init];
+		workTableViewController = [[WorkTableViewController alloc]init];
     }
     return self;
 }
@@ -63,6 +60,7 @@
 	[tabBarView addSubview:workView];
 	workView.frame = CGRectMake(0, 49, workView.frame.size.width, workView.frame.size.height);
 	
+	workTableViewController.delegate = self;
 	
 	
 }
@@ -203,7 +201,7 @@
 		if (indexPath.row < [tableParents count] - 1)
 		{
 			//mögliche selektierung löschen
-			[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
+			[self select3dContentWithName:nil withUIColor:nil toGroup:true	withObjects:nil];
 			
 			selectedElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[tempArray objectAtIndex:1]];
 			
@@ -225,7 +223,7 @@
 		}
 		else //letzte Top element also 3D selektieren
 		{
-			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:true	];
+			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:true	withObjects:nil];
 			if (!theSelectedModel)
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		}
@@ -253,7 +251,7 @@
 		}
 		else
 		{
-			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:false];
+			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:false	withObjects:nil];
 			if (!theSelectedModel)
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 		}
@@ -447,6 +445,7 @@
 	{
 		[self loadObjectsFromElement:rootElement->firstChild toCosID:oCos withParentObject:topModel fromFolder:pathString];
 	
+		
 		loadedModels = m_metaioSDK->getLoadedGeometries();
         
         //Werte für die tableView holen
@@ -771,11 +770,11 @@ toMaxScreenSize:(CGSize)sSize
 #pragma mark Object Interaction
 #pragma mark -
 
--(void)select3dContentWithName:(NSString*)content
+- (void)select3dContentWithName:(NSString*)content
 				   withUIColor:(NSString*)sColor
 					   toGroup:(bool)group
+					withObjects:(NSMutableArray*)wObjects
 {
-	
 	//alten Timer löschen
 	if (highlightTimer)
 	{
@@ -797,7 +796,7 @@ toMaxScreenSize:(CGSize)sSize
 	if (!content)
 		return;
 
-	if (theSelectedModel)
+	if (theSelectedModel && !wObjects)
 	{
 		theSelectedModel->setVisible(saveVisibleBeforSelection);
 		theSelectedModel = nil;
@@ -810,11 +809,15 @@ toMaxScreenSize:(CGSize)sSize
 		saveVisibleBeforSelection = theSelectedModel->isVisible();
 		theSelectedModel->setVisible(true);
 		
-		if (group == true)
+		if (group == true || wObjects)
 		{
 			selectedModels = [[NSMutableArray alloc]init];
 			
-			[TBXMLFunctions getAllElements:selectedElement withGroups:false toArray:selectedModels];
+			if (!wObjects)
+				[TBXMLFunctions getAllElements:selectedElement withGroups:false toArray:selectedModels];
+			else
+				selectedModels = wObjects;
+			
 			
 			if ([sColor isEqualToString:@"green"])
 				highlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(HighlightGroupWithFlushGreen) userInfo:nil repeats:YES];
@@ -832,9 +835,6 @@ toMaxScreenSize:(CGSize)sSize
 	
 	
 }
-
-
-
 
 
 #pragma mark -
@@ -916,7 +916,7 @@ toMaxScreenSize:(CGSize)sSize
 		objectTouch = false;
 		
 		[structurTableView deselectRowAtIndexPath:[structurTableView indexPathForSelectedRow] animated:YES];
-		[self select3dContentWithName:nil withUIColor:nil toGroup:true	];
+		[self select3dContentWithName:nil withUIColor:nil toGroup:true	withObjects:nil	];
 		
 		
 		return;

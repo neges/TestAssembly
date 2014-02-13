@@ -24,6 +24,8 @@
 +(void)getAllSteps:(TBXMLElement*)element
 		   toArray:(NSMutableArray *)elementArray;
 
++(NSString*)getDescriptionOfStep:(TBXMLElement*)element;
+
 
 +(NSString*)getAttribute:(NSString*)attrib
 			   OfElement:(TBXMLElement*)element;

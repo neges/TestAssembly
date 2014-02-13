@@ -373,6 +373,28 @@
 	
 }
 
++(NSString*)getDescriptionOfStep:(TBXMLElement*)element
+{
+	TBXMLElement* steps = element->firstChild;
+	
+	if (steps)
+	{
+		do
+		{
+			if ([[TBXML elementName:steps] isEqualToString:@"description"]){
+				
+				return [TBXML textForElement:steps];
+				
+			}
+			
+		}while ((steps = steps->nextSibling));
+	}
+	
+	return @"";
+	
+}
+
+
 +(NSMutableArray*)getAllInfectedObjectsForWorkInstruction:(TBXMLElement*)topElement
 {
 	

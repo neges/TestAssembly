@@ -14,14 +14,14 @@
 
 @implementation WorkTableViewController
 
+@synthesize delegate;
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
 		
-		
-    }
-
+	  }
 	
     return self;
 }
@@ -141,7 +141,7 @@
 			cell.textLabel.text = [[infParts objectAtIndex:indexPath.row]objectAtIndex:1];
 			
 			if ([[[infParts objectAtIndex:indexPath.row]objectAtIndex:2] isEqualToString:@"hidden"])
-				cell.textLabel.textColor = [UIColor grayColor];
+				cell.textLabel.textColor = [UIColor lightGrayColor];
 			else
 				cell.textLabel.textColor = [UIColor blackColor];
 			
@@ -193,8 +193,7 @@
 	
 	
 	//Get Description
-	NSString* stepDescription = [TBXMLFunctions getAttribute:@"description" OfElement:step] ;
-	[descriptionTextView setText:stepDescription];
+	[descriptionTextView setText:[TBXMLFunctions getDescriptionOfStep:step]];
 	
 	
 	//Get infected parts
@@ -206,6 +205,20 @@
 		else
 			infParts = [TBXMLFunctions getAllTableViewSubElements:step];
 	
+	int infPartsCounter;
+	NSMutableArray* highlightedParts = [[NSMutableArray alloc]init];
+	
+	for (infPartsCounter = 0; infPartsCounter < [infParts count]; ++infPartsCounter) {
+		if ([[[infParts objectAtIndex:infPartsCounter]objectAtIndex:2]isEqualToString:@"highlighted"])
+		{
+			[highlightedParts addObject:[[infParts objectAtIndex:infPartsCounter]objectAtIndex:1]];
+		}
+	}
+	
+	if ([highlightedParts count]> 0)
+		[delegate select3dContentWithName:[highlightedParts objectAtIndex:0] withUIColor:@"red" toGroup:false withObjects:highlightedParts ];
+	else
+		[delegate select3dContentWithName:nil withUIColor:@"red" toGroup:false withObjects:nil ];
 	
 	[partsTable reloadData];
 	
@@ -213,6 +226,7 @@
 
 
 }
+			 
 
 - (IBAction)nextStep:(id)sender
 {
