@@ -25,56 +25,116 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "maintenanceController/MaintenanceViewController.mm"
-            timestampString = "413994749.245507"
+            filePath = "maintenanceController/WorkTableViewController.mm"
+            timestampString = "413998151.012965"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "779"
-            endingLineNumber = "779"
-            landmarkName = "-select3dContentWithName:withUIColor:toGroup:withObjects:"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "-loadStep:"
             landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  symbolName = "-[WorkTableViewController loadStep:]"
                   moduleName = "itmAR"
-                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "413995077.576975"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998151.055293"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "779"
-                  endingLineNumber = "779"
-                  offsetFromSymbolStart = "156">
+                  startingLineNumber = "235"
+                  endingLineNumber = "235"
+                  offsetFromSymbolStart = "1728">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  symbolName = "-[WorkTableViewController loadStep:]"
                   moduleName = "itmAR"
-                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "413995077.577169"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998151.055517"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "779"
-                  endingLineNumber = "779"
-                  offsetFromSymbolStart = "1978">
+                  startingLineNumber = "235"
+                  endingLineNumber = "235"
+                  offsetFromSymbolStart = "1860">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "-[MaintenanceViewController select3dContentWithName:withUIColor:toGroup:withObjects:]"
+                  symbolName = "-[WorkTableViewController loadStep:]"
                   moduleName = "itmAR"
-                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "413995077.577369"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998151.055662"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "779"
-                  endingLineNumber = "779"
+                  startingLineNumber = "235"
+                  endingLineNumber = "235"
                   offsetFromSymbolStart = "2046">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "maintenanceController/WorkTableViewController.mm"
+            timestampString = "413998172.10492"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
+            landmarkName = "-loadStep:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[WorkTableViewController loadStep:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998172.115571"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "220"
+                  endingLineNumber = "220"
+                  offsetFromSymbolStart = "1222">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[WorkTableViewController loadStep:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998172.115754"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "220"
+                  endingLineNumber = "220"
+                  offsetFromSymbolStart = "1396">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[WorkTableViewController loadStep:]"
+                  moduleName = "itmAR"
+                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/WorkTableViewController.mm"
+                  timestampString = "413998172.115917"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "220"
+                  endingLineNumber = "220"
+                  offsetFromSymbolStart = "2114">
                </Location>
             </Locations>
          </BreakpointContent>

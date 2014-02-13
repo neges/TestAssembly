@@ -22,6 +22,7 @@
     if (self) {
 		
 	  }
+
 	
     return self;
 }
@@ -68,6 +69,8 @@
 	[TBXMLFunctions getAllSteps:maintenance toArray:steps];
 	
 	currentStepRow = -1;
+	
+	hiddenParts = [[NSMutableArray alloc]init];
 	
 	
 
@@ -205,21 +208,36 @@
 		else
 			infParts = [TBXMLFunctions getAllTableViewSubElements:step];
 	
-	int infPartsCounter;
+	int PartsCounter;
 	NSMutableArray* highlightedParts = [[NSMutableArray alloc]init];
+	[hiddenParts removeAllObjects];
 	
-	for (infPartsCounter = 0; infPartsCounter < [infParts count]; ++infPartsCounter) {
-		if ([[[infParts objectAtIndex:infPartsCounter]objectAtIndex:2]isEqualToString:@"highlighted"])
-		{
-			[highlightedParts addObject:[[infParts objectAtIndex:infPartsCounter]objectAtIndex:1]];
-		}
+	for (PartsCounter = 0; PartsCounter < [infParts count]; ++PartsCounter)
+	{
+		if ([[[infParts objectAtIndex:PartsCounter]objectAtIndex:2]isEqualToString:@"highlighted"])
+			[highlightedParts addObject:[[infParts objectAtIndex:PartsCounter]objectAtIndex:1]];
+		else if ([[[infParts objectAtIndex:PartsCounter]objectAtIndex:2]isEqualToString:@"hidden"])
+			[hiddenParts addObject:[[infParts objectAtIndex:PartsCounter]objectAtIndex:1]];
 	}
 	
+	
+	//Highlight der Parts
 	if ([highlightedParts count]> 0)
 		[delegate select3dContentWithName:[highlightedParts objectAtIndex:0] withUIColor:@"red" toGroup:false withObjects:highlightedParts ];
 	else
 		[delegate select3dContentWithName:nil withUIColor:@"red" toGroup:false withObjects:nil ];
 	
+	
+		
+	//Hidden/Zeigen der Parts
+	for (PartsCounter = 0; PartsCounter < [hiddenParts count]; ++PartsCounter)
+	{
+		[delegate setModelWithName: [hiddenParts objectAtIndex:PartsCounter] visible:false];
+	
+	}
+	
+	
+	//infected Parts Table neu laden
 	[partsTable reloadData];
 	
 
@@ -263,6 +281,16 @@
 		
 			nextIndexPath = [NSIndexPath indexPathForRow:(currentStepRow - 1) inSection:0];
 			currentStepRow = currentStepRow - 1;
+			
+			//ausgeblendete Elemente wieder herstellen
+			
+			//Hidden/Zeigen der Parts
+			int PartsCounter;
+			for (PartsCounter = 0; PartsCounter < [hiddenParts count]; ++PartsCounter)
+			{
+				[delegate setModelWithName: [hiddenParts objectAtIndex:PartsCounter] visible:true];
+				
+			}
 		
 		}else{
 			nextIndexPath = [NSIndexPath indexPathForRow:(currentStepRow) inSection:0];

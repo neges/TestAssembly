@@ -4,18 +4,16 @@
 		<description>Start maintenance</description>
 		<object name="frontcover" state="visible"/>
 		<object name="tube" state="visible"/>
-		<object name="backcover" state="hidden"/>
-		
 	</step>
 	<step name="Step 2">
 		<description>Remove frontcover</description>
 		<object name="frontcover" state="highlighted"/>
-		<object name="backcover" state="highlighted"/>
 	</step>
 	<step name="Step 3">
 		<description>Remove tube from backcover</description>
 		<object name="frontcover" state="hidden"/>
 		<object name="tube" state="highlighted"/>
+		<object name="screws_FRONT" state="hidden"/>
 	</step>
 	<step name="Step 4">
 		<description>Maintenance done</description>

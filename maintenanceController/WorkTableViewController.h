@@ -27,6 +27,7 @@
 
 	NSTimer *highlightTimer; //Timmer für das Blinken
 	
+	NSMutableArray* hiddenParts ;
 	
 	
 	IBOutlet UITextView *descriptionTextView;
@@ -50,6 +51,9 @@
 					withUIColor:(NSString*)sColor
 						toGroup:(bool)group
 					withObjects:(NSMutableArray*)wObjects;
+
+-(bool)setModelWithName:(NSString *)sName
+				visible:(bool)visible;
 
 
 @end
