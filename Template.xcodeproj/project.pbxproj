@@ -13,7 +13,6 @@
 		043C971F18367B7F00445B73 /* fragRED.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971B18367B7F00445B73 /* fragRED.glsl */; };
 		043C972018367B7F00445B73 /* shader_materials.xml in Resources */ = {isa = PBXBuildFile; fileRef = 043C971C18367B7F00445B73 /* shader_materials.xml */; };
 		043C972118367B7F00445B73 /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971D18367B7F00445B73 /* vert.glsl */; };
-		043C972318367BA200445B73 /* metaioSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043C972218367BA200445B73 /* metaioSDK.framework */; };
 		043C973B18367C6C00445B73 /* saveMethodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973618367C6C00445B73 /* saveMethodes.m */; };
 		043C973C18367C6C00445B73 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973818367C6C00445B73 /* TBXML.m */; };
 		043C973D18367C6C00445B73 /* TBXMLFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973A18367C6C00445B73 /* TBXMLFunctions.m */; };
@@ -29,6 +28,7 @@
 		043C976018367D5500445B73 /* MaintenanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C975C18367D5500445B73 /* MaintenanceViewController.mm */; };
 		043C976118367D5500445B73 /* MaintenanceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043C975D18367D5500445B73 /* MaintenanceViewController.xib */; };
 		043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.mm */; };
+		04AD243818ACDA3200CE8641 /* metaioSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043C972218367BA200445B73 /* metaioSDK.framework */; };
 		04F329E8172FCE8000910751 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E7172FCE8000910751 /* UIKit.framework */; };
 		04F329EA172FCE8000910751 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E9172FCE8000910751 /* Foundation.framework */; };
 		04F329EC172FCE8000910751 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329EB172FCE8000910751 /* CoreGraphics.framework */; };
@@ -122,7 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				043C972318367BA200445B73 /* metaioSDK.framework in Frameworks */,
+				04AD243818ACDA3200CE8641 /* metaioSDK.framework in Frameworks */,
 				C5F24681177C38F300EB88A8 /* CFNetwork.framework in Frameworks */,
 				C5F2467F177C38DA00EB88A8 /* Security.framework in Frameworks */,
 				04F32A22172FCF0E00910751 /* AudioToolbox.framework in Frameworks */,
@@ -465,6 +465,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					/Users/mac/Entwicklung/TestAssembly/metaio,
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -486,6 +487,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
+					/Users/mac/Entwicklung/TestAssembly/metaio,
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
