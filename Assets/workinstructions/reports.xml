@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<reports>
+	<report name="Broken Frontcover" date="02.02.14" user="Matthias Neges">
+		<description>Frontcover was broken on the top left edge. Has to change during next maintenace. </description>
+		<pic></pic>
+		<step>0</step>
+	</report>
+	<report name="Twisted tube" date="10.02.14" user="Matthias Neges">
+		<description>Tube correced during this maintenace</description>
+		<pic></pic>
+		<step>2</step>
+	</report>
+	<report name="Cleaning object" date="14.01.14" user="Jan-Luca Siewert">
+		<description>Cleaning of the grid using a brush and vacuum cleaner</description>
+		<pic></pic>
+		<step>3</step>
+	</report>
+</reports>

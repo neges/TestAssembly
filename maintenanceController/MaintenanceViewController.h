@@ -61,6 +61,7 @@
 
 @property (nonatomic, strong) IBOutlet UITableView *structurTableView;
 @property (nonatomic, strong) IBOutlet WorkTableViewController* workTableViewController;
+@property (nonatomic, strong) IBOutlet UIViewController* reportViewController;
 
 
 - (void)loadObjectsInFolder:(NSString *)oFolder forCosID:(int)oCos;

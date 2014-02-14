@@ -19,14 +19,22 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
-    if (self) {
-		
+    if (self)
+	{
+
 	  }
 
 	
     return self;
 }
 
+-(void)loadContent
+{
+
+	[self loadWorkInstructionForXML];
+	[self loadReports];
+	
+}
 
 
 - (void)didReceiveMemoryWarning
@@ -52,25 +60,55 @@
 	
 	//xml laden falls vorhanden
 	NSString* theContents = [[NSString alloc] initWithContentsOfFile:xmlPath encoding:NSUTF8StringEncoding error:nil];
-	workXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	TBXML* workXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
 	maintenance = workXML.rootXMLElement;
-	
-	NSString* maintenanceName = [TBXMLFunctions getAttribute:@"name" OfElement:maintenance];
-	[nameTextView setText:maintenanceName];
-	
-	
-	if (!workXML) {
+
+	if (!workXML || !maintenance) {
 		NSLog(@"No structur file could be found or structur file is incorrect : %@", xmlPath);
 		return;
 	};
 	
+	
+	[nameTextView setText:[TBXMLFunctions getAttribute:@"name" OfElement:maintenance]];
+	
 
 	steps = [[NSMutableArray alloc]init];
-	[TBXMLFunctions getAllSteps:maintenance toArray:steps];
+	[TBXMLFunctions getAllChilds:maintenance toArray:steps];
 	
 	currentStepRow = -1;
 	
 	hiddenParts = [[NSMutableArray alloc]init];
+	
+	
+	
+	
+
+}
+
+-(void)loadReports
+{
+
+	NSString *objectFolderPath = [[NSBundle mainBundle] pathForResource:@"Assets" ofType:nil];
+	
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",objectFolderPath,@"workinstructions"];
+	
+	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"reports.xml"];
+	
+	//xml laden falls vorhanden
+	NSString* theContents = [[NSString alloc] initWithContentsOfFile:xmlPath encoding:NSUTF8StringEncoding error:nil];
+	TBXML* reportsXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	reports = reportsXML.rootXMLElement;
+	
+	if (!reportsXML || !reports) {
+		NSLog(@"No structur file could be found or structur file is incorrect : %@", xmlPath);
+		return;
+	};
+	
+	
+	reportsArray = [[NSMutableArray alloc]init];
+	[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+
+	
 	
 	
 
@@ -87,19 +125,29 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	if (tableView.tag == 0)
-	{
-		[self loadWorkInstructionForXML];
-		
-		return [steps count];
-	}
-	else
-	{
-		if (infParts)
-			return [infParts count];
-		else
+	
+	
+	switch (tableView.tag) {
+		case 0:
+			return [steps count];
+			break;
+			
+		case 1:
+			if (infParts)
+				return [infParts count];
+			else
+				return 0;
+			break;
+			
+		case 2:
+			return [reportsArray count];
+			break;
+			
+		default:
 			return 0;
+			break;
 	}
+	
 }
 
 - (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -107,11 +155,15 @@
 
 	switch (tableView.tag) {
 		case 0:
-			return @"steps";
+			return [NSString stringWithFormat:@"steps - %i", [steps count] ];
 			break;
 			
 		case 1:
-			return @"infected parts";
+			return [NSString stringWithFormat:@"infected parts - %i", [infParts count] ];
+			break;
+			
+		case 2:
+			return [NSString stringWithFormat:@"reports - %i", [reportsArray count] ];
 			break;
 			
 		default:
@@ -137,7 +189,7 @@
 			NSString *stepName = [steps objectAtIndex:indexPath.row];
 			cell.textLabel.text = stepName;
 	}
-	else
+	else if (tableView.tag == 1)
 	{
 		if (infParts)
 		{
@@ -153,8 +205,12 @@
 		}
 	
 	}
+	else if (tableView.tag == 2)
+	{
     
-	
+		cell.textLabel.text = [reportsArray objectAtIndex:indexPath.row];
+		
+	}
 	
     return cell;
 }
@@ -173,15 +229,81 @@
 			[self jumpToStep:indexPath.row];
 
 
+	}else if (tableView.tag == 2)
+	{
+		NSString* repName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+		
+		//Get step in XML
+		TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:repName];
+		
+		
+		//Get Description
+		[reportTextView setText:[TBXMLFunctions getValue:@"description" OfElement:rep]];
+		
+		[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
+		
+		
+		
 	}
 	
 }
 
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView.tag == 2)
+		return YES;
+	else
+		return NO;
+	
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView.tag == 2 && editingStyle == UITableViewCellEditingStyleDelete)
+	{
+        [reportsArray removeObjectAtIndex:indexPath.row];
+		[reportsTable reloadData];
+    }
+}
 
 
 
+#pragma mark -
+#pragma mark Report Actions
+#pragma mark -
 
+-(IBAction)saveReport:(id)sender
+{
+	if (saveBto.isHidden)
+		return;
+	
+	NSDateFormatter *inFormat = [[NSDateFormatter alloc] init];
+	[inFormat setDateFormat:@"hh:mm:ss_dd-MM-yy"];
+	NSString *time = [inFormat stringFromDate:[NSDate date]];
+		
+	NSMutableArray* newReport = [[NSMutableArray alloc]init];
+	
+	[newReport addObject:[NSString stringWithFormat:@"R_%@", time]];
+	[newReport addObject:[NSString stringWithFormat:@"TEST"]];
+	[newReport addObject:[NSString stringWithFormat:@"%i",currentStepRow]];
+	
+	NSLog(@"Save : %i", currentStepRow);
+	
+	[reportsArray addObject:newReport];
+	[reportsTable reloadData];
+
+}
+
+-(IBAction)addScreenshot:(id)sender
+{
+
+	if (screenBto.isHidden)
+		return;
+
+
+
+}
 
 
 #pragma mark -
@@ -196,7 +318,7 @@
 	
 	
 	//Get Description
-	[descriptionTextView setText:[TBXMLFunctions getDescriptionOfStep:step]];
+	[descriptionTextView setText:[TBXMLFunctions getValue:@"description" OfElement:step]];
 	
 	
 	//Get infected parts
@@ -252,19 +374,27 @@
 
 - (IBAction)nextStep:(id)sender
 {
+	if (nextStepBto.isHidden)
+		return;
+	
 	[self jumpToStep:currentStepRow + 1];
+	
 }
 
 
 
 - (IBAction)prevStep:(id)sender
 {
+	if (prevStepBto.isHidden)
+		return;
+	
 	[self jumpToStep:currentStepRow - 1];
 }
 
 
 -(void)jumpToStep:(NSInteger) stepRow
 {
+	NSLog(@"Jump to step: %i", stepRow);
 	
 	//exit if not possible
 	if (stepRow == [stepsTable numberOfRowsInSection:0] || stepRow < 0) {
@@ -320,55 +450,51 @@
 
 
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
 
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
 
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
 
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
-/*
- #pragma mark - Navigation
- 
- // In a story board-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- 
- */
+
+#pragma mark -
+#pragma mark change work/report
+#pragma mark -
+
+
+-(void)changeToReport:(bool)change
+{
+
+	if (change)
+	{
+		[descriptionTextView setHidden:true];
+		[reportTextView setHidden:false];
+		[nextStepBto setHidden:true];
+		[prevStepBto setHidden:true];
+
+		[saveBto setHidden:false];
+		[screenBto setHidden:false];
+		
+		
+		[reportsTable setHidden:false];
+		[partsTable setHidden:true];
+		
+		
+	}
+	else
+	{
+		[descriptionTextView setHidden:false];
+		[reportTextView setHidden:true];
+		[nextStepBto setHidden:false];
+		[prevStepBto setHidden:false];
+		[saveBto setHidden:true];
+		[screenBto setHidden:true];
+	
+		
+		[reportsTable setHidden:true];
+		[partsTable setHidden:false];
+	}
+
+
+
+}
 
 @end

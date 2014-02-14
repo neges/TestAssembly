@@ -16,8 +16,9 @@
 @interface WorkTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 {
 
-	TBXML* workXML;
+	
 	TBXMLElement* maintenance;
+	TBXMLElement* reports;
 	
 	
 	NSMutableArray *steps ; //Array für die steps für die TableView
@@ -28,20 +29,35 @@
 	NSTimer *highlightTimer; //Timmer für das Blinken
 	
 	NSMutableArray* hiddenParts ;
+	NSMutableArray* reportsArray;
+	
 	
 	
 	IBOutlet UITextView *descriptionTextView;
 	IBOutlet UITextView *nameTextView;
 	IBOutlet UITableView *stepsTable;
 	IBOutlet UITableView *partsTable;
+	IBOutlet UITableView *reportsTable;
+	IBOutlet UITextView *reportTextView;
+	
+	
+	IBOutlet UIButton *nextStepBto;
+	IBOutlet UIButton *prevStepBto;
+	IBOutlet UIButton *saveBto;
+	IBOutlet UIButton *screenBto;
+	
 
 }
 
 @property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
 
+-(void)loadContent;
+-(void)changeToReport:(bool)change;
 
 - (IBAction)nextStep:(id)sender;
 - (IBAction)prevStep:(id)sender;
+- (IBAction)saveReport:(id)sender;
+- (IBAction)addScreenshot:(id)sender;
 
 @end
 

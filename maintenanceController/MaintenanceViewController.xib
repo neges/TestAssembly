@@ -25,7 +25,13 @@
             <connections>
                 <outlet property="descriptionTextView" destination="PGl-sf-Bmu" id="tWz-96-EtZ"/>
                 <outlet property="nameTextView" destination="ZUx-7j-Jm2" id="rz6-7a-8nN"/>
+                <outlet property="nextStepBto" destination="Gve-9J-t5G" id="Q4m-WM-iVD"/>
                 <outlet property="partsTable" destination="13A-FP-XBh" id="h6s-n2-zH1"/>
+                <outlet property="prevStepBto" destination="t3I-om-Ild" id="Kkh-p8-mxn"/>
+                <outlet property="reportTextView" destination="6oq-2i-gAb" id="eZo-d4-r0Y"/>
+                <outlet property="reportsTable" destination="Adi-0s-gM4" id="eGP-zj-QcM"/>
+                <outlet property="saveBto" destination="Axl-co-dFi" id="a97-kw-aor"/>
+                <outlet property="screenBto" destination="zoT-Cw-1ok" id="F3i-q4-qq9"/>
                 <outlet property="stepsTable" destination="bDU-3K-2D6" id="pXC-Sb-qxa"/>
             </connections>
         </tableViewController>
@@ -101,6 +107,15 @@
                         <outlet property="delegate" destination="1X8-W2-4Vw" id="pRh-Xn-vlJ"/>
                     </connections>
                 </tableView>
+                <tableView clipsSubviews="YES" tag="2" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Adi-0s-gM4" userLabel="reportsTable">
+                    <rect key="frame" x="764" y="5" width="260" height="255"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="1X8-W2-4Vw" id="Wfu-6o-CIT"/>
+                        <outlet property="delegate" destination="1X8-W2-4Vw" id="XRA-xe-HHV"/>
+                    </connections>
+                </tableView>
                 <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="13A-FP-XBh" userLabel="partsTable">
                     <rect key="frame" x="764" y="5" width="260" height="255"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -110,24 +125,32 @@
                         <outlet property="delegate" destination="1X8-W2-4Vw" id="muR-Ah-wEx"/>
                     </connections>
                 </tableView>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Press step for work instruction...." id="PGl-sf-Bmu" userLabel="description Text View">
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Type report here...." id="6oq-2i-gAb" userLabel="report Text View">
                     <rect key="frame" x="265" y="40" width="494" height="175"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Maintenance Description" id="ZUx-7j-Jm2" userLabel="description Text View">
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Press start for work instruction...." selectable="NO" id="PGl-sf-Bmu" userLabel="description Text View">
+                    <rect key="frame" x="265" y="40" width="494" height="175"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Maintenance Description" selectable="NO" id="ZUx-7j-Jm2" userLabel="Headline Text View">
                     <rect key="frame" x="265" y="5" width="494" height="33"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Gve-9J-t5G">
-                    <rect key="frame" x="644" y="218" width="112" height="30"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Gve-9J-t5G">
+                    <rect key="frame" x="513" y="217" width="246" height="43"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                     <state key="normal" title="next step >">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -135,10 +158,36 @@
                         <action selector="nextStep:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="AMo-nu-Kyf"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="t3I-om-Ild">
-                    <rect key="frame" x="268" y="218" width="112" height="30"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Axl-co-dFi">
+                    <rect key="frame" x="513" y="217" width="246" height="43"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <state key="normal" title="save">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="nextStep:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="7gM-6g-pQb"/>
+                        <action selector="saveReport:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="eGJ-Zq-3jl"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="zoT-Cw-1ok">
+                    <rect key="frame" x="265" y="217" width="246" height="43"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <state key="normal" title="add screenshot">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="addScreenshot:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="XAz-8R-CGK"/>
+                        <action selector="nextStep:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="TOV-gV-8jb"/>
+                        <action selector="saveReport:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="VBW-GQ-J9C"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="t3I-om-Ild">
+                    <rect key="frame" x="265" y="217" width="243" height="43"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <state key="normal" title="&lt; previous step">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>

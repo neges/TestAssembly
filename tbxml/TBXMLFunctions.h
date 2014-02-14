@@ -21,10 +21,11 @@
 		   withGroups:(bool)wGroups
 			  toArray:(NSMutableArray *)elementArray;
 
-+(void)getAllSteps:(TBXMLElement*)element
-		   toArray:(NSMutableArray *)elementArray;
++(void)getAllChilds:(TBXMLElement*)element
+			toArray:(NSMutableArray *)elementArray;
 
-+(NSString*)getDescriptionOfStep:(TBXMLElement*)element;
++(NSString*)getValue:(NSString*)value
+		   OfElement:(TBXMLElement*)element;
 
 
 +(NSString*)getAttribute:(NSString*)attrib

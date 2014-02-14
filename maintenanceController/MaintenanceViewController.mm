@@ -23,6 +23,7 @@
 
 @synthesize structurTableView;
 @synthesize workTableViewController;
+@synthesize reportViewController;
 
 #pragma mark -
 #pragma mark View
@@ -60,7 +61,10 @@
 	[tabBarView addSubview:workView];
 	workView.frame = CGRectMake(0, 49, workView.frame.size.width, workView.frame.size.height);
 	
+	
 	workTableViewController.delegate = self;
+	[workTableViewController loadContent];
+	
 	
 	
 }
@@ -309,13 +313,15 @@
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
 
-		
+			[workTableViewController changeToReport:false];
 			
 			break;
 		case 1:
 			tabBarTag = 1;
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
+			
+			[workTableViewController changeToReport:true];
 			
 			break;
 		case 2:

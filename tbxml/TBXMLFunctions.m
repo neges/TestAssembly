@@ -347,47 +347,44 @@
 
 }
 
-#
-
-
-
 
 
 #pragma mark -
-#pragma mark Steps
+#pragma mark Work
 #pragma mark -
 
-+(void)getAllSteps:(TBXMLElement*)element
++(void)getAllChilds:(TBXMLElement*)element
 		   toArray:(NSMutableArray *)elementArray
 {
-	TBXMLElement* steps = element->firstChild;
+	TBXMLElement* childs = element->firstChild;
 	
-	if (steps)
+	if (childs)
 	{
 		do
 		{
-			[elementArray addObject: [TBXMLFunctions getAttribute:@"name" OfElement:steps]];
+			[elementArray addObject: [TBXMLFunctions getAttribute:@"name" OfElement:childs]];
 			
-		}while ((steps = steps->nextSibling));
+		}while ((childs = childs->nextSibling));
 	}
 	
 }
 
-+(NSString*)getDescriptionOfStep:(TBXMLElement*)element
++(NSString*)getValue:(NSString*)value
+		   OfElement:(TBXMLElement*)element
 {
-	TBXMLElement* steps = element->firstChild;
+	TBXMLElement* child = element->firstChild;
 	
-	if (steps)
+	if (child)
 	{
 		do
 		{
-			if ([[TBXML elementName:steps] isEqualToString:@"description"]){
+			if ([[TBXML elementName:child] isEqualToString:value]){
 				
-				return [TBXML textForElement:steps];
+				return [TBXML textForElement:child];
 				
 			}
 			
-		}while ((steps = steps->nextSibling));
+		}while ((child = child->nextSibling));
 	}
 	
 	return @"";
