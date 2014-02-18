@@ -19,6 +19,10 @@
 	
 	TBXMLElement* maintenance;
 	TBXMLElement* reports;
+	TBXML* workXML;
+	TBXML* reportsXML;
+	
+	
 	
 	
 	NSMutableArray *steps ; //Array für die steps für die TableView
@@ -43,13 +47,22 @@
 	
 	IBOutlet UIButton *nextStepBto;
 	IBOutlet UIButton *prevStepBto;
-	IBOutlet UIButton *saveBto;
-	IBOutlet UIButton *screenBto;
+	
+	IBOutlet UILabel *dateLable;
+	IBOutlet UILabel *userLable;
+	IBOutlet UILabel *stepLable;
+	IBOutlet UIImageView *screenshotView;
+	IBOutlet UITextField *reportNameField;
+	IBOutlet UITextView *descriptionText;
+	IBOutlet UIView *newReportView;
 	
 
 }
 
 @property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
+
+
+
 
 -(void)loadContent;
 -(void)changeToReport:(bool)change;
@@ -58,6 +71,8 @@
 - (IBAction)prevStep:(id)sender;
 - (IBAction)saveReport:(id)sender;
 - (IBAction)addScreenshot:(id)sender;
+- (IBAction)cancelReport:(id)sender;
+
 
 @end
 
@@ -76,6 +91,10 @@
 					withValue:(char*)val;
 
 -(void) reloadStructerTable;
+
+-(void) addView:(UIView*)aView
+			 to:(bool)show;
+
 
 
 @end

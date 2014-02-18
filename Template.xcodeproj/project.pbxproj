@@ -13,7 +13,6 @@
 		043C971F18367B7F00445B73 /* fragRED.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971B18367B7F00445B73 /* fragRED.glsl */; };
 		043C972018367B7F00445B73 /* shader_materials.xml in Resources */ = {isa = PBXBuildFile; fileRef = 043C971C18367B7F00445B73 /* shader_materials.xml */; };
 		043C972118367B7F00445B73 /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971D18367B7F00445B73 /* vert.glsl */; };
-		043C973B18367C6C00445B73 /* saveMethodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973618367C6C00445B73 /* saveMethodes.m */; };
 		043C973C18367C6C00445B73 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973818367C6C00445B73 /* TBXML.m */; };
 		043C973D18367C6C00445B73 /* TBXMLFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 043C973A18367C6C00445B73 /* TBXMLFunctions.m */; };
 		043C974818367CBD00445B73 /* _empty_.obj in Resources */ = {isa = PBXBuildFile; fileRef = 043C973F18367CBD00445B73 /* _empty_.obj */; };
@@ -66,7 +65,6 @@
 		043C971C18367B7F00445B73 /* shader_materials.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = shader_materials.xml; sourceTree = "<group>"; };
 		043C971D18367B7F00445B73 /* vert.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vert.glsl; sourceTree = "<group>"; };
 		043C972218367BA200445B73 /* metaioSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = metaioSDK.framework; path = metaio/metaioSDK.framework; sourceTree = "<group>"; };
-		043C973618367C6C00445B73 /* saveMethodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = saveMethodes.m; sourceTree = "<group>"; };
 		043C973718367C6C00445B73 /* TBXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXML.h; sourceTree = "<group>"; };
 		043C973818367C6C00445B73 /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBXML.m; sourceTree = "<group>"; };
 		043C973918367C6C00445B73 /* TBXMLFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBXMLFunctions.h; sourceTree = "<group>"; };
@@ -160,7 +158,6 @@
 		043C973518367C6C00445B73 /* tbxml */ = {
 			isa = PBXGroup;
 			children = (
-				043C973618367C6C00445B73 /* saveMethodes.m */,
 				043C973718367C6C00445B73 /* TBXML.h */,
 				043C973818367C6C00445B73 /* TBXML.m */,
 				043C973918367C6C00445B73 /* TBXMLFunctions.h */,
@@ -365,7 +362,6 @@
 			files = (
 				043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */,
 				043C973C18367C6C00445B73 /* TBXML.m in Sources */,
-				043C973B18367C6C00445B73 /* saveMethodes.m in Sources */,
 				043C971718367B6A00445B73 /* EAGLView.mm in Sources */,
 				04F329F4172FCE8000910751 /* main.m in Sources */,
 				04F329F8172FCE8000910751 /* AppDelegate.mm in Sources */,

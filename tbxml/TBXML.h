@@ -181,6 +181,7 @@ typedef void (^TBXMLIterateAttributeBlock)(TBXMLAttribute *attribute, NSString *
 
 @interface TBXML (StaticFunctions)
 
+
 + (NSString*) elementName:(TBXMLElement*)aXMLElement;
 + (NSString*) elementName:(TBXMLElement*)aXMLElement error:(NSError **)error;
 + (NSString*) textForElement:(TBXMLElement*)aXMLElement;

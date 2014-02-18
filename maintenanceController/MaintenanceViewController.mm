@@ -76,6 +76,23 @@
 }
 
 
+-(void) addView:(UIView*)aView
+			 to:(bool)show
+{
+	BOOL doesContain = [glView.subviews containsObject:aView];
+	
+	if (show && !doesContain)
+	{
+		[glView addSubview:aView];
+	}else if (!show && doesContain){
+		[aView removeFromSuperview];
+	}
+	
+}
+
+
+
+
 #pragma mark -
 #pragma mark table View
 #pragma mark -

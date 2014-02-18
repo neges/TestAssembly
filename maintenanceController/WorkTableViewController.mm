@@ -16,13 +16,18 @@
 
 @synthesize delegate;
 
+
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self)
 	{
-
-	  }
+		
+		newReportView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
+	
+		
+	}
 
 	
     return self;
@@ -60,7 +65,8 @@
 	
 	//xml laden falls vorhanden
 	NSString* theContents = [[NSString alloc] initWithContentsOfFile:xmlPath encoding:NSUTF8StringEncoding error:nil];
-	TBXML* workXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	workXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	
 	maintenance = workXML.rootXMLElement;
 
 	if (!workXML || !maintenance) {
@@ -96,7 +102,7 @@
 	
 	//xml laden falls vorhanden
 	NSString* theContents = [[NSString alloc] initWithContentsOfFile:xmlPath encoding:NSUTF8StringEncoding error:nil];
-	TBXML* reportsXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
+	reportsXML = [TBXML newTBXMLWithXMLString:theContents error:nil];
 	reports = reportsXML.rootXMLElement;
 	
 	if (!reportsXML || !reports) {
@@ -170,8 +176,46 @@
 			return nil;
 			break;
 	}
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+	if (tableView.tag == 2)
+	{
+			CGFloat cellWidth = tableView.frame.size.width;
+			
+			UIView *myView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, cellWidth, 40.0)];
+			[myView setBackgroundColor:[UIColor lightGrayColor]];
+		
+			UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+			[button setFrame:CGRectMake(0.0, 10.0, cellWidth, 20.0)];
+			button.tag = section;
+			button.hidden = NO;
+			[button setBackgroundColor:[UIColor clearColor]];
+			[button	setTitle:@"Add report" forState:UIControlStateNormal];
+			[button addTarget:self action:@selector(addReport:) forControlEvents:UIControlEventTouchDown];
+			[myView addSubview:button];
+		
+			return myView;
+			
+	}else{
+			return nil;
+	}
+}
 
 
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+	
+	switch (tableView.tag) {
+		case 2:
+			return 40.0;
+			break;
+			
+		default:
+			return nil;
+			break;
+	}
+	
+	
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -275,13 +319,17 @@
 
 -(IBAction)saveReport:(id)sender
 {
-	if (saveBto.isHidden)
-		return;
 	
 	NSDateFormatter *inFormat = [[NSDateFormatter alloc] init];
 	[inFormat setDateFormat:@"hh:mm:ss_dd-MM-yy"];
 	NSString *time = [inFormat stringFromDate:[NSDate date]];
+	
+	[reportsArray addObject:[NSString stringWithFormat:@"NEW"]];
+	
 		
+
+	
+	
 	NSMutableArray* newReport = [[NSMutableArray alloc]init];
 	
 	[newReport addObject:[NSString stringWithFormat:@"R_%@", time]];
@@ -290,17 +338,27 @@
 	
 	NSLog(@"Save : %i", currentStepRow);
 	
-	[reportsArray addObject:newReport];
 	[reportsTable reloadData];
+
+}
+
+-(IBAction)addReport:(id)sender
+{
+	[delegate addView:newReportView to:true];
+	[reportNameField becomeFirstResponder];
+	
+	
+	
+}
+-(IBAction)cancelReport:(id)sender
+{
+
+	[delegate addView:newReportView to:false];
 
 }
 
 -(IBAction)addScreenshot:(id)sender
 {
-
-	if (screenBto.isHidden)
-		return;
-
 
 
 }
@@ -469,10 +527,6 @@
 		[reportTextView setHidden:false];
 		[nextStepBto setHidden:true];
 		[prevStepBto setHidden:true];
-
-		[saveBto setHidden:false];
-		[screenBto setHidden:false];
-		
 		
 		[reportsTable setHidden:false];
 		[partsTable setHidden:true];
@@ -485,9 +539,6 @@
 		[reportTextView setHidden:true];
 		[nextStepBto setHidden:false];
 		[prevStepBto setHidden:false];
-		[saveBto setHidden:true];
-		[screenBto setHidden:true];
-	
 		
 		[reportsTable setHidden:true];
 		[partsTable setHidden:false];
