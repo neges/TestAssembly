@@ -13,9 +13,10 @@
 @protocol WorkTableViewControllerDelegate;
 
 
-@interface WorkTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@interface WorkTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UIScrollViewDelegate>
 {
 
+	NSString* documentsDir; //Pfad zum dokumenten ordner
 	
 	TBXMLElement* maintenance;
 	TBXMLElement* reports;
@@ -34,6 +35,7 @@
 	
 	NSMutableArray* hiddenParts ;
 	NSMutableArray* reportsArray;
+	NSMutableArray* addedReportsArray;
 	
 	
 	
@@ -54,13 +56,16 @@
 	IBOutlet UIImageView *screenshotView;
 	IBOutlet UITextField *reportNameField;
 	IBOutlet UITextView *descriptionText;
-	IBOutlet UIView *newReportView;
+	IBOutlet UIView *reportAddView;
+	IBOutlet UIButton *reportPictureBto;
+	
+	UIScrollView* repImgScrollView; //View um das image des reports in fullscreen zu zeigen
 	
 
 }
 
 @property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
-
+@property (nonatomic, strong) IBOutlet UIView *reportAddView;
 
 
 
@@ -72,6 +77,8 @@
 - (IBAction)saveReport:(id)sender;
 - (IBAction)addScreenshot:(id)sender;
 - (IBAction)cancelReport:(id)sender;
+- (IBAction)showReportPictureFull:(id)sender;
+
 
 
 @end

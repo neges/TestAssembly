@@ -15,6 +15,7 @@
 @implementation WorkTableViewController
 
 @synthesize delegate;
+@synthesize reportAddView;
 
 
 
@@ -24,8 +25,7 @@
     if (self)
 	{
 		
-		newReportView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
-	
+		reportAddView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
 		
 	}
 
@@ -36,8 +36,15 @@
 -(void)loadContent
 {
 
+	//Dokuenten Ordner holen
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	documentsDir = [paths objectAtIndex:0];
+	
 	[self loadWorkInstructionForXML];
 	[self loadReports];
+	
+	addedReportsArray = [[NSMutableArray alloc]init];
+	repImgScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
 	
 }
 
@@ -57,9 +64,8 @@
 
 - (void)loadWorkInstructionForXML
 {
-	NSString *objectFolderPath = [[NSBundle mainBundle] pathForResource:@"Assets" ofType:nil];
-	
-	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",objectFolderPath,@"workinstructions"];
+
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
 	
 	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"work_20131113.xml"];
 	
@@ -94,9 +100,8 @@
 -(void)loadReports
 {
 
-	NSString *objectFolderPath = [[NSBundle mainBundle] pathForResource:@"Assets" ofType:nil];
-	
-	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",objectFolderPath,@"workinstructions"];
+
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
 	
 	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"reports.xml"];
 	
@@ -277,15 +282,7 @@
 	{
 		NSString* repName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
 		
-		//Get step in XML
-		TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:repName];
-		
-		
-		//Get Description
-		[reportTextView setText:[TBXMLFunctions getValue:@"description" OfElement:rep]];
-		
-		[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
-		
+		[self loadReportNamed:repName];
 		
 		
 	}
@@ -306,8 +303,22 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView.tag == 2 && editingStyle == UITableViewCellEditingStyleDelete)
 	{
-        [reportsArray removeObjectAtIndex:indexPath.row];
-		[reportsTable reloadData];
+		NSString* delReportNamed = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+		
+		for (int arrayCounter = 0; arrayCounter < addedReportsArray.count; ++arrayCounter)
+		{
+			NSMutableArray* elementArray = [addedReportsArray objectAtIndex:arrayCounter];
+		
+			if ([[elementArray objectAtIndex:0] isEqualToString:delReportNamed] )
+			{
+				[self deleteReport:[elementArray objectAtIndex:1]];
+				[addedReportsArray removeObjectAtIndex:arrayCounter];
+				break;
+			}
+			
+
+			
+		}
     }
 }
 
@@ -317,35 +328,219 @@
 #pragma mark Report Actions
 #pragma mark -
 
+- (IBAction)showReportPictureFull:(id)sender
+{
+	
+	UIImageView* repImgView;
+	
+	if ([repImgScrollView subviews].count > 0) {
+		repImgView = [[repImgScrollView subviews]objectAtIndex:0];
+	}else{
+		repImgView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, repImgScrollView.frame.size.width, repImgScrollView.frame.size.height)];
+		repImgView.contentMode = UIViewContentModeScaleAspectFit;
+		[repImgView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
+		[repImgScrollView addSubview:repImgView];
+		
+		[repImgScrollView setUserInteractionEnabled:YES];
+		UITapGestureRecognizer *singleTap =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeFullScreenReportImage:)];
+		[singleTap setNumberOfTapsRequired:1];
+		[repImgScrollView addGestureRecognizer:singleTap];
+		
+		[repImgScrollView setUserInteractionEnabled:YES];
+		UITapGestureRecognizer *doubleTap =  [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetScaleForScrollView:)];
+		[doubleTap setNumberOfTapsRequired:2];
+		[repImgScrollView addGestureRecognizer:doubleTap];
+		
+		[singleTap requireGestureRecognizerToFail:doubleTap];
+		
+		
+		[repImgScrollView setMaximumZoomScale:10.0];
+		[repImgScrollView setMinimumZoomScale:1.0];
+		repImgScrollView.delegate=self;
+	}
+	
+	[repImgView setImage:[reportPictureBto backgroundImageForState:UIControlStateNormal]];
+	[repImgScrollView setZoomScale:1.0];
+	
+	[delegate addView:repImgScrollView to:true];
+}
+
+-(IBAction)closeFullScreenReportImage:(id)sender
+{
+
+	[delegate addView:repImgScrollView to:false];
+	
+}
+
+-(IBAction)resetScaleForScrollView:(id)sender
+{
+	[repImgScrollView	setZoomScale:1.00 animated:true];
+
+}
+
+-(void) loadReportNamed:(NSString*)reportName
+{
+
+	//Get step in XML
+	TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:reportName];
+	
+	
+	//Get Description
+	NSString* descriptionTextStr = [NSString stringWithFormat:@"Date : %@\r", [TBXMLFunctions getAttribute:@"date" OfElement:rep]];
+	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"User : %@\r",[TBXMLFunctions getAttribute:@"user" OfElement:rep]]];
+	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"Step : %@\r\r",[TBXMLFunctions getValue:@"step" OfElement:rep]]];
+	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"%@",[TBXMLFunctions getValue:@"description" OfElement:rep]]];
+					   
+	[reportTextView setText:descriptionTextStr];
+	
+	NSString* reportImg = [TBXMLFunctions getValue:@"pic" OfElement:rep];
+	if ([reportImg isEqualToString:@""]){
+		[reportPictureBto setHidden:true];
+
+		[reportPictureBto setBackgroundImage:nil
+                            forState:UIControlStateNormal];
+	}else{
+		[reportPictureBto setHidden:false];
+		//Bild holen
+		NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
+		NSString* reportImgStr = [NSString stringWithFormat:@"%@/%@",workinstructionsPath,reportImg];
+		UIImage* reportImg = [[UIImage alloc] initWithContentsOfFile:reportImgStr];
+		[reportPictureBto setBackgroundImage:reportImg
+									forState:UIControlStateNormal];
+	}
+		
+	
+	
+	//Zum Workstep springen
+	[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
+
+
+
+
+
+}
+
+-(void) deleteReport:(NSString*)delString
+{
+
+	//daten aus xml einlesen und als nsstring speichern
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
+	
+	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"reports.xml"];
+	
+	NSString *reportXMLSring = [NSString stringWithContentsOfFile:xmlPath
+													 usedEncoding:nil
+															error:nil];
+	if (reportXMLSring)
+	{
+
+		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:delString withString:[NSString stringWithFormat:@""]];
+		
+		
+		//schreiben der XML
+		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+		
+		//Daten neu einlesen
+		[self loadReports];
+		[reportsTable reloadData];
+		
+	}
+}
+
 -(IBAction)saveReport:(id)sender
 {
 	
-	NSDateFormatter *inFormat = [[NSDateFormatter alloc] init];
-	[inFormat setDateFormat:@"hh:mm:ss_dd-MM-yy"];
-	NSString *time = [inFormat stringFromDate:[NSDate date]];
+	//Daten aus der View holen
+	NSString *tDate = dateLable.text;
+	NSString *tUser = userLable.text;
+	NSString *tStep = stepLable.text;
+	NSString *tName = reportNameField.text;
+	if ([tName isEqualToString:@""]) {
+		tName = [tDate stringByReplacingOccurrencesOfString:@" "
+											   withString:@"_"];
+	}
+	NSString *tDescription = descriptionText.text;
+	if ([tDescription rangeOfString:@"Report description"].location != NSNotFound) {
+		tDescription = @"";
+	}
 	
-	[reportsArray addObject:[NSString stringWithFormat:@"NEW"]];
+	NSString* tPic = @"TEST.PNG";
 	
+	//daten aus xml einlesen und als nsstring speichern
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
+	
+	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"reports.xml"];
+	
+	NSString *reportXMLSring = [NSString stringWithContentsOfFile:xmlPath
+											   usedEncoding:nil
+													  error:nil];
+	if (reportXMLSring)
+	{
 		
+	NSString* newReport = [NSString stringWithFormat:@"\t<report name=\"%@\" date=\"%@\" user=\"%@\">\r", tName, tDate, tUser];
+	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<description>%@</description>\r",tDescription]];
+	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<pic>%@</pic>\r",tPic]];
+	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<step>%@</step>\r",tStep]];
+	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t</report>\r"]];
+		
+	reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@\r</reports>",newReport]];
+		
+		//zwischenspeichern was eingefügt wurde ume es evl wieder löschen zu können
+		NSMutableArray* addReportArray = [[NSMutableArray alloc]init];
+		[addReportArray addObject:tName];
+		[addReportArray addObject:newReport];
+		[addedReportsArray addObject:addReportArray];
 
 	
 	
-	NSMutableArray* newReport = [[NSMutableArray alloc]init];
+	//schreiben der XML
+	[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 	
-	[newReport addObject:[NSString stringWithFormat:@"R_%@", time]];
-	[newReport addObject:[NSString stringWithFormat:@"TEST"]];
-	[newReport addObject:[NSString stringWithFormat:@"%i",currentStepRow]];
-	
-	NSLog(@"Save : %i", currentStepRow);
-	
+	//Daten neu einlesen
+	[self loadReports];
 	[reportsTable reloadData];
+	
+	//Placeholder für das Description Text Feld
+	[descriptionText setText:@"Report description...."];
+	
+	[delegate addView:reportAddView to:false];
+		
+	}
 
 }
 
 -(IBAction)addReport:(id)sender
 {
-	[delegate addView:newReportView to:true];
+	
+	//Zeit holen
+	NSDateFormatter *inFormat = [[NSDateFormatter alloc] init];
+	[inFormat setDateFormat:@"dd/MM/yy hh:mm:ss"];
+	NSString *time = [inFormat stringFromDate:[NSDate date]];
+	[dateLable setText:time];
+	
+	//User holen
+	NSString *user = [NSString stringWithFormat:@"Matthias Neges"];
+	[userLable setText:user];
+	
+	//Step holen
+	NSInteger currentRow;
+	if (currentStepRow < 0)
+		currentRow	= 0;
+	else
+		currentRow = currentStepRow;
+		
+	
+	UITableViewCell* currentCell = [stepsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:currentRow inSection:0]];
+	NSString *stepName = [NSString stringWithFormat:@"%@",currentCell.textLabel.text];
+	[stepLable setText:stepName];
+	
+	//Placeholder für das Description Text Feld
+	[descriptionText setText:@"Report description...."];
+	
+	[delegate addView:reportAddView to:true];
 	[reportNameField becomeFirstResponder];
+	 descriptionText.delegate = self;
+	
 	
 	
 	
@@ -353,7 +548,10 @@
 -(IBAction)cancelReport:(id)sender
 {
 
-	[delegate addView:newReportView to:false];
+	//Placeholder für das Description Text Feld
+	[descriptionText setText:@"Report description...."];
+	
+	[delegate addView:reportAddView to:false];
 
 }
 
@@ -362,6 +560,25 @@
 
 
 }
+#pragma mark -
+#pragma mark Scroll View Delegates
+#pragma mark -
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return [[scrollView subviews]objectAtIndex:0];
+}
+
+
+#pragma mark -
+#pragma mark Text View Delegates
+#pragma mark -
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    textView.text = @"";
+}
+
 
 
 #pragma mark -
@@ -542,6 +759,7 @@
 		
 		[reportsTable setHidden:true];
 		[partsTable setHidden:false];
+		[reportPictureBto setHidden:true];
 	}
 
 

@@ -42,6 +42,11 @@
 {
     [super viewDidLoad];
 	
+	//Dokuenten Ordner holen
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	documentsDir = [paths objectAtIndex:0];
+	
+	
 	[self initTrackingDataFileName:@"TrackingData"];
 	
 	
@@ -80,12 +85,39 @@
 			 to:(bool)show
 {
 	BOOL doesContain = [glView.subviews containsObject:aView];
-	
+		
 	if (show && !doesContain)
 	{
+		aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
+		[UIView animateWithDuration:0.4
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 aView.frame = CGRectMake(0, 0, aView.frame.size.width, aView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+						 }];
+		
 		[glView addSubview:aView];
+		
+		
+		
 	}else if (!show && doesContain){
-		[aView removeFromSuperview];
+		
+		[self.view endEditing:YES];
+
+		aView.frame = CGRectMake(0, 0, aView.frame.size.width, aView.frame.size.height);
+		[UIView animateWithDuration:0.4
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+							 [aView removeFromSuperview];
+						 }];
+		
+		
 	}
 	
 }
@@ -331,6 +363,7 @@
 			[self slideTableIn:false];
 
 			[workTableViewController changeToReport:false];
+			[self addView:[workTableViewController reportAddView] to:false];
 			
 			break;
 		case 1:
@@ -345,10 +378,13 @@
 			tabBarTag = 2;
 			[self slideTabBarIn:false];
 			[self slideTableIn:true];
+			[self addView:[workTableViewController reportAddView] to:false];
 			
 			
 			break;
         case 3:
+			
+			[self addView:[workTableViewController reportAddView] to:false];
 			
             metaio::IGeometry* tempModel = [self modelForObjectname:[[tableParents objectAtIndex:0]objectAtIndex:1]];
 
@@ -445,8 +481,7 @@
 
 {
 	
-	NSString *objectFolderPath = [[NSBundle mainBundle] pathForResource:@"Assets" ofType:nil];
-	NSString *pathString =  [NSString stringWithFormat:@"%@/%@",objectFolderPath,oFolder];
+	NSString *pathString =  [NSString stringWithFormat:@"%@/%@",documentsDir,oFolder];
 	
 	NSString *fullPath = [NSString stringWithFormat:@"%@/models.xml",pathString];
 	
@@ -879,7 +914,7 @@ toMaxScreenSize:(CGSize)sSize
 {
 	
     // load our tracking configuration
-    NSString* trackingDataFile = [[NSBundle mainBundle] pathForResource:trackingDataFileName ofType:@"xml" inDirectory:@"Assets"];
+    NSString* trackingDataFile = [NSString stringWithFormat:@"%@/%@.xml",documentsDir, trackingDataFileName];
 	if(trackingDataFile)
 	{
 		bool success = m_metaioSDK->setTrackingConfiguration([trackingDataFile UTF8String]);

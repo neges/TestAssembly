@@ -36,6 +36,8 @@
 	<string>ikqJ54WqY65h4C/TQKS83/8MEHt0hdcnxTUtzYpjG8w=</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UIStatusBarHidden</key>
 	<true/>
 </dict>

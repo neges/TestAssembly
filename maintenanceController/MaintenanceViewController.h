@@ -17,7 +17,7 @@
 >
 {
 	
-	
+	NSString* documentsDir; //Pfad zum dokumenten ordner
 	
     metaio::IGeometry* theLoadedModel; //Temporär aktuelle Geometry
 	metaio::IGeometry* theSelectedModel; //Temporär selektierte Geometry

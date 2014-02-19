@@ -50,7 +50,6 @@
 		04F32A1E172FCEEF00910751 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A1D172FCEEF00910751 /* libz.dylib */; };
 		04F32A20172FCEFE00910751 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A1F172FCEFE00910751 /* libxml2.dylib */; };
 		04F32A22172FCF0E00910751 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A21172FCF0E00910751 /* AudioToolbox.framework */; };
-		8C77542A1811982700CFC082 /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 8C7754291811982700CFC082 /* Assets */; };
 		C5F2467F177C38DA00EB88A8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F2467E177C38DA00EB88A8 /* Security.framework */; };
 		C5F24681177C38F300EB88A8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F24680177C38F300EB88A8 /* CFNetwork.framework */; };
 /* End PBXBuildFile section */
@@ -346,7 +345,6 @@
 				043C971F18367B7F00445B73 /* fragRED.glsl in Resources */,
 				04F32A07172FCE8000910751 /* ViewController_iPad.xib in Resources */,
 				043C972118367B7F00445B73 /* vert.glsl in Resources */,
-				8C77542A1811982700CFC082 /* Assets in Resources */,
 				043C974B18367CBD00445B73 /* checked@2x.png in Resources */,
 				043C974F18367CBD00445B73 /* structure@2x.png in Resources */,
 				043C974A18367CBD00445B73 /* camON@2x.png in Resources */,
