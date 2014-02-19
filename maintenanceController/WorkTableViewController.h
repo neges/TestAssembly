@@ -61,11 +61,16 @@
 	
 	UIScrollView* repImgScrollView; //View um das image des reports in fullscreen zu zeigen
 	
+	
+	IBOutlet UIView *screenshotTakeView;
+
+	
 
 }
 
 @property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
 @property (nonatomic, strong) IBOutlet UIView *reportAddView;
+@property (nonatomic, strong) IBOutlet UIView *screenshotTakeView;
 
 
 
@@ -78,6 +83,11 @@
 - (IBAction)addScreenshot:(id)sender;
 - (IBAction)cancelReport:(id)sender;
 - (IBAction)showReportPictureFull:(id)sender;
+
+
+- (IBAction)screenshotCancel:(id)sender;
+- (IBAction)takeScreenshot:(id)sender;
+- (IBAction)take5sScreenshot:(id)sender;
 
 
 
@@ -100,8 +110,10 @@
 -(void) reloadStructerTable;
 
 -(void) addView:(UIView*)aView
-			 to:(bool)show;
+			 to:(bool)show
+ withAnimations:(bool)ani;
 
+-(void) removeWorkView:(bool)front;
 
 
 @end

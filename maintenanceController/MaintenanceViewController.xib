@@ -35,6 +35,7 @@
                 <outlet property="reportPictureBto" destination="dtE-Fq-XhF" id="qJ8-DA-SUK"/>
                 <outlet property="reportTextView" destination="6oq-2i-gAb" id="eZo-d4-r0Y"/>
                 <outlet property="reportsTable" destination="Adi-0s-gM4" id="eGP-zj-QcM"/>
+                <outlet property="screenshotTakeView" destination="jrz-Lh-wtN" id="YrE-rH-SVo"/>
                 <outlet property="screenshotView" destination="qvC-ah-xtq" id="HsP-VQ-fpe"/>
                 <outlet property="stepLable" destination="rcn-nc-YDs" id="AKR-KY-ZVl"/>
                 <outlet property="stepsTable" destination="bDU-3K-2D6" id="pXC-Sb-qxa"/>
@@ -189,7 +190,7 @@
             <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
         </view>
-        <view contentMode="scaleToFill" id="sum-ws-3qh">
+        <view contentMode="scaleToFill" id="sum-ws-3qh" userLabel="reportAddView">
             <rect key="frame" x="0.0" y="0.0" width="1024" height="320"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
@@ -294,6 +295,47 @@
                     </state>
                     <connections>
                         <action selector="addScreenshot:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="0Rb-vu-uyD"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+        </view>
+        <view contentMode="scaleToFill" id="jrz-Lh-wtN" userLabel="screenshotTakeView">
+            <rect key="frame" x="0.0" y="0.0" width="1024" height="30"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hmJ-yM-gIV">
+                    <rect key="frame" x="0.0" y="0.0" width="300" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="cancel">
+                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="screenshotCancel:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="2UI-hu-BHq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Fek-l3-TVq">
+                    <rect key="frame" x="362" y="0.0" width="300" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="take screenshot">
+                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="takeScreenshot:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="e10-84-XBQ"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Ino-Co-J1M">
+                    <rect key="frame" x="724" y="0.0" width="300" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="take timer screenshot (5s)">
+                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="take5sScreenshot:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="8wq-es-ryz"/>
                     </connections>
                 </button>
             </subviews>

@@ -15,7 +15,7 @@
 @implementation WorkTableViewController
 
 @synthesize delegate;
-@synthesize reportAddView;
+@synthesize reportAddView, screenshotTakeView;
 
 
 
@@ -26,6 +26,8 @@
 	{
 		
 		reportAddView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
+		screenshotTakeView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, 30)];
+
 		
 	}
 
@@ -362,13 +364,13 @@
 	[repImgView setImage:[reportPictureBto backgroundImageForState:UIControlStateNormal]];
 	[repImgScrollView setZoomScale:1.0];
 	
-	[delegate addView:repImgScrollView to:true];
+	[delegate addView:repImgScrollView to:true withAnimations:true];
 }
 
 -(IBAction)closeFullScreenReportImage:(id)sender
 {
 
-	[delegate addView:repImgScrollView to:false];
+	[delegate addView:repImgScrollView to:false withAnimations:true];
 	
 }
 
@@ -503,7 +505,7 @@
 	//Placeholder für das Description Text Feld
 	[descriptionText setText:@"Report description...."];
 	
-	[delegate addView:reportAddView to:false];
+	[delegate addView:reportAddView to:false withAnimations:true];
 		
 	}
 
@@ -537,7 +539,7 @@
 	//Placeholder für das Description Text Feld
 	[descriptionText setText:@"Report description...."];
 	
-	[delegate addView:reportAddView to:true];
+	[delegate addView:reportAddView to:true withAnimations:true];
 	[reportNameField becomeFirstResponder];
 	 descriptionText.delegate = self;
 	
@@ -551,15 +553,62 @@
 	//Placeholder für das Description Text Feld
 	[descriptionText setText:@"Report description...."];
 	
-	[delegate addView:reportAddView to:false];
+	[delegate addView:reportAddView to:false withAnimations:true];
 
 }
+
+#pragma mark -
+#pragma mark Sceenshots
+#pragma mark -
 
 -(IBAction)addScreenshot:(id)sender
 {
-
+	//alles ausblenden
+	[delegate removeWorkView:true];
+	[reportAddView setHidden:true];
+	[reportAddView endEditing:true];
+	
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:true withAnimations:false];
+	[screenshotTakeView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.width - 30, [[UIScreen mainScreen] bounds].size.height, 30)];
+	
+	
 
 }
+
+
+- (IBAction)takeScreenshot:(id)sender
+{
+
+
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	
+}
+
+- (IBAction)take5sScreenshot:(id)sender
+{
+	
+	
+	
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	
+}
+
+- (IBAction)screenshotCancel:(id)sender
+{
+	
+	//alles ausblenden
+	[delegate removeWorkView:false];
+	[reportAddView setHidden:false];
+	[reportAddView endEditing:false];
+	
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	
+}
+
 #pragma mark -
 #pragma mark Scroll View Delegates
 #pragma mark -

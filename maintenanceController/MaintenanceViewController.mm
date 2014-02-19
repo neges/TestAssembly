@@ -83,12 +83,17 @@
 
 -(void) addView:(UIView*)aView
 			 to:(bool)show
+ withAnimations:(bool)ani
 {
 	BOOL doesContain = [glView.subviews containsObject:aView];
 		
 	if (show && !doesContain)
 	{
+		if (ani)
+		{
+			
 		aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
+		
 		[UIView animateWithDuration:0.4
 							  delay:0.0
 							options: UIViewAnimationCurveEaseIn
@@ -97,6 +102,7 @@
 						 }
 						 completion:^(BOOL finished){
 						 }];
+		}
 		
 		[glView addSubview:aView];
 		
@@ -105,25 +111,40 @@
 	}else if (!show && doesContain){
 		
 		[self.view endEditing:YES];
-
+		
+		if (ani) {
 		aView.frame = CGRectMake(0, 0, aView.frame.size.width, aView.frame.size.height);
+		
 		[UIView animateWithDuration:0.4
 							  delay:0.0
 							options: UIViewAnimationCurveEaseIn
 						 animations:^{
 							 aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
 						 }
-						 completion:^(BOOL finished){
-							 [aView removeFromSuperview];
-						 }];
+						 completion:^(BOOL finished){}];
+			
+		}
 		
+	    [aView removeFromSuperview];
+				
 		
 	}
 	
 }
 
 
+-(void) removeWorkView:(bool)front
+{
 
+
+	if (front)
+		[tabBarView setHidden:true];
+	else
+		[tabBarView setHidden:false];
+	
+
+
+}
 
 #pragma mark -
 #pragma mark table View
@@ -363,7 +384,7 @@
 			[self slideTableIn:false];
 
 			[workTableViewController changeToReport:false];
-			[self addView:[workTableViewController reportAddView] to:false];
+			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
 			
 			break;
 		case 1:
@@ -378,13 +399,13 @@
 			tabBarTag = 2;
 			[self slideTabBarIn:false];
 			[self slideTableIn:true];
-			[self addView:[workTableViewController reportAddView] to:false];
+			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
 			
 			
 			break;
         case 3:
 			
-			[self addView:[workTableViewController reportAddView] to:false];
+			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
 			
             metaio::IGeometry* tempModel = [self modelForObjectname:[[tableParents objectAtIndex:0]objectAtIndex:1]];
 
