@@ -46,10 +46,6 @@
 	IBOutlet UITableView *reportsTable;
 	IBOutlet UITextView *reportTextView;
 	
-	
-	IBOutlet UIButton *nextStepBto;
-	IBOutlet UIButton *prevStepBto;
-	
 	IBOutlet UILabel *dateLable;
 	IBOutlet UILabel *userLable;
 	IBOutlet UILabel *stepLable;
@@ -58,27 +54,35 @@
 	IBOutlet UITextView *descriptionText;
 	IBOutlet UIView *reportAddView;
 	IBOutlet UIButton *reportPictureBto;
+	IBOutlet UIImageView *screenShotPreviewView;
+	IBOutlet UIButton *take5sScreenshotBto;
+	
+	NSTimer* screenshotTimer;
+	int timerValue;
+	
 	
 	UIScrollView* repImgScrollView; //View um das image des reports in fullscreen zu zeigen
 	
-	
-	IBOutlet UIView *screenshotTakeView;
+	IBOutlet UILabel *timerLabel;
 
-	
 
 }
 
 @property (nonatomic,weak) id <WorkTableViewControllerDelegate> delegate;
 @property (nonatomic, strong) IBOutlet UIView *reportAddView;
 @property (nonatomic, strong) IBOutlet UIView *screenshotTakeView;
+@property (nonatomic, strong) IBOutlet UIView *screenshotUseView;
 
 
 
 -(void)loadContent;
 -(void)changeToReport:(bool)change;
 
-- (IBAction)nextStep:(id)sender;
-- (IBAction)prevStep:(id)sender;
+-(void)requestCameraImage:(UIImage*)requestedImage;
+
+
+- (IBAction)nextTableCell:(id)sender;
+- (IBAction)prevTableCell:(id)sender;
 - (IBAction)saveReport:(id)sender;
 - (IBAction)addScreenshot:(id)sender;
 - (IBAction)cancelReport:(id)sender;
@@ -88,6 +92,10 @@
 - (IBAction)screenshotCancel:(id)sender;
 - (IBAction)takeScreenshot:(id)sender;
 - (IBAction)take5sScreenshot:(id)sender;
+- (IBAction)virtualModeChange:(id)sender;
+- (IBAction)useScreenshot:(id)sender;
+- (IBAction)retryScreenshot:(id)sender;
+
 
 
 
@@ -114,6 +122,11 @@
  withAnimations:(bool)ani;
 
 -(void) removeWorkView:(bool)front;
+
+-(void)setObjectToInvisibleCos;
+
+-(void)getScreenshotFromMetaio;
+
 
 
 @end

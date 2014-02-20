@@ -15,8 +15,7 @@
 @implementation WorkTableViewController
 
 @synthesize delegate;
-@synthesize reportAddView, screenshotTakeView;
-
+@synthesize reportAddView, screenshotTakeView, screenshotUseView;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -26,8 +25,8 @@
 	{
 		
 		reportAddView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
-		screenshotTakeView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, 30)];
-
+		screenshotTakeView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, [super view].frame.size.height)];
+		screenshotUseView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, [super view].frame.size.height)];
 		
 	}
 
@@ -263,6 +262,9 @@
 		
 	}
 	
+	if (indexPath.row == 0)
+		[tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+	
     return cell;
 }
 
@@ -284,12 +286,25 @@
 	{
 		NSString* repName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
 		
-		[self loadReportNamed:repName];
+		//Get step in XML
+		TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:repName];
+		
+		if ([TBXMLFunctions getValue:@"step" OfElement:rep].integerValue == currentStepRow)//wir sind im gleichen Step
+		{
+			[self loadReportNamed:repName]; //nur den Step laden
+		}else{
+			//Zum neuen Workstep springen
+			[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
+		}
+		
+		
 		
 		
 	}
 	
 }
+
+
 
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -315,6 +330,8 @@
 			{
 				[self deleteReport:[elementArray objectAtIndex:1]];
 				[addedReportsArray removeObjectAtIndex:arrayCounter];
+				[self jumpToStep:currentStepRow];
+				[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false scrollPosition:UITableViewScrollPositionTop];
 				break;
 			}
 			
@@ -386,11 +403,17 @@
 	//Get step in XML
 	TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:reportName];
 	
+	//Namen des Steps bekommen
+	NSInteger stepInt = [TBXMLFunctions getValue:@"step" OfElement:rep].intValue;
+	NSIndexPath *stepInd = [NSIndexPath indexPathForRow: stepInt inSection:0];
+	NSString* stepN = [stepsTable cellForRowAtIndexPath:stepInd].textLabel.text ;
+	
+	
 	
 	//Get Description
 	NSString* descriptionTextStr = [NSString stringWithFormat:@"Date : %@\r", [TBXMLFunctions getAttribute:@"date" OfElement:rep]];
 	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"User : %@\r",[TBXMLFunctions getAttribute:@"user" OfElement:rep]]];
-	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"Step : %@\r\r",[TBXMLFunctions getValue:@"step" OfElement:rep]]];
+	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"Affects : %@\r\r",stepN]];
 	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"%@",[TBXMLFunctions getValue:@"description" OfElement:rep]]];
 					   
 	[reportTextView setText:descriptionTextStr];
@@ -413,8 +436,7 @@
 		
 	
 	
-	//Zum Workstep springen
-	[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
+	
 
 
 
@@ -445,6 +467,7 @@
 		//Daten neu einlesen
 		[self loadReports];
 		[reportsTable reloadData];
+				
 		
 	}
 }
@@ -455,19 +478,31 @@
 	//Daten aus der View holen
 	NSString *tDate = dateLable.text;
 	NSString *tUser = userLable.text;
-	NSString *tStep = stepLable.text;
+	NSString *tStep = [NSString	stringWithFormat:@"%i",currentStepRow];
 	NSString *tName = reportNameField.text;
-	if ([tName isEqualToString:@""]) {
-		tName = [tDate stringByReplacingOccurrencesOfString:@" "
-											   withString:@"_"];
-	}
+	if ([tName isEqualToString:@""])
+		tName = tDate;
+		
 	NSString *tDescription = descriptionText.text;
 	if ([tDescription rangeOfString:@"Report description"].location != NSNotFound) {
 		tDescription = @"";
 	}
 	
-	NSString* tPic = @"TEST.PNG";
-	
+	//Bild holen und ablegen
+	NSString* tPic = @"";
+	NSData *pngData = UIImagePNGRepresentation(screenshotView.image);
+	if (screenshotView.image)
+	{
+		tPic = [NSString stringWithFormat:@"%@.png",tDate];
+		tPic = [tPic stringByReplacingOccurrencesOfString:@" "
+												 withString:@"_"];
+		tPic = [tPic stringByReplacingOccurrencesOfString:@"/"
+												 withString:@""];
+		tPic = [tPic stringByReplacingOccurrencesOfString:@":"
+											   withString:@""];
+		
+	}
+			
 	//daten aus xml einlesen und als nsstring speichern
 	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
 	
@@ -479,33 +514,62 @@
 	if (reportXMLSring)
 	{
 		
-	NSString* newReport = [NSString stringWithFormat:@"\t<report name=\"%@\" date=\"%@\" user=\"%@\">\r", tName, tDate, tUser];
-	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<description>%@</description>\r",tDescription]];
-	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<pic>%@</pic>\r",tPic]];
-	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<step>%@</step>\r",tStep]];
-	newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t</report>\r"]];
+		if (pngData)
+		{
+			NSString* pngPath = [NSString stringWithFormat:@"%@/%@",workinstructionsPath,tPic];
+			[pngData writeToFile:pngPath atomically:YES]; //Write the file
+		}
 		
-	reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@\r</reports>",newReport]];
 		
-		//zwischenspeichern was eingefügt wurde ume es evl wieder löschen zu können
-		NSMutableArray* addReportArray = [[NSMutableArray alloc]init];
-		[addReportArray addObject:tName];
-		[addReportArray addObject:newReport];
-		[addedReportsArray addObject:addReportArray];
+		NSString* newReport = [NSString stringWithFormat:@"\t<report name=\"%@\" date=\"%@\" user=\"%@\">\r", tName, tDate, tUser];
+		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<description>%@</description>\r",tDescription]];
+		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<pic>%@</pic>\r",tPic]];
+		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<step>%@</step>\r",tStep]];
+		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t</report>\r"]];
+			
+		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@\r</reports>",newReport]];
+			
+			//zwischenspeichern was eingefügt wurde ume es evl wieder löschen zu können
+			NSMutableArray* addReportArray = [[NSMutableArray alloc]init];
+			[addReportArray addObject:tName];
+			[addReportArray addObject:newReport];
+			[addedReportsArray addObject:addReportArray];
 
-	
-	
-	//schreiben der XML
-	[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-	
-	//Daten neu einlesen
-	[self loadReports];
-	[reportsTable reloadData];
-	
-	//Placeholder für das Description Text Feld
-	[descriptionText setText:@"Report description...."];
-	
-	[delegate addView:reportAddView to:false withAnimations:true];
+		
+		
+		//schreiben der XML
+		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+		
+		//Leeren
+			//Placeholder für das Description Text Feld
+			[descriptionText setText:@"Report description...."];
+			
+			//Titel leeren
+			[reportNameField setText:@""];
+			
+			//Image
+			[screenshotView setImage:nil];
+			
+			
+		
+		[delegate addView:reportAddView to:false withAnimations:true];
+			
+		//Daten neu einlesen
+		[self loadReports];
+			
+		//Load Reports for this step
+		[reportsArray removeAllObjects];
+		if (tStep.integerValue == 0)
+			[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+		else
+			[TBXMLFunctions	getAllChilds:reports forValueNamed:@"step" withValue:tStep toArray:reportsArray];
+		
+		//Step auswählen
+		[self loadReportNamed: [reportsArray objectAtIndex:[reportsArray count]-1] ];
+		[reportsTable reloadData];
+		[reportsTable deselectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false];
+		[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:([reportsArray count]-1) inSection:0] animated:false scrollPosition:UITableViewScrollPositionBottom];
 		
 	}
 
@@ -552,10 +616,14 @@
 
 	//Placeholder für das Description Text Feld
 	[descriptionText setText:@"Report description...."];
+	[reportNameField setText:@""];
+	[screenshotView setImage:nil];
 	
 	[delegate addView:reportAddView to:false withAnimations:true];
 
 }
+
+
 
 #pragma mark -
 #pragma mark Sceenshots
@@ -570,7 +638,7 @@
 	
 	//screenshotleiste einblenden
 	[delegate addView:screenshotTakeView to:true withAnimations:false];
-	[screenshotTakeView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds].size.width - 30, [[UIScreen mainScreen] bounds].size.height, 30)];
+	[screenshotTakeView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
 	
 	
 
@@ -580,21 +648,85 @@
 - (IBAction)takeScreenshot:(id)sender
 {
 
-
-	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:false withAnimations:false];
-	
+	[delegate getScreenshotFromMetaio];
+		
 }
 
 - (IBAction)take5sScreenshot:(id)sender
 {
+	timerValue = 5;
+	[timerLabel setHidden:false];
+	[timerLabel setText:[NSString stringWithFormat:@"%i", timerValue]];
 	
+	screenshotTimer = [NSTimer    scheduledTimerWithTimeInterval:1.0    target:self    selector:@selector(timerForScreenshot)    userInfo:nil repeats:YES];
 	
+}
+
+- (void)timerForScreenshot
+{
+	timerValue = timerValue - 1;
+	
+	[timerLabel setText:[NSString stringWithFormat:@"%i", timerValue]];
+
+	if (timerValue == 0)
+	{
+		[screenshotTimer invalidate];
+		screenshotTimer = nil;
+		
+		[delegate getScreenshotFromMetaio];
+		
+		[timerLabel setHidden:true];
+	}
+
+}
+
+
+-(void)requestCameraImage:(UIImage*)requestedImage
+{
+
+	[screenShotPreviewView setImage:requestedImage];
+	[screenShotPreviewView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
 	
 	//screenshotleiste einblenden
 	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	[delegate addView:screenshotUseView to:true withAnimations:false];
+
+
+}
+
+
+- (IBAction)useScreenshot:(id)sender
+{
+	
+	//Bild übertragen
+	[screenshotView setImage:screenShotPreviewView.image];
+	
+	//alles ausblenden
+	[delegate removeWorkView:false];
+	[reportAddView setHidden:false];
+	[reportAddView endEditing:false];
+	
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	[delegate addView:screenshotUseView to:false withAnimations:false];
+	
+	
+	
 	
 }
+- (IBAction)retryScreenshot:(id)sender
+{
+	
+	[screenShotPreviewView setImage:nil];
+	
+	//screenshotleiste einblenden
+	[delegate addView:screenshotTakeView to:true withAnimations:false];
+	[delegate addView:screenshotUseView to:false withAnimations:false];
+	
+	
+	
+}
+
 
 - (IBAction)screenshotCancel:(id)sender
 {
@@ -606,6 +738,21 @@
 	
 	//screenshotleiste einblenden
 	[delegate addView:screenshotTakeView to:false withAnimations:false];
+	[delegate addView:screenshotUseView to:false withAnimations:false];
+}
+
+- (IBAction)virtualModeChange:(id)sender
+{
+	
+	[delegate setObjectToInvisibleCos];
+	
+	UIButton* tempBTO = sender;
+	
+	if ([tempBTO.titleLabel.text isEqualToString:@"virtual ON"])
+		[tempBTO setTitle:@"virtual OFF" forState:UIControlStateNormal];
+	else
+		[tempBTO setTitle:@"virtual ON" forState:UIControlStateNormal];
+		
 	
 }
 
@@ -690,35 +837,16 @@
 	//infected Parts Table neu laden
 	[partsTable reloadData];
 	
+	//schon mal den neuen Step in die view für das anlegen ienes neuen reports setzt, fals diese schon offen ist
+	[stepLable setText:stepName];
+	
 
 
 
 }
-			 
-
-- (IBAction)nextStep:(id)sender
-{
-	if (nextStepBto.isHidden)
-		return;
-	
-	[self jumpToStep:currentStepRow + 1];
-	
-}
-
-
-
-- (IBAction)prevStep:(id)sender
-{
-	if (prevStepBto.isHidden)
-		return;
-	
-	[self jumpToStep:currentStepRow - 1];
-}
-
 
 -(void)jumpToStep:(NSInteger) stepRow
 {
-	NSLog(@"Jump to step: %i", stepRow);
 	
 	//exit if not possible
 	if (stepRow == [stepsTable numberOfRowsInSection:0] || stepRow < 0) {
@@ -736,7 +864,7 @@
 			currentStepRow = currentStepRow + 1;
 			
 		}else if (currentStepRow > stepRow) {
-		
+			
 			nextIndexPath = [NSIndexPath indexPathForRow:(currentStepRow - 1) inSection:0];
 			currentStepRow = currentStepRow - 1;
 			
@@ -750,11 +878,11 @@
 				[delegate saveInXMLforObjectName:[hiddenParts objectAtIndex:PartsCounter] toAttribute:@"visible" withValue:(char*)"true"];
 				
 			}
-		
+			
 		}else{
 			nextIndexPath = [NSIndexPath indexPathForRow:(currentStepRow) inSection:0];
 		}
-			
+		
 		
 		//Get name of the next/previous step
 		nextStepName = [stepsTable cellForRowAtIndexPath:nextIndexPath].textLabel.text;
@@ -766,11 +894,82 @@
 		[stepsTable selectRowAtIndexPath:nextIndexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
 		
 		
+		//Load Reports for this step
+		[reportsArray removeAllObjects];
+		if (nextIndexPath.row == 0) //Start also alle
+			[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+		else //Step als nur die gültigen für diesen step
+			[TBXMLFunctions	getAllChilds:reports forValueNamed:@"step" withValue:[NSString stringWithFormat:@"%i",nextIndexPath.row] toArray:reportsArray];
+		
+		if ([reportsArray count] != 0)
+			[self loadReportNamed: [reportsArray objectAtIndex:0] ];
+		
+		[reportsTable reloadData];
+			
+		
+		
 		
 	} while (currentStepRow != stepRow);
 	
-		
+	
 }
+
+#pragma mark -
+#pragma mark next/prev Buttons
+#pragma mark -
+			 
+
+- (IBAction)nextTableCell:(id)sender
+{
+	if (reportTextView.isHidden) //next Step
+		[self jumpToStep:currentStepRow + 1];
+	else //next Report
+	{
+		if ([reportsArray count] == 0)
+			return;
+		
+		NSInteger toRow = [reportsTable indexPathForSelectedRow].row + 1;
+		
+		if (toRow == [reportsArray count])
+			return;
+		
+		
+		NSIndexPath* newIndexPath = [NSIndexPath indexPathForRow: toRow inSection:0];
+		
+		[reportsTable selectRowAtIndexPath:newIndexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+		
+		[self loadReportNamed:[reportsArray objectAtIndex:toRow]];
+	
+	}
+	
+}
+
+
+
+- (IBAction)prevTableCell:(id)sender
+{
+	if (reportTextView.isHidden) //next Step
+		[self jumpToStep:currentStepRow -1];
+	else //next Report
+	{
+		if ([reportsArray count] == 0)
+			return;
+		
+		NSInteger toRow = [reportsTable indexPathForSelectedRow].row - 1;
+		
+		if (toRow < 0)
+			return;
+		
+		NSIndexPath* newIndexPath = [NSIndexPath indexPathForRow: toRow inSection:0];
+		
+		[reportsTable selectRowAtIndexPath:newIndexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+		
+		[self loadReportNamed:[reportsArray objectAtIndex:toRow]];
+		
+	}
+}
+
+
 
 
 
@@ -791,8 +990,6 @@
 	{
 		[descriptionTextView setHidden:true];
 		[reportTextView setHidden:false];
-		[nextStepBto setHidden:true];
-		[prevStepBto setHidden:true];
 		
 		[reportsTable setHidden:false];
 		[partsTable setHidden:true];
@@ -803,12 +1000,11 @@
 	{
 		[descriptionTextView setHidden:false];
 		[reportTextView setHidden:true];
-		[nextStepBto setHidden:false];
-		[prevStepBto setHidden:false];
 		
 		[reportsTable setHidden:true];
 		[partsTable setHidden:false];
 		[reportPictureBto setHidden:true];
+		
 	}
 
 

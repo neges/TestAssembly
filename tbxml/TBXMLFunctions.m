@@ -369,6 +369,27 @@
 	
 }
 
++(void)getAllChilds:(TBXMLElement*)element
+	  forValueNamed:(NSString*)valueNamed
+		  withValue:(NSString*)value
+			toArray:(NSMutableArray *)elementArray
+{
+	TBXMLElement* childs = element->firstChild;
+	
+	if (childs)
+	{
+		do
+		{
+			
+			if ([[TBXMLFunctions getValue:valueNamed OfElement:childs] isEqualToString:value])
+				[elementArray addObject: [TBXMLFunctions getAttribute:@"name" OfElement:childs]];
+			
+		}while ((childs = childs->nextSibling));
+	}
+	
+}
+
+
 +(NSString*)getValue:(NSString*)value
 		   OfElement:(TBXMLElement*)element
 {

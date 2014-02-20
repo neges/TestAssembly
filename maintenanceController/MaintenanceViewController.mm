@@ -800,6 +800,22 @@ toMaxScreenSize:(CGSize)sSize
 	[TBXMLFunctions saveAttributForName:atr withValue:val toElement:[TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:oName]];
 }
 
+-(void)setObjectToInvisibleCos
+{
+
+
+	metaio::IGeometry* tempModel = [self modelForObjectname:[[tableParents objectAtIndex:0]objectAtIndex:1]];
+	
+	if (tempModel)
+	{
+		if (tempModel->getCoordinateSystemID() == 9)
+			[self setModel:tempModel toCosID:1];
+		else
+			[self setModel:tempModel toCosID:9];
+	}
+
+}
+
 #pragma mark -
 #pragma mark Content Getter
 #pragma mark -
@@ -854,6 +870,20 @@ toMaxScreenSize:(CGSize)sSize
 	return modelname;
 	
 }
+
+
+-(void)getScreenshotFromMetaio
+{
+	m_metaioSDK->requestScreenshot(glView->defaultFramebuffer, glView->colorRenderbuffer);
+	
+}
+
+- (void) onScreenshotImageIOS:(UIImage *)image
+{
+	[workTableViewController requestCameraImage: image];
+}
+
+
 
 
 #pragma mark -
@@ -1161,14 +1191,14 @@ toMaxScreenSize:(CGSize)sSize
 	//toggle taBarView
 	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
 	
-	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height - 20;
-	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49 - 20;
+	NSInteger showY = [[UIScreen mainScreen] bounds ].size.width - tabBarView.frame.size.height;
+	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49;
 	
 	//get Position
 	CGPoint tabBarPoint = [tabBarView convertPoint:tabBarView.bounds.origin toView:glView];
 	CGPoint tablePoint = [structurTableView convertPoint:structurTableView.bounds.origin toView:glView];
 	
-	NSLog(@"%f", [[UIScreen mainScreen] bounds ].size.width);
+	NSLog(@"%f", tabBarPoint.y );
 	
 	if (tabBarPoint.y == 800)//war eingelappt
 	{
@@ -1425,6 +1455,7 @@ toMaxScreenSize:(CGSize)sSize
 - (void) onNewCameraFrame:(metaio::ImageStruct *)cameraFrame
 {
     NSLog(@"a new camera frame image is delivered %f", cameraFrame->timestamp);
+
 }
 
 - (void) onCameraImageSaved:(NSString *)filepath
@@ -1438,10 +1469,10 @@ toMaxScreenSize:(CGSize)sSize
     NSLog(@"screenshot image is received %f", image->timestamp);
 }
 
-- (void) onScreenshotImageIOS:(UIImage *)image
-{
-    NSLog(@"screenshot image is received %@", [image description]);
-}
+//- (void) onScreenshotImageIOS:(UIImage *)image
+//{
+//    NSLog(@"screenshot IOS image is received %@", [image description]);
+//}
 
 -(void) onScreenshot:(NSString *)filepath
 {

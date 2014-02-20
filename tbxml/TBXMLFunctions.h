@@ -24,6 +24,11 @@
 +(void)getAllChilds:(TBXMLElement*)element
 			toArray:(NSMutableArray *)elementArray;
 
++(void)getAllChilds:(TBXMLElement*)element
+	  forValueNamed:(NSString*)valueNamed
+		  withValue:(NSString*)value
+			toArray:(NSMutableArray *)elementArray;
+
 +(NSString*)getValue:(NSString*)value
 		   OfElement:(TBXMLElement*)element;
 
