@@ -81,8 +81,10 @@
 		return;
 	};
 	
-	
+	//Name der WO anzeigen
 	[nameTextView setText:[TBXMLFunctions getAttribute:@"name" OfElement:maintenance]];
+	//Schriftgröße korrigieren
+	[nameTextView setFont:[UIFont boldSystemFontOfSize:17]];
 	
 
 	steps = [[NSMutableArray alloc]init];
@@ -413,6 +415,9 @@
 		[reportPictureBto setBackgroundImage:reportImg
 									forState:UIControlStateNormal];
 	}
+	
+	//Schriftgröße korrigieren
+	[reportTextView setFont:[UIFont systemFontOfSize:17]];
 		
 	
 	
@@ -860,6 +865,10 @@
 	
 	//structerView neu laden
 	[delegate reloadStructerTable];
+	
+	//Schriftgröße korrigieren
+	[descriptionTextView setFont:[UIFont systemFontOfSize:17]];
+	
 
 	
 	//schon mal den neuen Step in die view für das anlegen ienes neuen reports setzt, fals diese schon offen ist

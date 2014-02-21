@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		041807DF18B7747A00FA6124 /* report@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 041807DE18B7747A00FA6124 /* report@2x.png */; };
+		041807E118B7B64900FA6124 /* ToDoList in Resources */ = {isa = PBXBuildFile; fileRef = 041807E018B7B64900FA6124 /* ToDoList */; };
 		043C971718367B6A00445B73 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C971418367B6900445B73 /* EAGLView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		043C971818367B6A00445B73 /* MetaioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C971618367B6A00445B73 /* MetaioSDKViewController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		043C971E18367B7F00445B73 /* fragGREEN.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971A18367B7F00445B73 /* fragGREEN.glsl */; };
@@ -56,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		041807DE18B7747A00FA6124 /* report@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "report@2x.png"; sourceTree = "<group>"; };
+		041807E018B7B64900FA6124 /* ToDoList */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ToDoList; sourceTree = "<group>"; };
 		043C971318367B6900445B73 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAGLView.h; path = metaio/EAGLView.h; sourceTree = "<group>"; };
 		043C971418367B6900445B73 /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAGLView.mm; path = metaio/EAGLView.mm; sourceTree = "<group>"; };
 		043C971518367B6900445B73 /* MetaioSDKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetaioSDKViewController.h; path = metaio/MetaioSDKViewController.h; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 		04F329DB172FCE8000910751 = {
 			isa = PBXGroup;
 			children = (
+				041807E018B7B64900FA6124 /* ToDoList */,
 				043C975A18367D5500445B73 /* maintenanceController */,
 				043C973E18367CBC00445B73 /* content */,
 				043C973518367C6C00445B73 /* tbxml */,
@@ -331,6 +334,7 @@
 			files = (
 				043C974818367CBD00445B73 /* _empty_.obj in Resources */,
 				043C974C18367CBD00445B73 /* fullscreen@2x.png in Resources */,
+				041807E118B7B64900FA6124 /* ToDoList in Resources */,
 				043C974D18367CBD00445B73 /* maintenance@2x.png in Resources */,
 				04F329F2172FCE8000910751 /* InfoPlist.strings in Resources */,
 				043C974918367CBD00445B73 /* camOFF@2x.png in Resources */,
