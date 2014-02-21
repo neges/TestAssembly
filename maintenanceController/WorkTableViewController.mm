@@ -268,6 +268,8 @@
 	{
 		NSString* delReportNamed = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
 		
+		bool previouslyAdded = false;
+		
 		for (int arrayCounter = 0; arrayCounter < addedReportsArray.count; ++arrayCounter)
 		{
 			NSMutableArray* elementArray = [addedReportsArray objectAtIndex:arrayCounter];
@@ -290,12 +292,31 @@
 					}
 				}
 				
+				previouslyAdded = true;
+				
 				break;
 			}
-			
-
+				
+		}
+		
+		if (previouslyAdded == false)
+		{
+			//delete report aus xml
+			[self deleteReport:[self getXMLReportBlockByReportName:delReportNamed]];
+						
+			//neu laden der reports für den step
+			for (int delPos = 0; delPos < [reportsArray count]; ++delPos)
+			{
+				if ([[reportsArray objectAtIndex:delPos] isEqualToString:delReportNamed])
+				{
+					[reportsArray removeObjectAtIndex:delPos];
+					break;
+				}
+			}
 			
 		}
+			
+		
     }
 }
 
@@ -405,6 +426,9 @@
 -(void) deleteReport:(NSString*)delString
 {
 
+	NSLog(@"Delete String : \r%@",delString);
+	
+	
 	//daten aus xml einlesen und als nsstring speichern
 	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
 	
@@ -416,12 +440,14 @@
 	if (reportXMLSring)
 	{
 
-		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:delString withString:[NSString stringWithFormat:@""]];
+		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@",delString] withString:[NSString stringWithFormat:@""]];
 		
 		
 		//schreiben der XML
 		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 		
+		NSLog(@"New XML : \r%@",reportXMLSring);
+	
 		//Daten neu einlesen
 		[self loadReports];
 		
@@ -432,6 +458,48 @@
 				
 		
 	}
+}
+
+-(NSString*) getXMLReportBlockByReportName:(NSString*)tName
+{
+	//daten aus xml einlesen und als nsstring speichern
+	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
+	
+	NSString *xmlPath =  [NSString stringWithFormat:@"%@/%@",workinstructionsPath,@"reports.xml"];
+	
+	NSString *reportXMLSring = [NSString stringWithContentsOfFile:xmlPath
+													 usedEncoding:nil
+															error:nil];
+	if (reportXMLSring)
+	{
+		
+		NSString* beginnLine = [NSString stringWithFormat:@"\t<report name=\"%@\" date", tName];
+		NSString* endLine = [NSString stringWithFormat:@"</report>"];
+		
+		NSString* delBlock;
+		
+		
+		NSRange startRange = [reportXMLSring rangeOfString:beginnLine];
+		if (startRange.location != NSNotFound) {
+			NSRange targetRange;
+			targetRange.location = startRange.location + startRange.length;
+			targetRange.length = [reportXMLSring length] - targetRange.location;
+			NSRange endRange = [reportXMLSring rangeOfString:endLine options:0 range:targetRange];
+			if (endRange.location != NSNotFound) {
+				targetRange.length = endRange.location - targetRange.location;
+				delBlock = [reportXMLSring substringWithRange:targetRange];
+				
+				delBlock = [NSString stringWithFormat:@"%@%@%@\r",beginnLine,delBlock,endLine];
+			}
+		}
+		
+		if (delBlock)
+			return  delBlock;
+		
+	}
+	
+	return nil;
+	
 }
 
 -(IBAction)saveReport:(id)sender
@@ -489,7 +557,7 @@
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<step>%@</step>\r",tStep]];
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t</report>\r"]];
 			
-		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@\r</reports>",newReport]];
+		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@</reports>",newReport]];
 			
 			//zwischenspeichern was eingefügt wurde ume es evl wieder löschen zu können
 			NSMutableArray* addReportArray = [[NSMutableArray alloc]init];
@@ -501,6 +569,10 @@
 		
 		//schreiben der XML
 		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+		
+		//in NSLOG schreiben
+		NSLog(@"Save\r %@", reportXMLSring);
+		
 
 		
 		//Leeren
