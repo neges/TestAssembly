@@ -182,7 +182,7 @@
 	if (!button)
 	{
 		
-		button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		button = [UIButton buttonWithType:UIButtonTypeCustom];
 		button.tag = UNIQUE_TAG;
 		
 		[button addTarget: self
@@ -193,6 +193,7 @@
 		button.frame = CGRectMake(3, (cell.frame.size.height - 20) / 2 ,20,20);
 		[button setBackgroundImage: [UIImage imageNamed:@"checked.png"] forState:UIControlStateSelected];
 		[button setBackgroundImage: [UIImage imageNamed:@"unchecked.png"] forState:UIControlStateNormal];
+
 		
 		[cell addSubview:button];
 	}
@@ -1199,8 +1200,6 @@ toMaxScreenSize:(CGSize)sSize
 	//get Position
 	CGPoint tabBarPoint = [tabBarView convertPoint:tabBarView.bounds.origin toView:glView];
 	CGPoint tablePoint = [structurTableView convertPoint:structurTableView.bounds.origin toView:glView];
-	
-	NSLog(@"%f", tabBarPoint.y );
 	
 	if (tabBarPoint.y == 800)//war eingelappt
 	{

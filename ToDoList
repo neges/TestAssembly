@@ -1,4 +1,4 @@
 To Do List
 
 hinzufügen von infected parts zu den reports
-SChatten bei den checked elementen in structerview
+beim selektieren über die structure view werden nicht nur die childs sonder auch alle danachfolgenden elemente selektiert --> 940 ! tbxml functions checken

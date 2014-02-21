@@ -76,7 +76,7 @@
             <rect key="frame" x="0.0" y="0.0" width="1024" height="309"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <tabBar contentMode="center" barStyle="black" translucent="NO" itemPositioning="centered" id="bmZ-Fw-8jp">
+                <tabBar contentMode="center" barStyle="black" itemPositioning="centered" id="bmZ-Fw-8jp">
                     <rect key="frame" x="260" y="0.0" width="504" height="49"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
@@ -179,7 +179,7 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+            <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
         </view>
         <view contentMode="scaleToFill" id="sum-ws-3qh" userLabel="reportAddView">

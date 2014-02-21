@@ -2,7 +2,7 @@
 	<model name="agrm" visible="true">
 		<object name="frontcover" visible="true"/>
 		<object name="backcover" visible="true"/>
-		<object name="sealing" visible="false"/>
+		<object name="sealing" visible="true"/>
 		<group name="screws_TOP" visible="true">
 			<object name="screw_TOP" visible="true"/>
 			<object name="screw_TOP1" visible="true"/>
