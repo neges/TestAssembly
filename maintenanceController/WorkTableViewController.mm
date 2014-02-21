@@ -116,14 +116,25 @@
 		return;
 	};
 	
-	
-	reportsArray = [[NSMutableArray alloc]init];
-	[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+	if (!reportsArray)
+		reportsArray = [[NSMutableArray alloc]init];
 
 	
-	
-	
 
+}
+
+-(void)loadReportForStep:(NSInteger)loadedStep
+{
+	
+	[reportsArray removeAllObjects];
+	if (loadedStep == 0)
+		[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+	else
+		[TBXMLFunctions	getAllChilds:reports forValueNamed:@"step" withValue:[NSString stringWithFormat:@"%i",loadedStep] toArray:reportsArray];
+	reportsArray = [[[reportsArray reverseObjectEnumerator] allObjects]mutableCopy]; //invertieren sodass neuster Report zu beginn
+	
+	[reportsTable reloadData];
+	
 }
 
 
@@ -142,13 +153,6 @@
 	switch (tableView.tag) {
 		case 0:
 			return [steps count];
-			break;
-			
-		case 1:
-			if (infParts)
-				return [infParts count];
-			else
-				return 0;
 			break;
 			
 		case 2:
@@ -170,10 +174,6 @@
 			return [NSString stringWithFormat:@"steps - %i", [steps count] ];
 			break;
 			
-		case 1:
-			return [NSString stringWithFormat:@"infected parts - %i", [infParts count] ];
-			break;
-			
 		case 2:
 			return [NSString stringWithFormat:@"reports - %i", [reportsArray count] ];
 			break;
@@ -184,44 +184,15 @@
 	}
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
-	if (tableView.tag == 2)
-	{
-			CGFloat cellWidth = tableView.frame.size.width;
-			
-			UIView *myView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, cellWidth, 40.0)];
-			[myView setBackgroundColor:[UIColor lightGrayColor]];
-		
-			UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-			[button setFrame:CGRectMake(0.0, 10.0, cellWidth, 20.0)];
-			button.tag = section;
-			button.hidden = NO;
-			[button setBackgroundColor:[UIColor clearColor]];
-			[button	setTitle:@"Add report" forState:UIControlStateNormal];
-			[button addTarget:self action:@selector(addReport:) forControlEvents:UIControlEventTouchDown];
-			[myView addSubview:button];
-		
-			return myView;
-			
-	}else{
-			return nil;
-	}
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+	return nil;
 }
 
 
-- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-	
-	switch (tableView.tag) {
-		case 2:
-			return 40.0;
-			break;
-			
-		default:
-			return nil;
-			break;
-	}
-	
-	
+- (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+	return nil;	
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -239,31 +210,14 @@
 			NSString *stepName = [steps objectAtIndex:indexPath.row];
 			cell.textLabel.text = stepName;
 	}
-	else if (tableView.tag == 1)
-	{
-		if (infParts)
-		{
-			cell.textLabel.text = [[infParts objectAtIndex:indexPath.row]objectAtIndex:1];
-			
-			if ([[[infParts objectAtIndex:indexPath.row]objectAtIndex:2] isEqualToString:@"hidden"])
-				cell.textLabel.textColor = [UIColor lightGrayColor];
-			else
-				cell.textLabel.textColor = [UIColor blackColor];
-			
-			
-			
-		}
+
 	
-	}
 	else if (tableView.tag == 2)
 	{
     
 		cell.textLabel.text = [reportsArray objectAtIndex:indexPath.row];
 		
 	}
-	
-	if (indexPath.row == 0)
-		[tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
 	
     return cell;
 }
@@ -286,19 +240,11 @@
 	{
 		NSString* repName = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
 		
-		//Get step in XML
-		TBXMLElement *rep = [TBXMLFunctions getElement:reports ByName:repName];
-		
-		if ([TBXMLFunctions getValue:@"step" OfElement:rep].integerValue == currentStepRow)//wir sind im gleichen Step
-		{
-			[self loadReportNamed:repName]; //nur den Step laden
-		}else{
-			//Zum neuen Workstep springen
-			[self jumpToStep: [TBXMLFunctions getValue:@"step" OfElement:rep].integerValue];
-		}
-		
-		
-		
+		[self loadReportNamed:repName]; //nur den Step laden
+				
+		//sicherstellen das das richtige Texfeld sichbar ist
+		[descriptionTextView setHidden:true];
+		[reportTextView	setHidden:false];
 		
 	}
 	
@@ -328,10 +274,22 @@
 		
 			if ([[elementArray objectAtIndex:0] isEqualToString:delReportNamed] )
 			{
+				//delete report aus xml
 				[self deleteReport:[elementArray objectAtIndex:1]];
+				
+				//delete objet aus dem added reports array
 				[addedReportsArray removeObjectAtIndex:arrayCounter];
-				[self jumpToStep:currentStepRow];
-				[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false scrollPosition:UITableViewScrollPositionTop];
+				
+				//neu laden der reports für den step
+				for (int delPos = 0; delPos < [reportsArray count]; ++delPos)
+				{
+					if ([[reportsArray objectAtIndex:delPos] isEqualToString:delReportNamed])
+					{
+						[reportsArray removeObjectAtIndex:delPos];
+						break;
+					}
+				}
+				
 				break;
 			}
 			
@@ -466,7 +424,11 @@
 		
 		//Daten neu einlesen
 		[self loadReports];
-		[reportsTable reloadData];
+		
+		//Load Reports for this step
+		[self loadReportForStep:currentStepRow];
+
+		
 				
 		
 	}
@@ -559,23 +521,17 @@
 		[self loadReports];
 			
 		//Load Reports for this step
-		[reportsArray removeAllObjects];
-		if (tStep.integerValue == 0)
-			[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
-		else
-			[TBXMLFunctions	getAllChilds:reports forValueNamed:@"step" withValue:tStep toArray:reportsArray];
+		[self loadReportForStep:currentStepRow];
 		
 		//Step auswählen
 		[self loadReportNamed: [reportsArray objectAtIndex:[reportsArray count]-1] ];
-		[reportsTable reloadData];
-		[reportsTable deselectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false];
-		[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:([reportsArray count]-1) inSection:0] animated:false scrollPosition:UITableViewScrollPositionBottom];
+		[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false scrollPosition:UITableViewScrollPositionTop];
 		
 	}
 
 }
 
--(IBAction)addReport:(id)sender
+-(void)addNewReport
 {
 	
 	//Zeit holen
@@ -600,9 +556,8 @@
 	NSString *stepName = [NSString stringWithFormat:@"%@",currentCell.textLabel.text];
 	[stepLable setText:stepName];
 	
-	//Placeholder für das Description Text Feld
-	[descriptionText setText:@"Report description...."];
 	
+	//View laden
 	[delegate addView:reportAddView to:true withAnimations:true];
 	[reportNameField becomeFirstResponder];
 	 descriptionText.delegate = self;
@@ -832,10 +787,7 @@
 	
 	//structerView neu laden
 	[delegate reloadStructerTable];
-	
-	
-	//infected Parts Table neu laden
-	[partsTable reloadData];
+
 	
 	//schon mal den neuen Step in die view für das anlegen ienes neuen reports setzt, fals diese schon offen ist
 	[stepLable setText:stepName];
@@ -848,15 +800,20 @@
 -(void)jumpToStep:(NSInteger) stepRow
 {
 	
+	//sicherstellen das das richtige Texfeld sichbar ist
+	[descriptionTextView setHidden:false];
+	[reportTextView	setHidden:true];
+	
 	//exit if not possible
 	if (stepRow == [stepsTable numberOfRowsInSection:0] || stepRow < 0) {
 		return;
 	}
 	
+	NSIndexPath* nextIndexPath;
 	
 	do {
 		NSString* nextStepName;
-		NSIndexPath* nextIndexPath;
+		
 		
 		if (currentStepRow < stepRow) {
 			
@@ -890,26 +847,16 @@
 		//load step
 		[self loadStep:nextStepName];
 		
-		//select step
-		[stepsTable selectRowAtIndexPath:nextIndexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
-		
-		
-		//Load Reports for this step
-		[reportsArray removeAllObjects];
-		if (nextIndexPath.row == 0) //Start also alle
-			[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
-		else //Step als nur die gültigen für diesen step
-			[TBXMLFunctions	getAllChilds:reports forValueNamed:@"step" withValue:[NSString stringWithFormat:@"%i",nextIndexPath.row] toArray:reportsArray];
-		
-		if ([reportsArray count] != 0)
-			[self loadReportNamed: [reportsArray objectAtIndex:0] ];
-		
-		[reportsTable reloadData];
-			
-		
-		
-		
+	
 	} while (currentStepRow != stepRow);
+	
+	//select step
+	nextIndexPath = [NSIndexPath indexPathForRow:(currentStepRow) inSection:0];
+	[stepsTable selectRowAtIndexPath:nextIndexPath animated:true scrollPosition:UITableViewScrollPositionMiddle];
+	
+	
+	//Load Reports for this step
+	[self loadReportForStep:currentStepRow];
 	
 	
 }
@@ -921,94 +868,15 @@
 
 - (IBAction)nextTableCell:(id)sender
 {
-	if (reportTextView.isHidden) //next Step
-		[self jumpToStep:currentStepRow + 1];
-	else //next Report
-	{
-		if ([reportsArray count] == 0)
-			return;
-		
-		NSInteger toRow = [reportsTable indexPathForSelectedRow].row + 1;
-		
-		if (toRow == [reportsArray count])
-			return;
-		
-		
-		NSIndexPath* newIndexPath = [NSIndexPath indexPathForRow: toRow inSection:0];
-		
-		[reportsTable selectRowAtIndexPath:newIndexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-		
-		[self loadReportNamed:[reportsArray objectAtIndex:toRow]];
-	
-	}
-	
+	[self jumpToStep:currentStepRow + 1];
 }
 
 
 
 - (IBAction)prevTableCell:(id)sender
 {
-	if (reportTextView.isHidden) //next Step
-		[self jumpToStep:currentStepRow -1];
-	else //next Report
-	{
-		if ([reportsArray count] == 0)
-			return;
-		
-		NSInteger toRow = [reportsTable indexPathForSelectedRow].row - 1;
-		
-		if (toRow < 0)
-			return;
-		
-		NSIndexPath* newIndexPath = [NSIndexPath indexPathForRow: toRow inSection:0];
-		
-		[reportsTable selectRowAtIndexPath:newIndexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-		
-		[self loadReportNamed:[reportsArray objectAtIndex:toRow]];
-		
-	}
+	[self jumpToStep:currentStepRow -1];
 }
 
-
-
-
-
-
-
-
-
-
-#pragma mark -
-#pragma mark change work/report
-#pragma mark -
-
-
--(void)changeToReport:(bool)change
-{
-
-	if (change)
-	{
-		[descriptionTextView setHidden:true];
-		[reportTextView setHidden:false];
-		
-		[reportsTable setHidden:false];
-		[partsTable setHidden:true];
-		
-		
-	}
-	else
-	{
-		[descriptionTextView setHidden:false];
-		[reportTextView setHidden:true];
-		
-		[reportsTable setHidden:true];
-		[partsTable setHidden:false];
-		[reportPictureBto setHidden:true];
-		
-	}
-
-
-
-}
 
 @end

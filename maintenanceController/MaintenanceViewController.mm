@@ -383,16 +383,18 @@
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
 
-			[workTableViewController changeToReport:false];
 			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
 			
 			break;
 		case 1:
-			tabBarTag = 1;
 			[self slideTabBarIn:true];
 			[self slideTableIn:false];
 			
-			[workTableViewController changeToReport:true];
+			[workTableViewController addNewReport];
+			
+			
+			//altes TabItem wieder selektieren
+            [tabBar setSelectedItem:[tabBar.items objectAtIndex:tabBarTag]];
 			
 			break;
 		case 2:
@@ -441,7 +443,7 @@
 				
             }
 
-            //altes TabItem wieder selktieren
+            //altes TabItem wieder selektieren
             [tabBar setSelectedItem:[tabBar.items objectAtIndex:tabBarTag]];
 			
 			break;

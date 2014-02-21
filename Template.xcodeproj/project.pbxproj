@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041807DF18B7747A00FA6124 /* report@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 041807DE18B7747A00FA6124 /* report@2x.png */; };
 		043C971718367B6A00445B73 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C971418367B6900445B73 /* EAGLView.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		043C971818367B6A00445B73 /* MetaioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C971618367B6A00445B73 /* MetaioSDKViewController.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		043C971E18367B7F00445B73 /* fragGREEN.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 043C971A18367B7F00445B73 /* fragGREEN.glsl */; };
@@ -21,7 +22,6 @@
 		043C974B18367CBD00445B73 /* checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974218367CBD00445B73 /* checked@2x.png */; };
 		043C974C18367CBD00445B73 /* fullscreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974318367CBD00445B73 /* fullscreen@2x.png */; };
 		043C974D18367CBD00445B73 /* maintenance@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974418367CBD00445B73 /* maintenance@2x.png */; };
-		043C974E18367CBD00445B73 /* report@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974518367CBD00445B73 /* report@2x.png */; };
 		043C974F18367CBD00445B73 /* structure@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974618367CBD00445B73 /* structure@2x.png */; };
 		043C975018367CBD00445B73 /* unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 043C974718367CBD00445B73 /* unchecked@2x.png */; };
 		043C976018367D5500445B73 /* MaintenanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C975C18367D5500445B73 /* MaintenanceViewController.mm */; };
@@ -55,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		041807DE18B7747A00FA6124 /* report@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "report@2x.png"; sourceTree = "<group>"; };
 		043C971318367B6900445B73 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAGLView.h; path = metaio/EAGLView.h; sourceTree = "<group>"; };
 		043C971418367B6900445B73 /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EAGLView.mm; path = metaio/EAGLView.mm; sourceTree = "<group>"; };
 		043C971518367B6900445B73 /* MetaioSDKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetaioSDKViewController.h; path = metaio/MetaioSDKViewController.h; sourceTree = "<group>"; };
@@ -74,7 +75,6 @@
 		043C974218367CBD00445B73 /* checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checked@2x.png"; sourceTree = "<group>"; };
 		043C974318367CBD00445B73 /* fullscreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fullscreen@2x.png"; sourceTree = "<group>"; };
 		043C974418367CBD00445B73 /* maintenance@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "maintenance@2x.png"; sourceTree = "<group>"; };
-		043C974518367CBD00445B73 /* report@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "report@2x.png"; sourceTree = "<group>"; };
 		043C974618367CBD00445B73 /* structure@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "structure@2x.png"; sourceTree = "<group>"; };
 		043C974718367CBD00445B73 /* unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unchecked@2x.png"; sourceTree = "<group>"; };
 		043C975B18367D5500445B73 /* MaintenanceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaintenanceViewController.h; sourceTree = "<group>"; };
@@ -168,13 +168,13 @@
 		043C973E18367CBC00445B73 /* content */ = {
 			isa = PBXGroup;
 			children = (
+				041807DE18B7747A00FA6124 /* report@2x.png */,
 				043C973F18367CBD00445B73 /* _empty_.obj */,
 				043C974018367CBD00445B73 /* camOFF@2x.png */,
 				043C974118367CBD00445B73 /* camON@2x.png */,
 				043C974218367CBD00445B73 /* checked@2x.png */,
 				043C974318367CBD00445B73 /* fullscreen@2x.png */,
 				043C974418367CBD00445B73 /* maintenance@2x.png */,
-				043C974518367CBD00445B73 /* report@2x.png */,
 				043C974618367CBD00445B73 /* structure@2x.png */,
 				043C974718367CBD00445B73 /* unchecked@2x.png */,
 			);
@@ -329,7 +329,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				043C974E18367CBD00445B73 /* report@2x.png in Resources */,
 				043C974818367CBD00445B73 /* _empty_.obj in Resources */,
 				043C974C18367CBD00445B73 /* fullscreen@2x.png in Resources */,
 				043C974D18367CBD00445B73 /* maintenance@2x.png in Resources */,
@@ -340,6 +339,7 @@
 				043C976118367D5500445B73 /* MaintenanceViewController.xib in Resources */,
 				043C975018367CBD00445B73 /* unchecked@2x.png in Resources */,
 				04F329FE172FCE8000910751 /* Default-568h@2x.png in Resources */,
+				041807DF18B7747A00FA6124 /* report@2x.png in Resources */,
 				043C972018367B7F00445B73 /* shader_materials.xml in Resources */,
 				043C971E18367B7F00445B73 /* fragGREEN.glsl in Resources */,
 				043C971F18367B7F00445B73 /* fragRED.glsl in Resources */,

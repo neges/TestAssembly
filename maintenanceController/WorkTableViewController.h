@@ -42,7 +42,6 @@
 	IBOutlet UITextView *descriptionTextView;
 	IBOutlet UITextView *nameTextView;
 	IBOutlet UITableView *stepsTable;
-	IBOutlet UITableView *partsTable;
 	IBOutlet UITableView *reportsTable;
 	IBOutlet UITextView *reportTextView;
 	
@@ -76,9 +75,10 @@
 
 
 -(void)loadContent;
--(void)changeToReport:(bool)change;
 
 -(void)requestCameraImage:(UIImage*)requestedImage;
+
+-(void)addNewReport;
 
 
 - (IBAction)nextTableCell:(id)sender;

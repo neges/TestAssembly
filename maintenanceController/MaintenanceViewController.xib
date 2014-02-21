@@ -27,7 +27,6 @@
                 <outlet property="descriptionText" destination="uPO-9b-ECJ" id="hKZ-TU-jEh"/>
                 <outlet property="descriptionTextView" destination="PGl-sf-Bmu" id="tWz-96-EtZ"/>
                 <outlet property="nameTextView" destination="ZUx-7j-Jm2" id="rz6-7a-8nN"/>
-                <outlet property="partsTable" destination="13A-FP-XBh" id="h6s-n2-zH1"/>
                 <outlet property="reportAddView" destination="sum-ws-3qh" id="5xP-Qw-BBG"/>
                 <outlet property="reportNameField" destination="5oH-PI-8iz" id="t74-jH-68g"/>
                 <outlet property="reportPictureBto" destination="dtE-Fq-XhF" id="qJ8-DA-SUK"/>
@@ -82,7 +81,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
                         <tabBarItem title="work" image="maintenance.png" id="SPZ-kC-xrR"/>
-                        <tabBarItem tag="1" title="report" image="report.png" id="bXJ-da-uIM"/>
+                        <tabBarItem tag="1" title="add report" image="report.png" id="bXJ-da-uIM"/>
                         <tabBarItem tag="2" title="structure" image="structure.png" id="Hh5-JM-Iex"/>
                         <tabBarItem tag="3" title="TrackingON" image="camON.png" id="LNe-67-Glb"/>
                     </items>
@@ -125,15 +124,6 @@
                         <outlet property="delegate" destination="1X8-W2-4Vw" id="XRA-xe-HHV"/>
                     </connections>
                 </tableView>
-                <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="13A-FP-XBh" userLabel="partsTable">
-                    <rect key="frame" x="764" y="5" width="260" height="255"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <outlet property="dataSource" destination="1X8-W2-4Vw" id="daK-Eg-M0K"/>
-                        <outlet property="delegate" destination="1X8-W2-4Vw" id="muR-Ah-wEx"/>
-                    </connections>
-                </tableView>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Select report for information...." selectable="NO" id="6oq-2i-gAb" userLabel="report Text View">
                     <rect key="frame" x="265" y="40" width="494" height="175"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -141,6 +131,15 @@
                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="dtE-Fq-XhF" userLabel="Button - reportImg">
+                    <rect key="frame" x="680" y="46" width="64" height="48"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <connections>
+                        <action selector="showReportPictureFull:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="PRm-8T-vHs"/>
+                    </connections>
+                </button>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" text="Select step for work instruction...." selectable="NO" id="PGl-sf-Bmu" userLabel="description Text View">
                     <rect key="frame" x="265" y="40" width="494" height="175"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -160,7 +159,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
-                    <state key="normal" title="next >">
+                    <state key="normal" title="next step >">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -172,20 +171,11 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    <state key="normal" title="&lt; previous">
+                    <state key="normal" title="&lt; previous step">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="prevTableCell:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="AAH-eI-3ka"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="dtE-Fq-XhF" userLabel="Button - reportImg">
-                    <rect key="frame" x="680" y="46" width="64" height="48"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <connections>
-                        <action selector="showReportPictureFull:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="PRm-8T-vHs"/>
                     </connections>
                 </button>
             </subviews>
