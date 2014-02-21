@@ -59,6 +59,8 @@
 	NSTimer* screenshotTimer;
 	int timerValue;
 	
+	NSInteger delIndexPathRow;
+	
 	
 	UIScrollView* repImgScrollView; //View um das image des reports in fullscreen zu zeigen
 	

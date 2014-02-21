@@ -282,16 +282,6 @@
 				//delete objet aus dem added reports array
 				[addedReportsArray removeObjectAtIndex:arrayCounter];
 				
-				//neu laden der reports für den step
-				for (int delPos = 0; delPos < [reportsArray count]; ++delPos)
-				{
-					if ([[reportsArray objectAtIndex:delPos] isEqualToString:delReportNamed])
-					{
-						[reportsArray removeObjectAtIndex:delPos];
-						break;
-					}
-				}
-				
 				previouslyAdded = true;
 				
 				break;
@@ -301,18 +291,19 @@
 		
 		if (previouslyAdded == false)
 		{
-			//delete report aus xml
-			[self deleteReport:[self getXMLReportBlockByReportName:delReportNamed]];
-						
-			//neu laden der reports für den step
-			for (int delPos = 0; delPos < [reportsArray count]; ++delPos)
-			{
-				if ([[reportsArray objectAtIndex:delPos] isEqualToString:delReportNamed])
-				{
-					[reportsArray removeObjectAtIndex:delPos];
-					break;
-				}
-			}
+			
+			delIndexPathRow = indexPath.row;
+			
+			UIAlertView *alert = [[UIAlertView alloc] init];
+			[alert setTitle:@"Confirm deletion"];
+			[alert setMessage:@"You don't have the required access rights to delete this report!"];
+			[alert setDelegate:self];
+			[alert addButtonWithTitle:@"delete"];
+			[alert addButtonWithTitle:@"cancel"];
+			[alert show];
+			
+			
+			
 			
 		}
 			
@@ -320,7 +311,17 @@
     }
 }
 
+#pragma mark -
+#pragma mark Alert Actions
+#pragma mark -
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (buttonIndex == 0)//delete report aus xml
+		[self deleteReport:[self getXMLReportBlockByReportName:[reportsArray objectAtIndex:delIndexPathRow]]];
+	else //edit zurücksetzen
+		[reportsTable setEditing:false];
+}
 
 #pragma mark -
 #pragma mark Report Actions
