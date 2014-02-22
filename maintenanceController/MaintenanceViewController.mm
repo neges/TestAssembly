@@ -172,7 +172,13 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
 		
-		
+        
+        //Grün bei selektierung
+		UIView *bgColorView = [[UIView alloc] init];
+        bgColorView.backgroundColor = [UIColor greenColor];
+        //bgColorView.layer.cornerRadius = 10;
+        bgColorView.layer.masksToBounds = YES;
+        [cell setSelectedBackgroundView:bgColorView];
 
 	}
 	
@@ -212,7 +218,7 @@
 		
         cell.accessoryType = UITableViewCellAccessoryNone;
         
-        cell.backgroundColor = [UIColor lightGrayColor];
+        cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
 
 		
     }
@@ -729,7 +735,8 @@ toMaxScreenSize:(CGSize)sSize
 		NSMutableArray *allSubElements = [[NSMutableArray alloc]init];
 		
 		TBXMLElement *topElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:[self modelnameForModel:oModel]];
-		[TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
+		
+        [TBXMLFunctions getAllElements:topElement withGroups:true toArray:allSubElements];
 		
 		NSMutableArray *xBoundingBox = [[NSMutableArray alloc]init];
 		NSMutableArray *yBoundingBox = [[NSMutableArray alloc]init];
@@ -934,10 +941,17 @@ toMaxScreenSize:(CGSize)sSize
 		
 		if (group == true || wObjects)
 		{
-			selectedModels = [[NSMutableArray alloc]init];
+			if (selectedModels)
+                [selectedModels removeAllObjects];
+            else
+                selectedModels = [[NSMutableArray alloc]init];
+            
 			
 			if (!wObjects)
-				[TBXMLFunctions getAllElements:selectedElement withGroups:false toArray:selectedModels];
+                if (selectedElement->firstChild)
+                    [TBXMLFunctions getAllElements:selectedElement->firstChild withGroups:false toArray:selectedModels];
+                else
+                    [TBXMLFunctions getAllElements:selectedElement withGroups:false toArray:selectedModels];
 			else
 				selectedModels = wObjects;
 			
