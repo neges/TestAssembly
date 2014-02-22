@@ -254,7 +254,7 @@ struct METAIO_DLL_API Vector2di
 	 * Create Vector2di and initializes all components to the given scalar value
 	 * \param _n x and y components of the vector
 	 */
-	Vector2di(int _n);
+	explicit Vector2di(int _n);
 
 	/**
 	 * Create Vector2di and initializes all components to the given values
@@ -297,7 +297,7 @@ struct METAIO_DLL_API Vector3d
 	 * Create Vector3d and initializes all components to the given scalar value
 	 * \param _n x, y and z components of the vector
 	 */
-	Vector3d(float _n);
+	explicit Vector3d(float _n);
 
 	/**
 	 * Create Vector3d and initializes all components to the given values
@@ -711,11 +711,11 @@ struct METAIO_DLL_API Camera
  */
 struct METAIO_DLL_API LLACoordinate
 {
-	double latitude;	///< Latitude in decimal
-	double longitude;	///< Longitude in decimal
+	double latitude;	///< Latitude in degrees
+	double longitude;	///< Longitude in degrees
 	double altitude;	///< Altitude in meters
-	double accuracy;	///< Accuracy of the GPS position
-	double timestamp;	///< Timestamp in milliseconds when the coordinates were valid
+	double accuracy;	///< Accuracy of the GPS position in meters
+	double timestamp;	///< Timestamp when the coordinates were valid (in seconds since system boot)
 
 	/**
 	 * Default constructor

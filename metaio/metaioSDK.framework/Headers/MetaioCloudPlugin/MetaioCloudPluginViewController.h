@@ -50,7 +50,7 @@ static const int ANCHOR_BR = ANCHOR_BOTTOM|ANCHOR_RIGHT;			///< Anchor to the Bo
  * \param attribution image (might be NULL)
  * \return the image
  */
-- (UIImage*) getBillboardImageForPOI: (const metaio::world::MetaioWorldPOI*) poi withThumbnail: (UIImage*) image  attributionImage:(UIImage*) image;
+- (UIImage*) getBillboardImageForPOI: (const metaio::IARELObject*) poi withThumbnail: (UIImage*) image  attributionImage:(UIImage*) image;
 
 /** Overwrite this method to provide your own viewcontroller for displaying URLs
  * \param url the URL that should be openend

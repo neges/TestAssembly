@@ -13,24 +13,17 @@ typedef void (^WebViewViewControllerCallbackBlock)(void);
 
 @interface WebViewViewController : UIViewController<MetaioViewControllerClosingCallback,UIWebViewDelegate, UIPopoverControllerDelegate> {
 
-    UIWebView*		webView;
-    UIButton*		btnClose;
-	
+    UIWebView*                          webView;
     UIActivityIndicatorView *           activityIndicator;
-    UIInterfaceOrientation              m_currentInterfaceOrientation;
 }
-@property (nonatomic, copy) MetaioActionBlock viewDidDisappearAction;
-
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
-
-@property (nonatomic, retain) IBOutlet UIWebView*		webView;
-@property (nonatomic, retain) IBOutlet UIButton*		btnClose;
-@property (retain, nonatomic) IBOutlet UIButton *btnShare;
-@property (nonatomic, retain) NSURL*			url;
+@property (nonatomic, copy) MetaioActionBlock                       viewDidDisappearAction;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *    activityIndicator;
+@property (nonatomic, retain) IBOutlet UIWebView*                   webView;
+@property (nonatomic, retain) NSURL*                                url;
 
 
 - (IBAction) buttonClose;
-- (IBAction)buttonSharePushed:(id)sender;
+- (IBAction) buttonSharePushed:(UIBarButtonItem*)sender;
 
 -(id) initializeWithURL: (NSString*) url;
 

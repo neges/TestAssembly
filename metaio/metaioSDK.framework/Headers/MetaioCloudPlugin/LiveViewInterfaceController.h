@@ -6,13 +6,13 @@
 //  Copyright 2013 metaio, Inc. All rights reserved.
 //
 #import "MetaioViewControllerClosingCallback.h"
-#import "LiveViewObjectContextView.h"
+#import "POIDetailViewController.h"
 
 // forward declarations
 @class ASEAGLView;
 
 @interface LiveViewInterfaceController : UIViewController
- <UINavigationControllerDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate, LiveViewObjectContextViewDelegate, UIAlertViewDelegate>
+ <UINavigationControllerDelegate, UIWebViewDelegate, UIGestureRecognizerDelegate, POIDetailViewControllerDelegate, UIAlertViewDelegate>
 {	
 }
 
@@ -20,7 +20,7 @@
 @property (nonatomic) NSInteger animationFrameInterval;
 
 @property (nonatomic, retain) IBOutlet UILabel*                         messageActivityLabel;		// Label that
-@property (nonatomic, retain) IBOutlet LiveViewObjectContextView*		objectContextView;
+//@property (nonatomic, retain) IBOutlet LiveViewObjectContextView*		objectContextView;
 @property (nonatomic, retain) IBOutlet ASEAGLView*                        glView;
 @property (nonatomic, retain) IBOutlet UIView*							interfaceView;
 @property (nonatomic, retain) IBOutlet UIWebView*                       arelWebView;
@@ -36,23 +36,13 @@
 - (void) presentContentViewController: (UIViewController<MetaioViewControllerClosingCallback>*) contentViewController;
 
 
-/**
- * Creates image for annotation billboard (used with AnnotatedGeometriesGroup)
- * \param poi The POI
- * \param image Thumbnail of the POI
- * \param attributionImage Attribution image (can be NULL)
- * \return Final image or nil in case of error
- */
-- (UIImage*)getAnnotationImageForPOI:(const metaio::world::MetaioWorldPOI*)poi withThumbnail:(UIImage*)image  attributionImage:(UIImage*)attributionImage;
-
-
 /** Implementation to get a billboard image for a poi
  * \param poi the poi
  * \param image the thumbnail of the poi
  * \param attribution image (might be NULL)
  * \return the image
  */
-- (UIImage*) getBillboardImageForPOI: (const metaio::world::MetaioWorldPOI*) poi withThumbnail: (UIImage*) image  attributionImage:(UIImage*) image;
+- (UIImage*) getBillboardImageForPOI: (const metaio::IARELObject*) poi withThumbnail: (UIImage*) image  attributionImage:(UIImage*) image;
 
 
 /** Overwrite this method to provide your own viewcontroller for displaying URLs

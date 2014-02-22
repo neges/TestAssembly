@@ -94,8 +94,9 @@ public:
 
 
 /**
-* Constructor for Qt
+* Constructor for Qt AREL interpreter
 *
+* \param scene the QGraphicsScene pointer
 * \param webView the Qt WebView which should be used for initialization
 * \return IARELInterpreter returns a reference to the newly created ARELInterpreter
 */

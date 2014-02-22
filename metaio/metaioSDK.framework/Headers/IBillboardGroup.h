@@ -16,6 +16,9 @@ class IGeometry;
  * First the billboard distance to the global origin (3d camera position)
  * is adjusted and then the billboards are arranged in clip space that they
  * don't overlap anymore
+ *
+ * \deprecated Please use IAnnotatedGeometriesGroup instead. This interface will be removed in a
+ *             future release.
  */
 class IBillboardGroup
 {

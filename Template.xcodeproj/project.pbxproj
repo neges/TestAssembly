@@ -28,7 +28,6 @@
 		043C976018367D5500445B73 /* MaintenanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C975C18367D5500445B73 /* MaintenanceViewController.mm */; };
 		043C976118367D5500445B73 /* MaintenanceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043C975D18367D5500445B73 /* MaintenanceViewController.xib */; };
 		043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.mm */; };
-		04AD243818ACDA3200CE8641 /* metaioSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043C972218367BA200445B73 /* metaioSDK.framework */; };
 		04F329E8172FCE8000910751 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E7172FCE8000910751 /* UIKit.framework */; };
 		04F329EA172FCE8000910751 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329E9172FCE8000910751 /* Foundation.framework */; };
 		04F329EC172FCE8000910751 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F329EB172FCE8000910751 /* CoreGraphics.framework */; };
@@ -51,6 +50,7 @@
 		04F32A1E172FCEEF00910751 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A1D172FCEEF00910751 /* libz.dylib */; };
 		04F32A20172FCEFE00910751 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A1F172FCEFE00910751 /* libxml2.dylib */; };
 		04F32A22172FCF0E00910751 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F32A21172FCF0E00910751 /* AudioToolbox.framework */; };
+		8C9A2D9E18B8CC5100B78BD6 /* metaioSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C9A2D9618B8CC4100B78BD6 /* metaioSDK.framework */; };
 		C5F2467F177C38DA00EB88A8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F2467E177C38DA00EB88A8 /* Security.framework */; };
 		C5F24681177C38F300EB88A8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5F24680177C38F300EB88A8 /* CFNetwork.framework */; };
 /* End PBXBuildFile section */
@@ -112,6 +112,15 @@
 		04F32A1F172FCEFE00910751 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		04F32A21172FCF0E00910751 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8C7754291811982700CFC082 /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
+		8C9A2D9418B8CC4100B78BD6 /* EAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		8C9A2D9518B8CC4100B78BD6 /* EAGLView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
+		8C9A2D9618B8CC4100B78BD6 /* metaioSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = metaioSDK.framework; sourceTree = "<group>"; };
+		8C9A2D9718B8CC4100B78BD6 /* MetaioSDKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetaioSDKViewController.h; sourceTree = "<group>"; };
+		8C9A2D9818B8CC4100B78BD6 /* MetaioSDKViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MetaioSDKViewController.mm; sourceTree = "<group>"; };
+		8C9A2D9A18B8CC4100B78BD6 /* fragGREEN.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = fragGREEN.glsl; sourceTree = "<group>"; };
+		8C9A2D9B18B8CC4100B78BD6 /* fragRED.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = fragRED.glsl; sourceTree = "<group>"; };
+		8C9A2D9C18B8CC4100B78BD6 /* shader_materials.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = shader_materials.xml; sourceTree = "<group>"; };
+		8C9A2D9D18B8CC4100B78BD6 /* vert.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = vert.glsl; sourceTree = "<group>"; };
 		C5F2467E177C38DA00EB88A8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C5F24680177C38F300EB88A8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -121,7 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04AD243818ACDA3200CE8641 /* metaioSDK.framework in Frameworks */,
+				8C9A2D9E18B8CC5100B78BD6 /* metaioSDK.framework in Frameworks */,
 				C5F24681177C38F300EB88A8 /* CFNetwork.framework in Frameworks */,
 				C5F2467F177C38DA00EB88A8 /* Security.framework in Frameworks */,
 				04F32A22172FCF0E00910751 /* AudioToolbox.framework in Frameworks */,
@@ -221,6 +230,7 @@
 		04F329E6172FCE8000910751 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C9A2D9318B8CC4100B78BD6 /* metaio */,
 				043C972218367BA200445B73 /* metaioSDK.framework */,
 				C5F24680177C38F300EB88A8 /* CFNetwork.framework */,
 				C5F2467E177C38DA00EB88A8 /* Security.framework */,
@@ -279,6 +289,30 @@
 				043C971618367B6A00445B73 /* MetaioSDKViewController.mm */,
 			);
 			name = Metaio;
+			sourceTree = "<group>";
+		};
+		8C9A2D9318B8CC4100B78BD6 /* metaio */ = {
+			isa = PBXGroup;
+			children = (
+				8C9A2D9418B8CC4100B78BD6 /* EAGLView.h */,
+				8C9A2D9518B8CC4100B78BD6 /* EAGLView.mm */,
+				8C9A2D9618B8CC4100B78BD6 /* metaioSDK.framework */,
+				8C9A2D9718B8CC4100B78BD6 /* MetaioSDKViewController.h */,
+				8C9A2D9818B8CC4100B78BD6 /* MetaioSDKViewController.mm */,
+				8C9A2D9918B8CC4100B78BD6 /* Shaders */,
+			);
+			path = metaio;
+			sourceTree = "<group>";
+		};
+		8C9A2D9918B8CC4100B78BD6 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				8C9A2D9A18B8CC4100B78BD6 /* fragGREEN.glsl */,
+				8C9A2D9B18B8CC4100B78BD6 /* fragRED.glsl */,
+				8C9A2D9C18B8CC4100B78BD6 /* shader_materials.xml */,
+				8C9A2D9D18B8CC4100B78BD6 /* vert.glsl */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -460,11 +494,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					/Users/mac/Entwicklung/TestAssembly/metaio,
-				);
+				FRAMEWORK_SEARCH_PATHS = /Users/matze/Documents/Entwicklung/TestAssembly/metaio;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Template/Template-Prefix.pch";
@@ -482,11 +512,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)",
-					/Users/mac/Entwicklung/TestAssembly/metaio,
-				);
+				FRAMEWORK_SEARCH_PATHS = /Users/matze/Documents/Entwicklung/TestAssembly/metaio;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Template/Template-Prefix.pch";

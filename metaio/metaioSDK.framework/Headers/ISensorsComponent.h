@@ -184,7 +184,7 @@ public:
 	 *
 	 * \return sensor values
 	 */
-	virtual SensorValues getSensorValues() const = 0;
+	virtual SensorValues getSensorValues() = 0;
 
 };
 

@@ -259,7 +259,7 @@ public:
 	 * \return A 3D vector containing the translation.
 	 * \sa setTranslation
 	 */
-	virtual Vector3d getTranslation() = 0;
+	virtual Vector3d getTranslation() const = 0;
 
 
 	/**
@@ -282,7 +282,7 @@ public:
 	 * \sa setTranslationLLA
 	 * \sa getTranslationLLACartesian
 	 */
-	virtual LLACoordinate getTranslationLLA() = 0;
+	virtual LLACoordinate getTranslationLLA() const = 0;
 
 
 	/**
@@ -294,7 +294,7 @@ public:
 	 * \sa setTranslation and getTranslation
 	 * \sa setTranslationLLA and getTranslationLLA
 	 */
-	virtual Vector3d getTranslationLLACartesian() = 0;
+	virtual Vector3d getTranslationLLACartesian() const = 0;
 
 
 	/**
@@ -318,7 +318,7 @@ public:
 	 * \return The scaling vector (x,y,z).
 	 * \sa setScale
 	 */
-	virtual Vector3d getScale() = 0;
+	virtual Vector3d getScale() const = 0;
 
 
 	/**
@@ -336,7 +336,7 @@ public:
 	 * \return The current rotation as Rotation object.
 	 * \sa setRotation
 	 */
-	virtual metaio::Rotation getRotation() = 0;
+	virtual metaio::Rotation getRotation() const = 0;
 
 	/**
 	 * Attach this IGeometry to another IGeometry to e.g. share it's transformation.
@@ -350,7 +350,7 @@ public:
 	 * \return pointer to parent IGeometry object (null if there is none)
 	 * \sa setParentGeometry
 	 */
-	virtual const metaio::IGeometry* getParentGeometry() = 0;
+	virtual const metaio::IGeometry* getParentGeometry() const = 0;
 
 	/**
 	 * Assigns a shader material defined by the given name to this geometry
@@ -389,7 +389,7 @@ public:
 	 *
 	 * \return True if the geometry is being rendered, false otherwise.
 	 */
-	virtual bool getIsRendered() = 0;
+	virtual bool getIsRendered() const = 0;
 
 
 	/**
@@ -397,7 +397,7 @@ public:
 	 * \return True if the geometry is set visible, false otherwise.
 	 * \sa setVisible
 	 */
-	virtual bool isVisible() = 0;
+	virtual bool isVisible() const = 0;
 
 	/**
 	 * Triggers application pause actions
@@ -419,7 +419,7 @@ public:
 	 * \sa isVisible
 	 * \sa setOcclusionMode
 	 * \sa setTransparency
-	 * \sa setRenderAsXray
+	 * \sa setRenderOption
 	 * \sa setPickingEnabled
 	 */
 	virtual void setVisible(bool visible) = 0;
@@ -447,7 +447,14 @@ public:
 	 * \sa setDebugDataVisibility
 	 * \sa getDebugDataVisibility
 	 */
-	virtual int getRenderOption(ERENDER_OPTION option) = 0;
+	virtual int getRenderOption(ERENDER_OPTION option) const = 0;
+
+	/**
+	 * Get triangle count of this model.
+	 *
+	 *	\return the number of triangles within this model
+	 */
+	virtual unsigned int getTriangleCount() const = 0;
 
 	/**
 	 * Set the rendering order of the geometry
@@ -482,7 +489,7 @@ public:
 	 * \return the level
 	 * \sa setRenderOrder
 	 */
-	virtual int getRenderOrder() = 0;
+	virtual int getRenderOrder() const = 0;
 
 	/**
 	 * Set the occlusion mode of the geometry.
@@ -491,7 +498,7 @@ public:
 	 * otherwise it will be displayed normally.
 	 * \sa setVisible and isVisible
 	 * \sa setTransparency
-	 * \sa setRenderAsXray
+	 * \sa setRenderOption
 	 * \sa setPickingEnabled
 	 */
 	virtual void setOcclusionMode(bool occlude) = 0;
@@ -502,7 +509,7 @@ public:
 	 * \return boolean If true geometry is occluded, otherwise false
 	 * \sa isVisible
 	 */
-	virtual bool isOccluded() = 0;
+	virtual bool isOccluded() const = 0;
     
 	/**
 	 * Set the transparency of the geometry.
@@ -511,7 +518,7 @@ public:
 	 * \sa getTransparency
 	 * \sa setVisible and isVisible
 	 * \sa setOcclusionMode
-	 * \sa setRenderAsXray
+	 * \sa setRenderOption
 	 * \sa setPickingEnabled
 	 */
 	virtual void setTransparency(float transparency) = 0;
@@ -522,7 +529,7 @@ public:
 	 * \return transparency The transparency value, where 0 corresponds to a non-transparent model, 1 to a fully transparent model.
 	 * \sa setTransparency
 	 */
-	virtual float getTransparency() = 0;
+	virtual float getTransparency() const = 0;
 
 
 	/**
@@ -550,7 +557,16 @@ public:
 	 * \param loop If true, the animation is looped, otherwise it is only played once.
 	 * \sa setAnimationSpeed
 	 */
-	virtual void startAnimation(const stlcompat::String& animationName = "", bool loop = false) = 0;
+	virtual void startAnimation(const stlcompat::String& animationName = "", const bool loop = false) = 0;
+
+	/**
+	 * Start an animation (frame range) of the geometry. OnAnimationEndCallback will receive animationName like "frameXX-YY" if not playing looped.
+	 * \param startFrame frame number of animation start.
+	 * \param stopFrame frame number of animation stop.
+	 * \param loop If true, the animation is looped, otherwise it is only played once.
+	 * \sa setAnimationSpeed
+	 */
+	virtual void startAnimation(const unsigned int startFrame, const unsigned int stopFrame, const bool loop = false) = 0;
 
 	/**
 	 * Stops the current animation of the geometry.
@@ -574,7 +590,7 @@ public:
 	 * \return all animation names.
 	 * \sa startAnimation
 	 */
-	virtual stlcompat::Vector<stlcompat::String> getAnimationNames() = 0;
+	virtual stlcompat::Vector<stlcompat::String> getAnimationNames() const = 0;
 
 	/**
 	 * Get the (axis-aligned) bounding box of the geometry.
@@ -583,9 +599,16 @@ public:
 			  it will be returned in the camera coordinate system
 	 * \return The bounding box of the geometry.
 	 */
-	virtual BoundingBox getBoundingBox(bool inObjectCoordinates = true) = 0;
+	virtual BoundingBox getBoundingBox(bool inObjectCoordinates = true) const = 0;
 
 
+    /**
+	 * Get the bounding box of the geometry in screen coordinates.
+	 * \return The bounding box of the geometry.
+	 */
+  	virtual BoundingBox getBoundingBox2D() = 0;
+
+    
 	/**
 	 * Assign the geometry to a specific coordinate system (COS).
 	 * \param coordinateSystemID The (one based) index of the coordinate system.
@@ -599,7 +622,7 @@ public:
 	 * \return The (one based) index of the coordinate system.
 	 * \sa setCoordinateSystemID
 	 */
-	virtual int getCoordinateSystemID() = 0;
+	virtual int getCoordinateSystemID() const = 0;
 
 
 	/**
@@ -614,7 +637,7 @@ public:
 	 * \return Name of the geometry
 	 * \sa setName
 	 */
-	virtual stlcompat::String getName() = 0;
+	virtual stlcompat::String getName() const = 0;
 
 
 	/**
@@ -622,7 +645,7 @@ public:
 	 * \return EGEOMETRY_TYPE value
 	 * \sa EGEOMETRY_TYPE
 	 */
-	virtual EGEOMETRY_TYPE getType()  = 0;
+	virtual EGEOMETRY_TYPE getType() const = 0;
 
 
 	/**
@@ -647,7 +670,7 @@ public:
 	 * \sa setOcclusionMode
 	 * \sa setTransparency
 	 * \sa setPickingEnabled
-	 * \sa setRenderAsXray
+	 * \sa setRenderOption
 	 */
 	virtual void setPickingEnabled(bool enabled)  = 0;
 
@@ -657,7 +680,7 @@ public:
 	 * \return true, if enabled, false otherwise
 	 * \sa setPickingEnabled
 	 */
-	virtual bool isPickingEnabled() = 0;
+	virtual bool isPickingEnabled() const = 0;
 
 
 	/**
@@ -758,7 +781,7 @@ public:
 	 * \sa metaio::EDEBUG_VISIBILITY
 	 * \sa setDebugDataVisibility to set visibility of debug data
 	 */
-	virtual int getDebugDataVisibility() const = 0;
+	virtual EDEBUG_VISIBILITY getDebugDataVisibility() const = 0;
 
 	/** Sets which debug data shall be displayed 
 	 * \param debugVisibilityFlags BitField with bitwise-OR'ed EDEBUG_VISIBILITY flags
@@ -766,7 +789,7 @@ public:
 	 * \sa metaio::EDEBUG_VISIBILITY
 	 * \sa getDebugDataVisibility to retrieve visibility of debug data
 	 */
-	virtual void setDebugDataVisibility( int debugVisibilityFlags ) = 0;
+	virtual void setDebugDataVisibility(EDEBUG_VISIBILITY debugVisibilityFlags) = 0;
 
 	/** Determine if a selection box shall be displayed around the geometry
 	 * \return true, if it should be displayed, false otherwise

@@ -186,7 +186,7 @@ public:
 	/**
 	* \brief Sets this rotation by an Euler angle representation
 	*
-	* \param eulerAngleRadians Euler angle. Rotation order: x-axis, y-axis, z-axis in radians
+	* \param eulerAngleRadians Euler angle. Rotation order: x-axis, y-axis, z-axis in radians, i.e., a point is rotated as X_rotated = Rz * Ry * Rx * X_original
 	*/
 	void setFromEulerAngleRadians(const Vector3d& eulerAngleRadians);
 

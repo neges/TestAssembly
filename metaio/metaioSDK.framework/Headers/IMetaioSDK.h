@@ -5,6 +5,7 @@
 #include <metaioSDK/MobileStructs.h>
 #include <metaioSDK/IGeometry.h>
 #include <metaioSDK/ILight.h>
+#include <metaioSDK/IAnnotatedGeometriesGroup.h>
 #include <metaioSDK/IBillboardGroup.h>
 #include <metaioSDK/IRadar.h>
 #include <metaioSDK/IMetaioSDKCallback.h>
@@ -79,6 +80,14 @@ public:
 
 
 	/**
+	 * Release all memory that was statically allocated by metaio SDK or its dependencies
+	 *
+	 * Call this at the end of your application or only if you will not use SDK functions anymore.
+	 */
+	static void shutdownLibrary();
+
+
+	/**
 	 * Get the SDK version string
 	 * \return version string
 	 */
@@ -123,6 +132,7 @@ public:
 	 *
 	 * \param trackingMode one of the supported tracking modes
 	 * \param outFile Output file to save the result, if empty, it will save it to a temporary file.
+	 * \param enablePreview Enable preview of 2D tracking area or 3D visualization
 	 * The saved file path is returned in IMetaioSDKCallback.onInstantTrackingEvent callback.
 	 * \sa IMetaioSDKCallback.onInstantTrackingEvent
 	 */
@@ -319,7 +329,8 @@ public:
 	 *						 it will be updated with actual supported parameters.
 	 * \return true on success
 	 * \sa getCameraList
-	 * \SA stopCamera
+	 * \sa getCamera
+	 * \sa stopCamera
 	 */
 	virtual bool startCamera(Camera& camera) = 0;
 
@@ -331,6 +342,12 @@ public:
 	 * \sa startCamera
 	 */
 	virtual void stopCamera() = 0;
+
+	/**
+	 * Get currently running camera
+	 * \sa startCamera
+	 */
+	virtual Camera getCamera() = 0;
 
 	/**
 	 * Pause all processing and rendering
@@ -401,8 +418,9 @@ public:
 	 * \sa ESCREEN_ROTATION
 	 *
 	 * \param rotation screen rotation
+	 * \return true if the rotation has been changed, false otherwise
 	 */
-	virtual void setScreenRotation(const ESCREEN_ROTATION rotation) = 0;
+	virtual bool setScreenRotation(const ESCREEN_ROTATION rotation) = 0;
 
 	/**
 	 * Get screen rotation
@@ -497,14 +515,13 @@ public:
 	 *
 	 * \param enable If set to true the features are enabled, default is false
 	 *
-	 * \sa setAutoEnableAdvancedRenderingFeatures
+	 * \sa autoEnableAdvancedRenderingFeatures
 	 */
 	virtual void setAdvancedRenderingFeatures(const bool enable) = 0;
 	
 	/**
 	 * This is a convenience method for setAdvancedRenderingFeatures
-	 * It checks if metaio::isAdvancedRenderingSupported() (iOS) or
-	 * isAdvancedRenderingSupported (com.metaio.tools.SystemInfo, Android) 
+	 * It checks if isAdvancedRenderingSupported()
 	 * returns true or false and enables advanced rendering accordingly.
 	 *
 	 * \return true if advanced rendering was enabled, false if not
@@ -512,6 +529,16 @@ public:
 	 * \sa setAdvancedRenderingFeatures
 	 */
 	virtual bool autoEnableAdvancedRenderingFeatures() = 0;
+	
+	/**
+	 * Check if advanced rendering is supported on the current device or not.
+	 *
+	 * This is just a suggestion for where to use advanced rendering. Advanced 
+	 * rendering can be enabled on every device with setAdvancedRenderingFeatures(true).
+	 * 
+	 * \return true if advanced rendering is supported, false otherwise
+	 */
+	virtual bool isAdvancedRenderingSupported() = 0;
 	
 	/**
 	 * Sets the parameters for the Depth of Field (DoF) effect
@@ -727,20 +754,26 @@ public:
 	 * Toggle see-through state of the renderer.
 	 *
 	 * This function can be used to turn off the rendering of the camera image.
-	 * It is useful e.g. when overlaying the metaio SDK view on top of another view that renders the camera image.
+	 * It is useful e.g. when overlaying the metaio SDK view on top of another 
+	 * view that renders the camera image.
 	 *
-	 * \param seeThrough If true, the camera image is not displayed, otherwise it is drawn as by default.
-	 * \param seeThroughColor Sets the color that will be drawn as see through part
+	 * \param seeThrough If true, the camera image is not displayed, otherwise 
+	 * it is drawn as by default.
+	 *
+	 * \sa setSeeThroughColor
 	 */
 	virtual void setSeeThrough(bool seeThrough) = 0;
 	
 	/**
-	 * Sets the color for the seeh through parts
+	 * Set the background color for see-through mode.
+	 * The specified color is rendered instead of the camera image if
+	 * the see-through mode is enabled.
 	 *
-	 * \param red red value of see through color
-	 * \param green green value of see through color
-	 * \param blue blue value of see through color
-	 * \param alpha alpha value of see through color
+	 * \param red Red value of see through color in range [0,255]
+	 * \param green Green value of see through color in range [0,255]
+	 * \param blue Blue value of see through color in range [0,255]
+	 * \param alpha Alpha value of see through color in range [0,255]
+	 * \sa setSeeThrough
 	 */
 	virtual void setSeeThroughColor(unsigned int red,
 									unsigned int green,
@@ -766,12 +799,12 @@ public:
 	 * By default the translation is set to [0, 0, 0] and the look at to [0, 0, -100]
 	 *
 	 * \param translation The translation vector for the camera position
-	 * \param upVecto The camera's up vector
+	 * \param upVector The camera's up vector
 	 * \param lookAt The cameras look at position
 	 * \sa setStereoRendering
 	 */
 	virtual void setStereoRenderingLeftCameraTransformation(const Vector3d &translation,
-															const Vector3d &upVecotr = Vector3d(0.0f, 1.0f, 0.0f),
+															const Vector3d &upVector = Vector3d(0.0f, 1.0f, 0.0f),
 															const Vector3d &lookAt = Vector3d(0.0f, 0.0f, -100.0f)) = 0;
 	
 	/**
@@ -779,12 +812,12 @@ public:
 	 * By default the translation is set to [-10, 0, 0] and the look at to [0, 0, -100]
 	 *
 	 * \param translation The translation vector for the camera position
-	 * \param upVecto The camera's up vector
+	 * \param upVector The camera's up vector
 	 * \param lookAt The cameras look at position
 	 * \sa setStereoRendering
 	 */
 	virtual void setStereoRenderingRightCameraTransformation(const Vector3d &translation,
-															 const Vector3d &upVecotr = Vector3d(0.0f, 1.0f, 0.0f),
+															 const Vector3d &upVector = Vector3d(0.0f, 1.0f, 0.0f),
 															 const Vector3d &lookAt = Vector3d(0.0f, 0.0f, -100.0f)) = 0;
     
 	/**
@@ -989,10 +1022,11 @@ public:
 	 *
 	 * \param coordinateSystemID The (one-based) index of the coordinate system in which the 3D point is defined.
 	 * \param point A 3D point on the specified coordinate system.
+	 * \param forRelativeToScreenGeometry Set this to true to find correct screen coordinates for RTS geometries
 	 * \return A 2D vector containing the screen coordinates. The origin is at Top-Left that is consistent with
 	 *	the touch coordinates.
 	 */
-	virtual Vector2d getScreenCoordinatesFrom3DPosition(int coordinateSystemID, const Vector3d& point) = 0;
+	virtual Vector2d getScreenCoordinatesFrom3DPosition(int coordinateSystemID, const Vector3d& point, bool forRelativeToScreenGeometry = false) = 0;
 
 	/**
 	 * Converts screen coordinates to the corresponding 3D point on the plane of the tracked target.
@@ -1008,6 +1042,17 @@ public:
 	 */
 	virtual Vector3d get3DPositionFromScreenCoordinates(int coordinateSystemID, const Vector2d& point, const Vector3d& distance = Vector3d(0.0f, 0.0f, 0.0f), const Vector3d& normal = Vector3d(0.0f, 0.0f, 1.0f)) = 0;
 
+    /**
+	 * Converts screen coordinates to the corresponding 3D point on surface of the touched model.
+	 *
+	 * The function will only return (0,0,0) if there's no model at the given screenposition
+	 *
+	 * \param point The 2D screen coordinate to use.
+	 * \param useTriangleTest If true, all triangles are tested which is more accurate but slower. If set to false, bounding boxes are used instead.
+	 * \return A 3D vector containing the coordinates of the resulting 3D point.
+	 */
+	virtual Vector3d get3DLocalPositionFromScreenCoordinates(const Vector2d& point, const bool useTriangleTest = false) = 0;
+    
 	/**
 	 * Set the rendering limits for geometries with LLA coordinates.
 	 *
@@ -1033,6 +1078,13 @@ public:
 	virtual Vector2di getLLAObjectRenderingLimits() const = 0;
 
 	/**
+	 * Creates a group for annotated geometries or returns the existing one
+	 *
+	 * \return New or existing group
+	 */
+	virtual metaio::IAnnotatedGeometriesGroup* createAnnotatedGeometriesGroup() = 0;
+
+	/**
 	 * Creates or gets the billboard group object.
 	 *
 	 * Calling this function the first time will create a billboard group. Calling it again, will return the
@@ -1043,11 +1095,11 @@ public:
 	 * is adjusted (in the range [nearValue, farValue] see parameters) and then the billboards are arranged in
 	 * clip space that they don't overlap anymore.
 	 *
-	 * \param nearValue The minimum billboard-to-camera distance a billboard can have (default 580).
-	 * \param farValue The maximum billboard-to-camera distance a billboard can have (default 800).
+	 * \param nearValue The minimum billboard-to-camera distance a billboard can have (default 0.5).
+	 * \param farValue The maximum billboard-to-camera distance a billboard can have (default 3.0).
 	 * \return Pointer to the billboard group.
 	 */
-	virtual metaio::IBillboardGroup* createBillboardGroup(const float nearValue=580.f, const float farValue=800.f) = 0;
+	virtual metaio::IBillboardGroup* createBillboardGroup(const float nearValue=0.5f, const float farValue=3.f) = 0;
 
 	/**
 	 * Loads shader materials from XML (file or buffer)
@@ -1173,8 +1225,15 @@ public:
 	 * Restart all the necessary sensors that the current Tracking-System requires
 	 *
 	 * \sa pauseSensors
+	 * \sa getRunningSensors
 	 */
 	virtual void resumeSensors() = 0;
+
+	/**
+	 * Get currently running sensors that have been started by the SDK.
+	 * \sa metaio::ISensorsComponent
+	 */
+	virtual int getRunningSensors() const = 0;
 
 
 	/**

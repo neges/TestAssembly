@@ -123,7 +123,7 @@ namespace metaio
         virtual LLACoordinate getLocation() const;
         virtual Vector3d getGravity() const;
         virtual float getHeading() const;
-        virtual SensorValues getSensorValues() const;
+        virtual SensorValues getSensorValues();
 		
 		/** Return a pointer to the objective C object that you can work with
 		 * \return pointer to obj-c object

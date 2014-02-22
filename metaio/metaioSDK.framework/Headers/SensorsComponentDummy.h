@@ -1,4 +1,4 @@
-// Copyright 2007-2013 metaio GmbH. All rights reserved.
+// Copyright 2007-2014 metaio GmbH. All rights reserved.
 #ifndef __AS_SENSORSCOMPONENTWIN32_H__
 #define __AS_SENSORSCOMPONENTWIN32_H__
 
@@ -6,19 +6,15 @@
 #include <metaioSDK/MobileStructs.h>
 #include <metaioSDK/ISensorsComponent.h>
 
-#include <Common/AS_Matrix.h>
-
-
 namespace metaio
 {
 
 /**
- * \brief Interface for sensors (Location, Accelerometer and Compass
+ * Dummy sensors component that provides static sensor values.
  *
- * \anchor ISensorsComponentDummy
- * \todo make setter arguments const references. 
+ * \anchor ISensorsComponent
  */
-class SensorsComponentDummy: virtual public ISensorsComponent
+class SensorsComponentDummy: public ISensorsComponent
 {
 public:
 
@@ -42,7 +38,7 @@ public:
 	* \returns Sensor values (lla, gravity, accelerometer ...) currently stored in the
 	*  sensor component.
 	*/
-	virtual SensorValues getSensorValues() const;
+	virtual SensorValues getSensorValues();
 
 	/** Sets all sensor measurements at once.
 	* \param values Sensor values (lla, gravity, accelerometer ...) to be stored in the

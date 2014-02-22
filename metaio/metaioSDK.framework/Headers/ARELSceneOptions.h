@@ -48,7 +48,20 @@ enum EAREL_SCENE_OPTION
 	/** 
 	 * Defines a path to the shader materials file that should be set to the SDK
 	 */
-	EARELSO_SHADER_MATERIALS = 5
+	EARELSO_SHADER_MATERIALS = 5,
+    
+    
+    /**
+     * If this flag is set to true,  the old billboard visualization will be used
+     */
+    EARELSO_USE_LEGACY_VISUALIZATION = 6,
+
+	/**
+	 * Defines padding on bottom of screen to use with annotations in case of location-based channel
+	 *
+	 * \sa IAnnotatedGeometriesGroup::setBottomPadding
+	 */
+	EARELSO_PADDING_TO_ANNOTATIONS = 7
 };
 
 } // end of namespace metaio::common

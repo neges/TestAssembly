@@ -172,6 +172,12 @@ public:
 	 */
 	stlcompat::Vector<metaio::IGeometry*> getAllObjects();
 
+	/** 
+	 * Get a list of objects that are currently selected by gesture.
+	 * \return A vector of selected geometries
+	 */
+	stlcompat::Vector<metaio::IGeometry*> getSelectedObjects();
+
     
     /**
      * Select all the objects in the same group and record their initial states.

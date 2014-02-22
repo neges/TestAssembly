@@ -12,7 +12,7 @@ namespace metaio
 /** Sensor reading with timestamp */
 struct SensorReading
 { 
-	double timestamp;	///< timestamp in [s]
+	double timestamp;	///< timestamp (in seconds since system boot)
 	int accuracy;		///< accuracy - not yet really used (3 seems "good"...)
 	Vector3d values;	///< Three floating point numbers from a sensor.
 	                    ///< The interpretation depends on the sensor used.
@@ -27,14 +27,18 @@ struct SensorReading
 struct SensorValues
 {
 	LLACoordinate location; ///< Device location. Needed: SENSOR_LOCATION
+	
 	Vector3d gravity; ///< Normalized gravity vector. Needed: SENSOR_GRAVITY
-	double gravityTimestamp; ///< timestamp [s]
+	double gravityTimestamp; ///< timestamp (in seconds since system boot)
+	bool hasGravity() const { return gravityTimestamp > 0; }
 
 	float heading; ///< Heading in degrees, 0=North, 90=East, 180=South. Needed: SENSOR_HEADING
-	double headingTimestamp; ///< timestamp [s]
+	double headingTimestamp; ///< timestamp (in seconds since system boot)
+	bool hasHeading() const { return headingTimestamp > 0; }
 
 	metaio::Rotation attitude; ///< device attitude based on running sensors. Needed: SENSOR_ATTITUDE
-	double attitudeTimestamp; ///< timestamp [s]
+	double attitudeTimestamp; ///< timestamp (in seconds since system boot)
+	bool hasAttitude() const { return attitudeTimestamp > 0; }
 
 	bool	deviceIsMoving; ///< Indicates if device is moving. Needed: SENSOR_DEVICE_MOVEMENT
 
@@ -47,6 +51,11 @@ struct SensorValues
 	{
 	}
 
+	/** Copy constructor */
+	SensorValues(const SensorValues& other);
+
+	/** Assignment operator */
+	SensorValues& operator=(const SensorValues& other);
 };
 }
 

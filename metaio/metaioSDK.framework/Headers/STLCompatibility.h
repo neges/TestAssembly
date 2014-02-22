@@ -414,6 +414,11 @@ private:
 template<typename T> class Vector
 {
 public:
+	//public types
+
+	typedef std::vector<T> std_type;
+
+public:
 	/// Constructor for empty vector
 	Vector() :
 		m_pElements(0),
