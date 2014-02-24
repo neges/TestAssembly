@@ -26,6 +26,8 @@
                 <outlet property="dateLable" destination="Iw7-N7-9ID" id="WYU-Gq-Kj6"/>
                 <outlet property="descriptionText" destination="uPO-9b-ECJ" id="hKZ-TU-jEh"/>
                 <outlet property="descriptionTextView" destination="PGl-sf-Bmu" id="tWz-96-EtZ"/>
+                <outlet property="infectedPartsBto" destination="pzY-h8-oCZ" id="G4h-wj-pj2"/>
+                <outlet property="infectedPartsTable" destination="9Oh-g4-CSk" id="KcR-2W-HHt"/>
                 <outlet property="nameTextView" destination="ZUx-7j-Jm2" id="rz6-7a-8nN"/>
                 <outlet property="reportAddView" destination="sum-ws-3qh" id="5xP-Qw-BBG"/>
                 <outlet property="reportNameField" destination="5oH-PI-8iz" id="t74-jH-68g"/>
@@ -76,8 +78,8 @@
             <rect key="frame" x="0.0" y="0.0" width="1024" height="309"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <tabBar contentMode="center" barStyle="black" itemPositioning="centered" id="bmZ-Fw-8jp">
-                    <rect key="frame" x="260" y="0.0" width="504" height="49"/>
+                <tabBar contentMode="center" translucent="NO" itemPositioning="centered" id="bmZ-Fw-8jp">
+                    <rect key="frame" x="265" y="0.0" width="494" height="49"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
                         <tabBarItem title="work" image="maintenance.png" id="SPZ-kC-xrR"/>
@@ -85,7 +87,7 @@
                         <tabBarItem tag="2" title="structure" image="structure.png" id="Hh5-JM-Iex"/>
                         <tabBarItem tag="3" title="TrackingON" image="camON.png" id="LNe-67-Glb"/>
                     </items>
-                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
                         <outlet property="delegate" destination="-1" id="khU-iD-L8B"/>
                     </connections>
@@ -94,7 +96,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </view>
         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" style="plain" separatorStyle="none" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="w6k-jj-gIl" userLabel="structurTableView">
-            <rect key="frame" x="0.0" y="0.0" width="260" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="260" height="470"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <connections>
@@ -228,8 +230,15 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Related parts :" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8bA-zQ-2ys">
+                    <rect key="frame" x="554" y="51" width="122" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="5oH-PI-8iz">
-                    <rect key="frame" x="60" y="48" width="803" height="30"/>
+                    <rect key="frame" x="60" y="48" width="473" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits"/>
@@ -255,6 +264,7 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="qvC-ah-xtq">
                     <rect key="frame" x="886" y="5" width="128" height="96"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aFe-Rh-sGZ">
                     <rect key="frame" x="10" y="290" width="444" height="30"/>
@@ -276,6 +286,17 @@
                     </state>
                     <connections>
                         <action selector="saveReport:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="zIv-kO-5m7"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="pzY-h8-oCZ">
+                    <rect key="frame" x="670" y="23" width="208" height="78"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="none (click to add)">
+                        <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="addInfectedPartsToReport:" destination="1X8-W2-4Vw" eventType="touchUpInside" id="NXM-FG-oBJ"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" id="qHM-Lq-ejV">
@@ -414,6 +435,15 @@
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </view>
+        <tableView clipsSubviews="YES" tag="4" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="9Oh-g4-CSk" userLabel="Infectd Parts Table View">
+            <rect key="frame" x="0.0" y="0.0" width="260" height="288"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="dataSource" destination="1X8-W2-4Vw" id="ZDr-ZE-Scd"/>
+                <outlet property="delegate" destination="1X8-W2-4Vw" id="wSH-IN-635"/>
+            </connections>
+        </tableView>
     </objects>
     <resources>
         <image name="camON.png" width="30" height="30"/>

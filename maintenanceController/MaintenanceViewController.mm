@@ -83,53 +83,95 @@
 
 -(void) addView:(UIView*)aView
 			 to:(bool)show
- withAnimations:(bool)ani
+ withAnimationsFrom:(NSString*)ani
 {
 	BOOL doesContain = [glView.subviews containsObject:aView];
+	
+	CGFloat showX = 0;
+	CGFloat showY = 0;
+	CGFloat hideX = 0;
+	CGFloat hideY = 0;
+	
 		
-	if (show && !doesContain)
+	if (show && !doesContain) //einblenden
 	{
-		if (ani)
+		
+		if ([ani isEqualToString:@"top"])
+		{
+			showX = aView.frame.origin.x;
+			showY = 0;
+			hideX = aView.frame.origin.x;
+			hideY = - aView.frame.size.height;
+			
+		}
+		else if ([ani isEqualToString:@"right"])
+		{
+		
+			showX = 1024 - aView.frame.size.width;
+			showY = aView.frame.origin.y;
+			hideX = 1024;
+			hideY = aView.frame.origin.y;
+
+		}
+		else if ([ani isEqualToString:@"bottom"])
 		{
 			
-		aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
+			showX = aView.frame.origin.x;
+			showY = 768 - aView.frame.size.height;
+			hideX = aView.frame.origin.x;
+			hideY = 768 + aView.frame.size.height;
+			
+		}
 		
-		[UIView animateWithDuration:0.4
+		aView.frame = CGRectMake(hideX, hideY, aView.frame.size.width, aView.frame.size.height);
+		
+		[UIView animateWithDuration:0.5
 							  delay:0.0
 							options: UIViewAnimationCurveEaseIn
 						 animations:^{
-							 aView.frame = CGRectMake(0, 0, aView.frame.size.width, aView.frame.size.height);
+							 aView.frame = CGRectMake(showX, showY , aView.frame.size.width, aView.frame.size.height);
 						 }
 						 completion:^(BOOL finished){
 						 }];
-		}
+		
 		
 		[glView addSubview:aView];
 		
 		
 		
-	}else if (!show && doesContain){
+	}else if (!show && doesContain) //ausblenden
+	{
 		
 		[self.view endEditing:YES];
 		
-		if (ani) {
-		aView.frame = CGRectMake(0, 0, aView.frame.size.width, aView.frame.size.height);
-		
-		[UIView animateWithDuration:0.4
-							  delay:0.0
-							options: UIViewAnimationCurveEaseIn
-						 animations:^{
-							 aView.frame = CGRectMake(0, 0, aView.frame.size.width, - aView.frame.size.height);
-						 }
-						 completion:^(BOOL finished){}];
+		if ([ani isEqualToString:@"top"])
+		{
+			hideX = aView.frame.origin.x;
+			hideY = - aView.frame.size.height;
+			
+		}else if ([ani isEqualToString:@"right"])
+		{
+			hideX = 1024 + aView.frame.origin.y;
+			hideY = aView.frame.origin.y;
+			
+		}else if ([ani isEqualToString:@"bottom"])
+		{
+			hideX = aView.frame.origin.x;
+			hideY = 768 + aView.frame.size.height;
 			
 		}
 		
-	    [aView removeFromSuperview];
-				
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 aView.frame = CGRectMake(hideX, hideY , aView.frame.size.width, aView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+							 [aView removeFromSuperview];
+						 }];
 		
 	}
-	
 }
 
 
@@ -307,6 +349,8 @@
 			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:true	withObjects:nil];
 			if (!theSelectedModel)
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			
+			[workTableViewController getSelectedElement:[tempArray objectAtIndex:1]];
 		}
 		
 	}else{
@@ -335,6 +379,8 @@
 			[self select3dContentWithName:[tempArray objectAtIndex:1] withUIColor:@"green" toGroup:false	withObjects:nil];
 			if (!theSelectedModel)
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			
+			[workTableViewController getSelectedElement:[tempArray objectAtIndex:1]];
 		}
 	}
 	
@@ -371,10 +417,7 @@
 {
 	[tabBarView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds ].size.width - 49 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
 	[glView	addSubview:tabBarView];
-	
-	[structurTableView setFrame:CGRectMake([[UIScreen mainScreen] bounds ].size.height + 1, 0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
-	[glView addSubview:structurTableView];
-    
+	   
     savedCosID = 1;
 	tabBarTag = 0;
 	
@@ -388,14 +431,14 @@
 		case 0:
 			tabBarTag = 0;
 			[self slideTabBarIn:true];
-			[self slideTableIn:false];
+			[self addView:structurTableView to:false withAnimationsFrom:@"right"];
 
-			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
+			[self addView:[workTableViewController reportAddView] to:false withAnimationsFrom:@"top"];
 			
 			break;
 		case 1:
 			[self slideTabBarIn:true];
-			[self slideTableIn:false];
+			[self addView:structurTableView to:false withAnimationsFrom:@"right"];
 			
 			[workTableViewController addNewReport];
 			
@@ -407,14 +450,14 @@
 		case 2:
 			tabBarTag = 2;
 			[self slideTabBarIn:false];
-			[self slideTableIn:true];
-			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
+			[self addView:structurTableView to:true withAnimationsFrom:@"right"];
+			[self addView:[workTableViewController reportAddView] to:false withAnimationsFrom:@"top"];
 			
 			
 			break;
         case 3:
 			
-			[self addView:[workTableViewController reportAddView] to:false withAnimations:true];
+			[self addView:[workTableViewController reportAddView] to:false withAnimationsFrom:@"top"];
 			
             metaio::IGeometry* tempModel = [self modelForObjectname:[[tableParents objectAtIndex:0]objectAtIndex:1]];
 
@@ -468,7 +511,7 @@
 	NSInteger hideY = [[UIScreen mainScreen] bounds ].size.width - 49;
 	
 	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:1.0];
+	[UIView setAnimationDuration:0.5];
 	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
 	
 	if (ingoing == true)
@@ -483,22 +526,7 @@
 
 -(void)slideTableIn:(bool)ingoing
 {
-	
-	NSInteger showX = [[UIScreen mainScreen] bounds ].size.height - structurTableView.frame.size.width;
-	NSInteger hideX = [[UIScreen mainScreen] bounds ].size.height;
-	
-	//UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f,460.0f,320.0f,260.0f)];
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:1.0];
-	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
-	
-	if (ingoing == true)
-		[structurTableView setFrame:CGRectMake(showX,0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
-	else
-		[structurTableView setFrame:CGRectMake(hideX,0 ,structurTableView.frame.size.width    ,structurTableView.frame.size.height )];
-	
-	[UIView commitAnimations];
-	
+	[self addView:structurTableView to:ingoing withAnimationsFrom:@"right"];
 }
 
 
@@ -1042,6 +1070,7 @@ toMaxScreenSize:(CGSize)sSize
 			if ([tempCell.textLabel.text isEqual:[NSString stringWithFormat:@"%@%@", SubDivider,touchObjectsName]])
 			{
 				[structurTableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+				[workTableViewController getSelectedElement:touchObjectsName];
 			}
 		}
 		
@@ -1203,7 +1232,7 @@ toMaxScreenSize:(CGSize)sSize
 {
 
 	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:1.0];
+	[UIView setAnimationDuration:0.5];
 	
 	//toggle taBarView
 	[UIView setAnimationTransition:UIViewAnimationTransitionNone forView:tabBarView cache:YES];
@@ -1218,10 +1247,10 @@ toMaxScreenSize:(CGSize)sSize
 	if (tabBarPoint.y == 800)//war eingelappt
 	{
 		[tabBarView setFrame:CGRectMake(0, hideY ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
-		//da zu begin kein tab selektier wurde ist die tableView noch auf 1025
-		if (tablePoint.x == [[UIScreen mainScreen] bounds ].size.height) {
-			[self slideTableIn:true];
+		if ([structureTabBar selectedItem]) {
+			[self addView:structurTableView to:true withAnimationsFrom:@"right"];
 		}
+		
 		
 	}
 	else if (tabBarPoint.y == 900)//war ausgeklappt
@@ -1236,7 +1265,7 @@ toMaxScreenSize:(CGSize)sSize
 	{
 		[tabBarView setFrame:CGRectMake(0,800 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
 		if (tablePoint.x == [[UIScreen mainScreen] bounds ].size.height - structurTableView.frame.size.width) {
-			[self slideTableIn:false];
+			[self addView:structurTableView to:false withAnimationsFrom:@"right"];
 		}
 	}
 	

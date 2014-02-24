@@ -4,20 +4,19 @@
 		<description>Frontcover was broken on the top left edge. Has to change during next maintenace. </description>
 		<pic>020214_123255.png</pic>
 		<step>0</step>
+		<object>frontcover</object>
 	</report>
 	<report name="Twisted tube" date="10/02/14 11:32:54" user="Matthias Neges">
 		<description>Tube correced during this maintenance</description>
 		<pic>020214_123254.png</pic>
 		<step>2</step>
+		<object>tube</object>
 	</report>
 	<report name="Cleaning object" date="14/01/14 10:32:54" user="Jan-Luca Siewert">
 		<description>Cleaning of the grid using a brush and vacuum cleaner</description>
 		<pic>140114_103254.png</pic>
 		<step>3</step>
-	</report>
-	<report name="Test" date="19/02/14 01:56:17" user="Matthias Neges">
-		<description>Teggghh</description>
-		<pic></pic>
-		<step>Start</step>
+		<object>agrm</object>
+		<object>grid</object>
 	</report>
 </reports>

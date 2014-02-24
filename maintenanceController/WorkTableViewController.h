@@ -37,6 +37,12 @@
 	NSMutableArray* reportsArray;
 	NSMutableArray* addedReportsArray;
 	
+	NSMutableArray* infectedPartsArray;
+	
+	NSString* infectedPartSelected;
+
+	
+	
 	
 	
 	IBOutlet UITextView *descriptionTextView;
@@ -55,6 +61,11 @@
 	IBOutlet UIButton *reportPictureBto;
 	IBOutlet UIImageView *screenShotPreviewView;
 	IBOutlet UIButton *take5sScreenshotBto;
+	
+	IBOutlet UIButton *infectedPartsBto;
+	IBOutlet UITableView *infectedPartsTable;
+	
+	
 	
 	NSTimer* screenshotTimer;
 	int timerValue;
@@ -76,11 +87,14 @@
 
 
 
--(void)loadContent;
 
--(void)requestCameraImage:(UIImage*)requestedImage;
+- (void)loadContent;
 
--(void)addNewReport;
+- (void)requestCameraImage:(UIImage*)requestedImage;
+
+- (void)addNewReport;
+
+- (void)getSelectedElement:(NSString*)selectedElement;
 
 
 - (IBAction)nextTableCell:(id)sender;
@@ -89,6 +103,7 @@
 - (IBAction)addScreenshot:(id)sender;
 - (IBAction)cancelReport:(id)sender;
 - (IBAction)showReportPictureFull:(id)sender;
+- (IBAction)addInfectedPartsToReport:(id)sender;
 
 
 - (IBAction)screenshotCancel:(id)sender;
@@ -121,13 +136,17 @@
 
 -(void) addView:(UIView*)aView
 			 to:(bool)show
- withAnimations:(bool)ani;
+withAnimationsFrom:(NSString*)ani;
 
 -(void) removeWorkView:(bool)front;
 
 -(void)setObjectToInvisibleCos;
 
 -(void)getScreenshotFromMetaio;
+
+- (void)slideTableIn:(bool)ingoing;
+
+
 
 
 

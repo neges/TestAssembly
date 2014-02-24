@@ -412,6 +412,30 @@
 	
 }
 
++(NSMutableArray*)getValues:(NSString*)value
+		   OfElement:(TBXMLElement*)element
+{
+	NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+	
+	TBXMLElement* child = element->firstChild;
+	
+	if (child)
+	{
+		do
+		{
+			if ([[TBXML elementName:child] isEqualToString:value]){
+				
+				[tempArray addObject:[TBXML textForElement:child]];
+				
+			}
+			
+		}while ((child = child->nextSibling));
+	}
+	
+	return tempArray;
+	
+}
+
 
 +(NSMutableArray*)getAllInfectedObjectsForWorkInstruction:(TBXMLElement*)topElement
 {

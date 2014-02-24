@@ -27,6 +27,7 @@
 		reportAddView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, [super view].frame.size.width, [super view].frame.size.height)];
 		screenshotTakeView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, [super view].frame.size.height)];
 		screenshotUseView = [[UIView alloc]initWithFrame:CGRectMake(0, 0 , [super view].frame.size.width, [super view].frame.size.height)];
+		infectedPartSelected = [[NSString alloc]initWithFormat:@""];
 		
 	}
 
@@ -90,13 +91,10 @@
 	steps = [[NSMutableArray alloc]init];
 	[TBXMLFunctions getAllChilds:maintenance toArray:steps];
 	
-	currentStepRow = -1;
-	
 	hiddenParts = [[NSMutableArray alloc]init];
 	
-	
-	
-	
+	[self loadStep:[steps objectAtIndex:0]];
+
 
 }
 
@@ -120,6 +118,10 @@
 	
 	if (!reportsArray)
 		reportsArray = [[NSMutableArray alloc]init];
+	
+	if (!infectedPartsArray)
+		infectedPartsArray = [[NSMutableArray alloc]init];
+	
 
 	
 
@@ -161,6 +163,10 @@
 			return [reportsArray count];
 			break;
 			
+		case 4:
+			return [infectedPartsArray count];
+			break;
+			
 		default:
 			return 0;
 			break;
@@ -186,6 +192,38 @@
 	}
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+		if (tableView.tag == 4)
+			{
+						CGFloat cellWidth = tableView.frame.size.width;
+			
+						UIView *myView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, cellWidth, 40.0)];
+						[myView setBackgroundColor:[UIColor lightGrayColor]];
+			
+						UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+						[button setFrame:CGRectMake(0.0, 0.0, 100, 40.0)];
+						button.hidden = NO;
+						[button setBackgroundColor:[UIColor clearColor]];
+						[button	setTitle:@"add" forState:UIControlStateNormal];
+						[button addTarget:self action:@selector(addInfectedPart) forControlEvents:UIControlEventTouchDown];
+						[myView addSubview:button];
+				
+				
+						UIButton *button2 = [UIButton buttonWithType:UIButtonTypeCustom];
+						[button2 setFrame:CGRectMake(cellWidth - 100.0, 0.0, 100, 40.0)];
+						button2.hidden = NO;
+						[button2 setBackgroundColor:[UIColor clearColor]];
+						[button2	setTitle:@"close" forState:UIControlStateNormal];
+						[button2 addTarget:self action:@selector(exitInfectedPartsSelection) forControlEvents:UIControlEventTouchDown];
+						[myView addSubview:button2];
+			
+						return myView;
+						
+				}else
+							return nil;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
 	return nil;
@@ -195,6 +233,15 @@
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
 	return nil;	
+}
+
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+	
+	if (tableView.tag == 4)
+		return 40;
+	else
+		return 28;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -209,16 +256,25 @@
 	
 	if (tableView.tag == 0)
 	{
-			NSString *stepName = [steps objectAtIndex:indexPath.row];
-			cell.textLabel.text = stepName;
+			cell.textLabel.text = [steps objectAtIndex:indexPath.row];
+		//selektieren des Start steps
+		if (indexPath.row == 0)
+		{
+			[tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionTop];
+			[self loadStep:[steps objectAtIndex:indexPath.row]];
+			[self loadReportForStep:0];
+		}
+		
 	}
-
-	
 	else if (tableView.tag == 2)
 	{
-    
 		cell.textLabel.text = [reportsArray objectAtIndex:indexPath.row];
-		
+	}
+	else if (tableView.tag == 4)
+	{
+		cell.textLabel.text = [infectedPartsArray objectAtIndex:indexPath.row];
+		if ([infectedPartsArray count] - 1 == indexPath.row)
+			[tableView setEditing: YES animated: YES];
 	}
 	
     return cell;
@@ -232,11 +288,7 @@
 	
 	if (tableView.tag == 0)
 	{
-		if (currentStepRow == -1)
-			[self jumpToStep:0];
-		else
-			[self jumpToStep:indexPath.row];
-
+		[self jumpToStep:indexPath.row];
 
 	}else if (tableView.tag == 2)
 	{
@@ -257,7 +309,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView.tag == 2)
+    if (tableView.tag == 2 || tableView.tag == 4)
 		return YES;
 	else
 		return NO;
@@ -266,7 +318,8 @@
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (tableView.tag == 2 && editingStyle == UITableViewCellEditingStyleDelete)
+    
+	if (tableView.tag == 2 && editingStyle == UITableViewCellEditingStyleDelete)
 	{
 		NSString* delReportNamed = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
 		
@@ -311,6 +364,11 @@
 			
 		
     }
+	else if (tableView.tag == 4 && editingStyle == UITableViewCellEditingStyleDelete) //infected Parts Table
+	{
+		[infectedPartsArray removeObjectAtIndex:indexPath.row];
+		[infectedPartsTable reloadData];
+	}
 }
 
 #pragma mark -
@@ -363,13 +421,13 @@
 	[repImgView setImage:[reportPictureBto backgroundImageForState:UIControlStateNormal]];
 	[repImgScrollView setZoomScale:1.0];
 	
-	[delegate addView:repImgScrollView to:true withAnimations:true];
+	[delegate addView:repImgScrollView to:true withAnimationsFrom:@"top"];
 }
 
 -(IBAction)closeFullScreenReportImage:(id)sender
 {
 
-	[delegate addView:repImgScrollView to:false withAnimations:true];
+	[delegate addView:repImgScrollView to:false withAnimationsFrom:@"top"];
 	
 }
 
@@ -390,13 +448,29 @@
 	NSIndexPath *stepInd = [NSIndexPath indexPathForRow: stepInt inSection:0];
 	NSString* stepN = [stepsTable cellForRowAtIndexPath:stepInd].textLabel.text ;
 	
+
 	
 	
+
 	//Get Description
 	NSString* descriptionTextStr = [NSString stringWithFormat:@"Date : %@\r", [TBXMLFunctions getAttribute:@"date" OfElement:rep]];
 	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"User : %@\r",[TBXMLFunctions getAttribute:@"user" OfElement:rep]]];
 	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"Affects : %@\r\r",stepN]];
 	descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"%@",[TBXMLFunctions getValue:@"description" OfElement:rep]]];
+	
+	
+	//relatedParts holen
+	infectedPartsArray = [TBXMLFunctions getValues:@"object" OfElement:rep];
+	if ([infectedPartsArray count] > 0)
+	{
+		descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"\r\rRelated parts:\r"]];
+		for (int p = 0; p < [infectedPartsArray count] ; ++p)
+		{
+			descriptionTextStr = [descriptionTextStr stringByAppendingString:[NSString stringWithFormat:@"- %@\r", [infectedPartsArray objectAtIndex:p ]]];
+		}
+	}
+	
+	
 					   
 	[reportTextView setText:descriptionTextStr];
 	
@@ -432,9 +506,6 @@
 -(void) deleteReport:(NSString*)delString
 {
 
-	NSLog(@"Delete String : \r%@",delString);
-	
-	
 	//daten aus xml einlesen und als nsstring speichern
 	NSString *workinstructionsPath =  [NSString stringWithFormat:@"%@/%@",documentsDir,@"workinstructions"];
 	
@@ -452,8 +523,6 @@
 		//schreiben der XML
 		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 		
-		NSLog(@"New XML : \r%@",reportXMLSring);
-	
 		//Daten neu einlesen
 		[self loadReports];
 		
@@ -561,6 +630,12 @@
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<description>%@</description>\r",tDescription]];
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<pic>%@</pic>\r",tPic]];
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<step>%@</step>\r",tStep]];
+		for (int p = 0; p < [infectedPartsArray count]; ++p)
+		{
+			newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t\t<object>%@</object>\r",[infectedPartsArray objectAtIndex:p]]];
+		}
+		
+		
 		newReport = [newReport stringByAppendingString:[NSString stringWithFormat:@"\t</report>\r"]];
 			
 		reportXMLSring = [reportXMLSring stringByReplacingOccurrencesOfString:@"</reports>" withString:[NSString stringWithFormat:@"%@</reports>",newReport]];
@@ -575,10 +650,6 @@
 		
 		//schreiben der XML
 		[reportXMLSring writeToFile:xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-		
-		//in NSLOG schreiben
-		NSLog(@"Save\r %@", reportXMLSring);
-		
 
 		
 		//Leeren
@@ -593,7 +664,7 @@
 			
 			
 		
-		[delegate addView:reportAddView to:false withAnimations:true];
+		[delegate addView:reportAddView to:false withAnimationsFrom:@"top"];
 			
 		//Daten neu einlesen
 		[self loadReports];
@@ -634,15 +705,19 @@
 	NSString *stepName = [NSString stringWithFormat:@"%@",currentCell.textLabel.text];
 	[stepLable setText:stepName];
 	
+	//related parts leeren
+	[infectedPartsArray removeAllObjects];
+	[infectedPartsBto setTitle:@"none (click to add)" forState:UIControlStateNormal];
+	[infectedPartsTable reloadData];
+	
 	
 	//View laden
-	[delegate addView:reportAddView to:true withAnimations:true];
+	[delegate addView:reportAddView to:true withAnimationsFrom:@"top"];
 	[reportNameField becomeFirstResponder];
 	 descriptionText.delegate = self;
 	
-	
-	
-	
+
+		
 }
 -(IBAction)cancelReport:(id)sender
 {
@@ -652,11 +727,77 @@
 	[reportNameField setText:@""];
 	[screenshotView setImage:nil];
 	
-	[delegate addView:reportAddView to:false withAnimations:true];
+	[delegate addView:reportAddView to:false withAnimationsFrom:@"top"];
 
 }
 
 
+#pragma mark -
+#pragma mark Infected PArts
+#pragma mark -
+
+- (IBAction)addInfectedPartsToReport:(id)sender
+{
+		
+	//Table setzten
+	[infectedPartsTable setFrame:CGRectMake(1024-260, 480, 260, 288)];
+	[delegate addView:infectedPartsTable to:true withAnimationsFrom:@"right"];
+		
+	
+	//alles ausblenden
+	[delegate removeWorkView:true];
+	[reportAddView setHidden:true];
+	[reportAddView endEditing:true];
+	
+	//structureview einblenden
+	[delegate slideTableIn:true];
+	
+}
+
+-(IBAction)exitInfectedPartsSelection
+{
+	
+	//Table setzten
+	[delegate addView:infectedPartsTable to:false withAnimationsFrom:@"right"];
+	
+	//structureview einblenden
+	[delegate slideTableIn:false];
+	
+	
+	//alles einsblenden
+	[delegate removeWorkView:false];
+	[reportAddView setHidden:false];
+	[reportAddView endEditing:false];
+	
+	if ([infectedPartsArray count] == 0)
+		[infectedPartsBto setTitle:@"none (click to add)" forState:UIControlStateNormal];
+	else if ([infectedPartsArray count] == 1)
+		[infectedPartsBto setTitle:[NSString stringWithFormat:@"%@ (click to edit)",[infectedPartsArray objectAtIndex:0]]  forState:UIControlStateNormal];
+	else
+		[infectedPartsBto setTitle:[NSString stringWithFormat:@"%i selected (click to edit)",[infectedPartsArray count]] forState:UIControlStateNormal];
+	
+	
+}
+-(IBAction)addInfectedPart
+{
+	if (![infectedPartSelected isEqualToString:@""] && infectedPartSelected)
+	{
+		
+		if (![infectedPartsArray containsObject: infectedPartSelected])
+		{
+			[infectedPartsArray addObject:infectedPartSelected];
+			[infectedPartsTable reloadData];
+		}
+		
+	}
+	
+	
+}
+
+- (void)getSelectedElement:(NSString*)selectedElement
+{
+	infectedPartSelected = selectedElement;
+}
 
 #pragma mark -
 #pragma mark Sceenshots
@@ -670,7 +811,7 @@
 	[reportAddView endEditing:true];
 	
 	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:true withAnimations:false];
+	[delegate addView:screenshotTakeView to:true withAnimationsFrom:@"bottom"];
 	[screenshotTakeView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
 	
 	
@@ -680,8 +821,8 @@
 
 - (IBAction)takeScreenshot:(id)sender
 {
-
-	[delegate getScreenshotFromMetaio];
+	if (![infectedPartSelected isEqualToString:@""])
+		[delegate getScreenshotFromMetaio];
 		
 }
 
@@ -721,8 +862,8 @@
 	[screenShotPreviewView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.height, [[UIScreen mainScreen] bounds].size.width)];
 	
 	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:false withAnimations:false];
-	[delegate addView:screenshotUseView to:true withAnimations:false];
+	[delegate addView:screenshotTakeView to:false withAnimationsFrom:@"bottom"];
+	[delegate addView:screenshotUseView to:true withAnimationsFrom:@"bottom"];
 
 
 }
@@ -734,14 +875,14 @@
 	//Bild übertragen
 	[screenshotView setImage:screenShotPreviewView.image];
 	
-	//alles ausblenden
+	//alles einblenden
 	[delegate removeWorkView:false];
 	[reportAddView setHidden:false];
 	[reportAddView endEditing:false];
 	
-	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:false withAnimations:false];
-	[delegate addView:screenshotUseView to:false withAnimations:false];
+	//screenshotleiste ausblenden
+	[delegate addView:screenshotTakeView to:false withAnimationsFrom:@"bottom"];
+	[delegate addView:screenshotUseView to:false withAnimationsFrom:@"bottom"];
 	
 	
 	
@@ -753,8 +894,8 @@
 	[screenShotPreviewView setImage:nil];
 	
 	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:true withAnimations:false];
-	[delegate addView:screenshotUseView to:false withAnimations:false];
+	[delegate addView:screenshotTakeView to:true withAnimationsFrom:@"bottom"];
+	[delegate addView:screenshotUseView to:false withAnimationsFrom:@"bottom"];
 	
 	
 	
@@ -764,14 +905,14 @@
 - (IBAction)screenshotCancel:(id)sender
 {
 	
-	//alles ausblenden
+	//alles einblenden
 	[delegate removeWorkView:false];
 	[reportAddView setHidden:false];
 	[reportAddView endEditing:false];
 	
 	//screenshotleiste einblenden
-	[delegate addView:screenshotTakeView to:false withAnimations:false];
-	[delegate addView:screenshotUseView to:false withAnimations:false];
+	[delegate addView:screenshotTakeView to:false withAnimationsFrom:@"bottom"];
+	[delegate addView:screenshotUseView to:false withAnimationsFrom:@"bottom"];
 }
 
 - (IBAction)virtualModeChange:(id)sender

@@ -32,6 +32,9 @@
 +(NSString*)getValue:(NSString*)value
 		   OfElement:(TBXMLElement*)element;
 
++(NSMutableArray*)getValues:(NSString*)value
+				  OfElement:(TBXMLElement*)element;
+
 
 +(NSString*)getAttribute:(NSString*)attrib
 			   OfElement:(TBXMLElement*)element;
