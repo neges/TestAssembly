@@ -16,6 +16,7 @@
 
 @synthesize delegate;
 @synthesize reportAddView, screenshotTakeView, screenshotUseView;
+@synthesize addingReport;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -122,8 +123,35 @@
 	if (!infectedPartsArray)
 		infectedPartsArray = [[NSMutableArray alloc]init];
 	
-
+	//Alle Elemente mit Reports suchen und ablegen für die Structure View
+	if (!reportsElementsArray)
+		reportsElementsArray = [[NSMutableArray alloc]init];
 	
+	
+	//alle Reports holen
+	[reportsArray removeAllObjects];
+	[TBXMLFunctions getAllChilds:reports toArray:reportsArray];
+	
+	for (int a = 0; a < [reportsArray count]; ++a )
+	{
+		NSMutableArray* tempReports = [[NSMutableArray alloc]init];
+		
+		TBXMLElement* reportTBXMLElement = [TBXMLFunctions getElement:reports ByName:[reportsArray objectAtIndex:a]];
+		
+		tempReports = [TBXMLFunctions	getValues:@"object" OfElement:reportTBXMLElement];
+				
+		for (int aa = 0; aa < [tempReports count]; ++aa )
+		{
+			NSMutableArray* temp = [[NSMutableArray alloc]init];
+			[temp addObject:[tempReports objectAtIndex:aa]];
+			[temp addObject:[reportsArray objectAtIndex:a]];
+			[reportsElementsArray addObject:temp];
+		}
+		
+	}
+	
+	[delegate getReportsForElements:reportsElementsArray];
+		
 
 }
 
@@ -677,11 +705,15 @@
 		[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:false scrollPosition:UITableViewScrollPositionTop];
 		
 	}
+	
+	addingReport = false;
 
 }
 
 -(void)addNewReport
 {
+	addingReport = true;
+	
 	
 	//Zeit holen
 	NSDateFormatter *inFormat = [[NSDateFormatter alloc] init];
@@ -728,17 +760,56 @@
 	[screenshotView setImage:nil];
 	
 	[delegate addView:reportAddView to:false withAnimationsFrom:@"top"];
+	
+	addingReport = false;
+
+}
+
+#pragma mark -
+#pragma mark Reports for Element
+#pragma mark -
+
+- (void)getReportsForElementNamed:(NSString*)repElementName
+{
+	if (!reportsElementsArray)
+		return;
+	
+	[reportsArray removeAllObjects];
+	
+	for (int ren = 0; ren < [reportsElementsArray count]; ++ren)
+	{
+		if ([[[reportsElementsArray objectAtIndex:ren]objectAtIndex:0] isEqualToString:repElementName])
+		{
+			[reportsArray addObject:[[reportsElementsArray objectAtIndex:ren]objectAtIndex:1]];
+		}
+	}
+	
+	[reportsTable reloadData];
+	
+	[delegate selectTabBarItem:0];
+	[delegate slideTabBarIn:true];
+	
+	
+	if ([reportsArray count] == 0)
+		return;
+	
+	[reportsTable selectRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] animated:false scrollPosition:UITableViewScrollPositionTop];
+	[self loadReportNamed:[reportsArray objectAtIndex:0] ];
+	[descriptionTextView setHidden:true];
+	[stepsTable deselectRowAtIndexPath:[NSIndexPath indexPathForItem:currentStepRow inSection:0] animated:false];
 
 }
 
 
+
+
 #pragma mark -
-#pragma mark Infected PArts
+#pragma mark Infected Parts
 #pragma mark -
 
 - (IBAction)addInfectedPartsToReport:(id)sender
 {
-		
+	
 	//Table setzten
 	[infectedPartsTable setFrame:CGRectMake(1024-260, 480, 260, 288)];
 	[delegate addView:infectedPartsTable to:true withAnimationsFrom:@"right"];
@@ -1025,7 +1096,7 @@
 	
 	//sicherstellen das das richtige Texfeld sichbar ist
 	[descriptionTextView setHidden:false];
-	[reportTextView	setHidden:true];
+	[delegate slideTableIn:false];
 	
 	//exit if not possible
 	if (stepRow == [stepsTable numberOfRowsInSection:0] || stepRow < 0) {

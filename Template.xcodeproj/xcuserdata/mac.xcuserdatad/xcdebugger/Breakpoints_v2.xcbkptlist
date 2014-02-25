@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "tbxml/TBXMLFunctions.m"
-            timestampString = "414001193.474499"
+            timestampString = "415019588.805804"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "319"
-            endingLineNumber = "319"
+            startingLineNumber = "317"
+            endingLineNumber = "317"
             landmarkName = "+saveAttributForName:withValue:toElement:"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "tbxml/TBXMLFunctions.m"
-            timestampString = "414001204.082698"
+            timestampString = "415019588.805804"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "+saveAttributForName:withValue:toElement:"
             landmarkType = "5">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "maintenanceController/MaintenanceViewController.mm"
-            timestampString = "414956899.060339"
+            timestampString = "415021306.769202"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "353"
-            endingLineNumber = "353"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
             <Locations>
@@ -73,11 +73,11 @@
                   symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
                   moduleName = "itmAR"
                   urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "414958644.0471"
+                  timestampString = "415024389.2216"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "353"
-                  endingLineNumber = "353"
+                  startingLineNumber = "390"
+                  endingLineNumber = "390"
                   offsetFromSymbolStart = "1052">
                </Location>
                <Location
@@ -87,11 +87,11 @@
                   symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
                   moduleName = "itmAR"
                   urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "414958644.047301"
+                  timestampString = "415024389.22186"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "353"
-                  endingLineNumber = "353"
+                  startingLineNumber = "390"
+                  endingLineNumber = "390"
                   offsetFromSymbolStart = "2512">
                </Location>
             </Locations>
@@ -104,74 +104,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "maintenanceController/WorkTableViewController.mm"
-            timestampString = "414958939.207924"
+            timestampString = "415024389.1716"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "783"
-            endingLineNumber = "783"
+            startingLineNumber = "854"
+            endingLineNumber = "854"
             landmarkName = "-addInfectedPart"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "maintenanceController/MaintenanceViewController.mm"
-            timestampString = "414957930.097439"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
-                  moduleName = "itmAR"
-                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "414958644.047715"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "379"
-                  endingLineNumber = "379"
-                  offsetFromSymbolStart = "1748">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
-                  moduleName = "itmAR"
-                  urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "414958644.047887"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "379"
-                  endingLineNumber = "379"
-                  offsetFromSymbolStart = "2448">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "maintenanceController/WorkTableViewController.mm"
-            timestampString = "414958893.955017"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

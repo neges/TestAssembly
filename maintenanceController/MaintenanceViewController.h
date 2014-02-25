@@ -35,6 +35,7 @@
 	
     NSMutableArray* tableModels; //Array für die jeweilige TableView
 	NSMutableArray* tableParents; //Array für die jeweiligen TopElemente der TableView
+	NSMutableArray* reportElements;
 
 	
 	//Selektierung
@@ -43,7 +44,8 @@
 	NSTimer *highlightTimer; //Timmer für das Blinken
 	
 	bool isBtoEnable; //Variable die den Status des letzten Parents der TableView speicher --> wenn nicht aktiv dann alle Unterelemente bis zum ende nicht aktiv
-
+	
+	
 	NSMutableArray* selectedModels; //Array in dem die selektierten Models und Groups abgelegt sind
     TBXMLElement *selectedElement; //selektiertes Element
 	

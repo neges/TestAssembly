@@ -19,7 +19,7 @@
 			<object name="screw_FRONT2" visible="true"/>
 			<object name="screw_FRONT3" visible="true"/>
 		</group>
-        <group name="Parts" visible="true">
+        <group name="parts" visible="true">
             <object name="grid_TOP" visible="true"/>
             <object name="tube" visible="true"/>
              <group name="Covers" visible="true">

@@ -35,6 +35,7 @@
 	
 	NSMutableArray* hiddenParts ;
 	NSMutableArray* reportsArray;
+	NSMutableArray* reportsElementsArray;
 	NSMutableArray* addedReportsArray;
 	
 	NSMutableArray* infectedPartsArray;
@@ -84,6 +85,7 @@
 @property (nonatomic, strong) IBOutlet UIView *reportAddView;
 @property (nonatomic, strong) IBOutlet UIView *screenshotTakeView;
 @property (nonatomic, strong) IBOutlet UIView *screenshotUseView;
+@property (nonatomic) bool addingReport; //Variable um festzuhalen das gerade eine Report geadded wird
 
 
 
@@ -95,6 +97,8 @@
 - (void)addNewReport;
 
 - (void)getSelectedElement:(NSString*)selectedElement;
+
+- (void)getReportsForElementNamed:(NSString*)repElementName;
 
 
 - (IBAction)nextTableCell:(id)sender;
@@ -140,11 +144,17 @@ withAnimationsFrom:(NSString*)ani;
 
 -(void) removeWorkView:(bool)front;
 
--(void)setObjectToInvisibleCos;
+-(void) setObjectToInvisibleCos;
 
--(void)getScreenshotFromMetaio;
+-(void) getScreenshotFromMetaio;
 
-- (void)slideTableIn:(bool)ingoing;
+- (void) slideTableIn:(bool)ingoing;
+
+- (void)slideTabBarIn:(bool)ingoing;
+
+- (void) getReportsForElements:(NSMutableArray*)gArray;
+
+- (void) selectTabBarItem:(NSInteger)tabBarItemIndex;
 
 
 

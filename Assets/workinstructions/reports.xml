@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <reports>
-	<report name="Broken Frontcover" date="02/02/14 12:32:54" user="Matthias Neges">
+	<report name="Broken frontcover" date="02/02/14 12:32:54" user="Matthias Neges">
 		<description>Frontcover was broken on the top left edge. Has to change during next maintenace. </description>
 		<pic>020214_123255.png</pic>
 		<step>0</step>
@@ -13,10 +13,11 @@
 		<object>tube</object>
 	</report>
 	<report name="Cleaning object" date="14/01/14 10:32:54" user="Jan-Luca Siewert">
-		<description>Cleaning of the grid using a brush and vacuum cleaner</description>
+		<description>Cleaning grid and covers using a brush and vacuum cleaner</description>
 		<pic>140114_103254.png</pic>
 		<step>3</step>
-		<object>agrm</object>
-		<object>grid</object>
+		<object>grid_TOP</object>
+		<object>frontcover</object>
+		<object>backcover</object>
 	</report>
 </reports>

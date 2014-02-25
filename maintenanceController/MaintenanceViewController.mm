@@ -17,6 +17,7 @@
 
 @implementation MaintenanceViewController
 	const NSInteger UNIQUE_TAG = 11111;
+	const NSInteger UNIQUE_TAG2 = 22222;
 	static NSString *CellIdentifier = @"Cell";
 	static NSString *SubDivider = @"   ├ ";
 	static NSString *TopDivider = @"   ";
@@ -200,7 +201,6 @@
 	
 	tableModels = [TBXMLFunctions getAllTableViewSubElements:selectedElement];
 
-	
     return [tableModels count] + [tableParents count];
 }
 
@@ -224,7 +224,7 @@
 
 	}
 	
-	//Button für clickEvent erzeigen
+	//Button für clickEvent erzeugen
 	UIButton *button = (UIButton *)[cell viewWithTag:UNIQUE_TAG];
 	
 	if (!button)
@@ -245,6 +245,27 @@
 		
 		[cell addSubview:button];
 	}
+	
+	//Button für Reports erzeugen
+	UIButton *button2 = (UIButton *)[cell viewWithTag:UNIQUE_TAG2];
+	
+	if (!button2)
+	{
+		
+		button2 = [UIButton buttonWithType:UIButtonTypeCustom];
+		button2.tag = UNIQUE_TAG2;
+		
+		[button2 addTarget: self
+				   action: @selector(reportsButtonPressed:withEvent:)
+		 forControlEvents: UIControlEventTouchDown];
+		
+		button2.frame = CGRectMake(210, (cell.frame.size.height - 20) / 2 ,20,20);
+		[button2 setBackgroundImage: [UIImage imageNamed:@"document.png"] forState:UIControlStateNormal];
+		
+		[cell addSubview:button2];
+	}
+	
+	
     
 	NSArray* tempArray;
 	
@@ -300,6 +321,22 @@
 		[button setSelected:true];
 	}else{
 		[button setSelected:false];
+	}
+	
+	
+	//Button hinzufügen wenn für das Element Reports vorliegen
+	button2 = (UIButton *)[cell viewWithTag:UNIQUE_TAG2];
+	[button2 setHidden:YES];
+	
+	if (reportElements)
+	{
+		for (int re = 0 ; re < [reportElements count]; ++re)
+		{
+			if ([[tempArray objectAtIndex:1] isEqualToString:[[reportElements objectAtIndex:re]objectAtIndex:0]] ) {
+				[button2 setHidden:NO];
+				break;
+			}
+		}
 	}
 
     
@@ -406,6 +443,15 @@
 {
 
 	[structurTableView reloadData];
+}
+
+
+- (void) selectTabBarItem:(NSInteger)tabBarItemIndex
+{
+
+	[structureTabBar setSelectedItem:[structureTabBar.items objectAtIndex:tabBarItemIndex]];
+
+
 }
 
 
@@ -858,6 +904,18 @@ toMaxScreenSize:(CGSize)sSize
 #pragma mark Content Getter
 #pragma mark -
 
+- (void)getReportsForElements:(NSMutableArray*)gArray //Übergabe der Elemente für die Reports vorliegen
+{
+	
+	if (!reportElements)
+	{
+		reportElements = [[NSMutableArray alloc]init];
+	}
+	
+	reportElements = gArray;
+	
+}
+
 - (metaio::IGeometry *)modelForObjectname: (NSString *)objectname
 {
 	
@@ -1224,6 +1282,36 @@ toMaxScreenSize:(CGSize)sSize
 	//Neuladen wenn es ein Top Element ist
 	if (indexPath.row < [tableParents count])
 		[structurTableView reloadData];
+
+}
+
+- (void) reportsButtonPressed: (id) sender withEvent: (UIEvent *) event
+{
+	
+	//nur mache wenn man nicht gerade einen neuen report erstell
+	if([workTableViewController addingReport])
+		return;
+	
+	
+	//Touchposition als Indexpath
+    UITouch * touch = [[event allTouches] anyObject];
+    CGPoint location = [touch locationInView: self.structurTableView];
+    NSIndexPath * indexPath = [self.structurTableView indexPathForRowAtPoint: location];
+	
+	
+	NSArray* tempArray;
+	
+	if (indexPath.row == [tableParents count]-1) //Letzte Top element
+		tempArray = [tableParents objectAtIndex:indexPath.row ];
+	else if((indexPath.row > [tableParents count] - 1)) //Subelement
+		tempArray = [tableModels objectAtIndex:(indexPath.row - [tableParents count]) ];
+	else //Parent des letzten Top elements also mach nix
+		return;
+	
+	NSString* cellText = [tempArray objectAtIndex:1];
+	
+	[workTableViewController getReportsForElementNamed:cellText];
+
 
 }
 
