@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<TrackingData>
+	<Sensors>
+		<Sensor Type="MarkerBasedSensorSource">
+			<SensorID>Markertracking1</SensorID>
+			<Parameters>
+				<MarkerTrackingParameters>
+					<trackingQuality>robust</trackingQuality>
+					<thresholdOffset>128</thresholdOffset>
+					<numberOfSearchIterations>5</numberOfSearchIterations>
+				</MarkerTrackingParameters>
+			</Parameters>
+			<SensorCOS>
+				<SensorCosID>RW_right.png</SensorCosID>
+				<Parameters>
+					<MarkerParameters>
+						<MatrixID>2</MatrixID>
+							<referenceImage widthMM="380.000000" heightMM="230.000000" binary="0" qualityThreshold="0.80">RW_right.png</referenceImage>
+					</MarkerParameters>
+				</Parameters>
+			</SensorCOS>
+			<SensorCOS>
+				<SensorCosID>RW_left.png</SensorCosID>
+				<Parameters>
+					<MarkerParameters>
+						<MatrixID>3</MatrixID>
+							<referenceImage widthMM="380.000000" heightMM="230.000000" binary="0" qualityThreshold="0.80">RW_left.png</referenceImage>
+					</MarkerParameters>
+				</Parameters>
+			</SensorCOS>
+		</Sensor>
+	</Sensors>
+	<Connections>
+		<Cos>
+			<Name>RW_right.png</Name>
+			<SensorSource>
+				<SensorCosID>RW_right.png</SensorCosID>
+			</SensorSource>
+		</Cos>
+		<Cos>
+			<Name>RW_left.png</Name>
+			<SensorSource>
+				<SensorCosID>RW_left.png</SensorCosID>
+			</SensorSource>
+		</Cos>
+	</Connections>
+</TrackingData>

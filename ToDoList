@@ -1,1 +1,32 @@
 To Do List
+
+
+Navigation:
+1. Beispiel Feuerlöscher: 
+	•	- liegen in verschiedenen Größen vor, daher beim export ein Referenzimage nehmen (100x100) und entsprechend den scale dazu errechnen und das Referenzimage, den scale mit übertragen in xml
+	•	bei markererkennung in metaio wird nur das Referenzimage genutzt
+	•	bei der markersuche wird die Distanz jeweils gemäß des scales umgerechnet
+--> damit sollte auch eine Identifizierung verschiedener großen ermöglicht werden
+--> in Prototyp implementieren und kleinen Test aufnehmen
+
+
+2. Farbe des Zeichens als [uicolor] in excel hinterlegen und später dementsprechend darstellen
+--> aktuell hardcoded grün und rot
+
+
+3. Kompass deaktivier + per touch steuern
+
+4. zwischendurch 0 Position beim SChrittzähler
+
+5. Plan mit Shrittzähler abgleichen und immer dem Gang nachgehen
+
+6. Compass Kalibirierung mit Marker fehlerhaft
+
+7. Compass sehr unzuverlässig. entweder ipad 5 und/oder
+beschleunigungssensoren nutzen.
+
+8. Schrittzähler haut immer noch dazwischen. kommt teilweise aus
+"speicher" nach markererkennung.
+
+9. Abstände passen nicht (einstellbar über gui) Vll besser im neuen
+gebäude da bessere eindeutigere Zeichen.
