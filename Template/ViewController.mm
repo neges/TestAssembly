@@ -20,16 +20,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    
+	
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-	MaintenanceViewController *mvc = [[MaintenanceViewController alloc]init];
 	
-	[self presentViewController:mvc animated:YES completion:nil];
+	navigationViewController *nvc = [[navigationViewController alloc]init];
+	
+	[self presentViewController:nvc animated:YES completion:nil];
 
+	
+	
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,11 +40,23 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)loadModul
+- (IBAction)startMaintenance:(id)sender
 {
+	MaintenanceViewController *mvc = [[MaintenanceViewController alloc]init];
 	
+	[self presentViewController:mvc animated:YES completion:nil];
 
 }
+
+- (IBAction)startNavigation:(id)sender
+{
+
+	navigationViewController *nvc = [[navigationViewController alloc]init];
+	
+	[self presentViewController:nvc animated:YES completion:nil];
+	
+}
+
 
 
 

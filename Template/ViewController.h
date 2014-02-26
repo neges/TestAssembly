@@ -9,6 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MaintenanceViewController.h"
+#import "navigationViewController.h"
 
 
 @interface ViewController : UIViewController
@@ -17,4 +18,7 @@
     
 }
 
+- (IBAction)startMaintenance:(id)sender;
+
+- (IBAction)startNavigation:(id)sender;
 @end

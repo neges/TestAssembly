@@ -22,11 +22,7 @@
 #import "MetaioSDKViewController.h"
 
 
-
-@protocol navigationViewControllerDelegate;
-
-
-@interface navigationViewController : MetaioSDKViewController < UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, CLLocationManagerDelegate>
+@interface navigationViewController : MetaioSDKViewController < UITableViewDelegate, CLLocationManagerDelegate>
 
 {
 	
@@ -70,14 +66,18 @@
 	IBOutlet UILabel *distanceLabel;
 
 	
+	//SignsView
+	IBOutlet UIView* signsView;
+	IBOutlet UIView* sign1;
+	IBOutlet UIView* sign2;
+	IBOutlet UIView* sign3;
 	
 	NSString *navigationDirectory;
 	
 	UIView *mapView; //view für die map
-	IBOutlet UIScrollView *mapScrollView;  //Scroll View für die Map
-	IBOutlet UIImageView	*mapImageView; //ImageView die in der ScrollView liegt und die map.png läd
+	UIScrollView *mapScrollView;  //Scroll View für die Map
+	UIImageView	*mapImageView; //ImageView die in der ScrollView liegt und die map.png läd
 	CALayer *mapPositionLayer; //layer für die Position mit Blickwinkel
-	UITableView *signsTableView; //TableView für das einblenden der Signs
 	NSArray *markerListXML; //Array mit allen Marker werden gespeichert
 	
 	//Variablen für die dynamische TableView
@@ -102,9 +102,7 @@
 	SignClass *detectedSign; //detektiertes Schild
     MapClass *loadedMap; //Daten zur geladene Map
 	
-	UIView *detectionView; //Button für die aktivierung der Erkennung / deaktivierung des Schrittzählers
 	BOOL isSignDetected; //Bool um abzufragen ob das derektierte Schild bereits erkannt wurde
-	BOOL searchForSign; //Bool wenn die Markerkennung genutzt und er Schirttzähler deaktiviert wird
 	
 	UIView *setPostitonView; //View mit der eine neue Position gesetzt werden kann
 	CGPoint tapPointInView; //longPress Point Coords
@@ -119,8 +117,6 @@
 @property (nonatomic, strong) CMStepCounter *cmStepCounter;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
-@property(nonatomic)id<navigationViewControllerDelegate>myNavigationViewControllerDelegate;
-
 - (IBAction)showConfigView :(id)sender;
 
 - (IBAction)closeConfigView :(id)sender;
@@ -130,42 +126,6 @@
 - (IBAction)setTrueNorth :(id)sender;
 
 - (IBAction)deletePath :(id)sender;
-
-
-
-- (void) isTouch: (bool) isTouched
-	  atLocation: (CGPoint) touchPoint;
-
-
-- (void) drawCircleAtPoint: (CGPoint) circlePoint
-				 withColor: (UIColor*) drawColor
-				   toLayer: (NSString*) dLayer;
-
-- (void) deleteLayerWithName:(NSString*)layerName;
-
-- (void) loadSignsFromXML: (NSString*) xmlFile;
-
-- (void) detectMarkerNamed: (NSString*) dMarker
-			   withQuality: (CGFloat) dQuality
-				inDistance: (CGFloat) dDistance
-				  andAngel: (CGFloat) dAngle;
-
-- (void)setConfigForPedometer: (bool)aktiv
-				   sensitvity:(CGFloat) sensitivity
-				   stepLength:(CGFloat) stepLength;
-
-
-- (void)setConfigForDetection: (bool)aktiv
-					   ration:(CGFloat) ratio;
-
-- (void) writeTrackingXMLforSigns: (NSArray*) markerList
-						   toFile: (NSString*) xmlName
-			 withThresholdQuality: (CGFloat) thresholdQuality;
-
-- (void) correctTrueNorthWith: (CGFloat)correctionAngle;
-
-
-- (void) resetToCurrentPosition;
 
 
 @end

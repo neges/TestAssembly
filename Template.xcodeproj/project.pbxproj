@@ -30,7 +30,6 @@
 		043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.mm */; };
 		04AFAC2E18BCB7D800702A3E /* document.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AFAC2D18BCB7D800702A3E /* document.png */; };
 		04AFAC4618BCF00B00702A3E /* MapClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC3B18BCF00B00702A3E /* MapClass.m */; };
-		04AFAC4718BCF00B00702A3E /* MapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC3D18BCF00B00702A3E /* MapController.m */; };
 		04AFAC4818BCF00B00702A3E /* SignClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC3F18BCF00B00702A3E /* SignClass.m */; };
 		04AFAC4918BCF00B00702A3E /* ARMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC4218BCF00B00702A3E /* ARMarker.m */; };
 		04AFAC4A18BCF00B00702A3E /* ARPictureMarkerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC4518BCF00B00702A3E /* ARPictureMarkerConfiguration.m */; };
@@ -98,8 +97,6 @@
 		04AFAC2D18BCB7D800702A3E /* document.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = document.png; sourceTree = "<group>"; };
 		04AFAC3A18BCF00B00702A3E /* MapClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapClass.h; sourceTree = "<group>"; };
 		04AFAC3B18BCF00B00702A3E /* MapClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapClass.m; sourceTree = "<group>"; };
-		04AFAC3C18BCF00B00702A3E /* MapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapController.h; sourceTree = "<group>"; };
-		04AFAC3D18BCF00B00702A3E /* MapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapController.m; sourceTree = "<group>"; };
 		04AFAC3E18BCF00B00702A3E /* SignClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignClass.h; sourceTree = "<group>"; };
 		04AFAC3F18BCF00B00702A3E /* SignClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignClass.m; sourceTree = "<group>"; };
 		04AFAC4118BCF00B00702A3E /* ARMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMarker.h; sourceTree = "<group>"; };
@@ -265,8 +262,6 @@
 			children = (
 				04AFAC3A18BCF00B00702A3E /* MapClass.h */,
 				04AFAC3B18BCF00B00702A3E /* MapClass.m */,
-				04AFAC3C18BCF00B00702A3E /* MapController.h */,
-				04AFAC3D18BCF00B00702A3E /* MapController.m */,
 				04AFAC3E18BCF00B00702A3E /* SignClass.h */,
 				04AFAC3F18BCF00B00702A3E /* SignClass.m */,
 			);
@@ -475,7 +470,6 @@
 				043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */,
 				04AFAC4818BCF00B00702A3E /* SignClass.m in Sources */,
 				043C973C18367C6C00445B73 /* TBXML.m in Sources */,
-				04AFAC4718BCF00B00702A3E /* MapController.m in Sources */,
 				043C971718367B6A00445B73 /* EAGLView.mm in Sources */,
 				04F329F4172FCE8000910751 /* main.m in Sources */,
 				04AFAC4A18BCF00B00702A3E /* ARPictureMarkerConfiguration.m in Sources */,

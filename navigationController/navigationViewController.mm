@@ -18,14 +18,12 @@
 @synthesize locationManager;
 @synthesize cmStepCounter;
 @synthesize operationQueue;
-@synthesize myNavigationViewControllerDelegate;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
     }
     return self;
 }
@@ -33,18 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
--(void)initController
-{
+    
 	
 	// Benutzerpfade abfragen
 	NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory,
@@ -62,17 +49,28 @@
 	
 	currentPosition = CGPointMake(855, 6840);
 	
+	
+	
 	[self initMap];
 	
+	[self loadSignsFromXML:@"signs"];
+		
 	[self initCompass];
 	
 	[self initSchrittzaehler];
 	
+	[self initConfigView];
 	
-	mapScrollView.zoomScale = 0.5;
+	[self initSignsView];
+	
+	
 }
 
-
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 #pragma mark -
 #pragma mark Map View
@@ -85,7 +83,7 @@
 	
 	
 	// Absoluter String zur XML-Datei
-	NSString *mapFile = [ navigationDirectory stringByAppendingPathComponent: loadedMap.map ];
+	NSString *mapFile = [NSString stringWithFormat:@"%@/%@",navigationDirectory, loadedMap.map  ];
 	
 	
 	//Plan laden
@@ -96,25 +94,17 @@
 	[loadedMap setWidth:image.size.width];
 	
 	//scale der map auf pixel umrechnen
-	loadedMap.scale =  (loadedMap.scale * loadedMap.ySize) / loadedMap.height;
+	loadedMap.scale =  loadedMap.scale * loadedMap.ySize / loadedMap.height;
 	
 	//Anpassung durch CustomRendere ?!?!?!?
-	if ([[UIScreen mainScreen] scale] == 1) {
-		loadedMap.scale =  loadedMap.scale * 4  ;
-	}
-	
-	
-	
-	//Hauptview init
-	mapView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 400, 748)];
-	
+	loadedMap.scale =  loadedMap.scale * [[UIScreen mainScreen] scale]  ;
+
 	
 	//map ScrollView init
 	mapScrollView = [[UIScrollView alloc]initWithFrame:mapView.frame];
 	mapScrollView.delegate = self;
 	mapScrollView.minimumZoomScale = 0.1;
 	mapScrollView.maximumZoomScale = 100.0;
-	
 	mapScrollView.zoomScale = 1;
 	mapScrollView.contentSize = image.size;
 	
@@ -143,32 +133,11 @@
 	[longPress setMinimumPressDuration:2];
 	[mapImageView addGestureRecognizer:longPress];
 	
-	
-	
-	
-	
-	//TableView
-	signsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0, 230, 0) style:UITableViewStylePlain];
-	signsTableView.dataSource = self;
-	signsTableView.delegate = self;
-	signsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	
-	
-	
-	//View für die Markerekennung hinzufügen um die Markererkennung zu aktivieren
-	detectionView = [[UIView alloc] initWithFrame:CGRectMake(0, mapView.frame.size.height-100, 100, 100)];
-	detectionView.backgroundColor = [UIColor blackColor];
-	detectionView.alpha = 0.1;
-	
-	
-	
-	
+
+
 	//Views hinzufügen
 	[mapScrollView addSubview:mapImageView];
 	[mapView addSubview:mapScrollView];
-	[mapView addSubview:signsTableView];
-	[mapView addSubview:detectionView];
-	
 	
 	
 	
@@ -180,149 +149,15 @@
 	
 	//Am Start einen Kreis zeichnen
 	[self drawCircleAtPoint:currentPosition withColor:[UIColor redColor] toLayer:@"startPoint"];
-	
-	
+		
 	//Position in View mittig setzen
 	[self setNewPosition:currentPosition];
 	
 	
+	mapScrollView.zoomScale = 0.5;
+	
 	
 }
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-	static NSString *CellIdentifier = @"Cell";
-	
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
-    
-    //erstmalige init
-    if (cell == nil) {
-		
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        
-    }
-	
-	
-	
-	SignClass *cellSign = [nearSigns objectAtIndex:indexPath.row];
-	
-	
-	
-	
-	
-	//Richtung als Pfeil
-    UIImageView *directionImage = (UIImageView*)[cell viewWithTag:111];
-    
-    //Wenn nicht existiert dann erstellen
-    if (directionImage == nil) {
-        directionImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 4, 48, cell.frame.size.height-8)];
-        directionImage.tag = 111;
-        directionImage.contentMode = UIViewContentModeScaleAspectFit;
-        [cell addSubview:directionImage];
-    }
-    
-    directionImage.image = [UIImage imageNamed:@"pfeil.png"];
-    
-	//Pfeil drehen
-    CGFloat arrowOrientation = [self angleOfPoint:CGPointMake(cellSign.xPos, cellSign.yPos) toPoint:currentPosition withZeroDirection:mapDirection];
-    directionImage.transform = CGAffineTransformMakeRotation(DegreesToRadians (correctDirection(arrowOrientation)) );
-    
-    
-	
-	
-	
-	
-	
-	//Entfernung als Text
-    UILabel *signLabel = (UILabel*)[cell viewWithTag:222];
-    
-    //Wenn nicht existiert dann erstellen
-    if (signLabel == nil) {
-        signLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, 1, 70, cell.frame.size.height-2)];
-        signLabel.textAlignment = NSTextAlignmentRight;
-        signLabel.tag = 222;
-        [cell addSubview:signLabel];
-    }
-	
-    CGFloat signDistance = cellSign.Distance / 1000; //Anzeige in Meter
-    signLabel.text = [NSString stringWithFormat:@"%1.2f m", signDistance];
-	
-	
-	
-	
-	
-    
-	//Zeichen als bild
-    UIImageView *signImage = (UIImageView*)[cell viewWithTag:444];
-    
-    //Wenn nicht existiert dann erstellen
-    if (signImage == nil) {
-        signImage = [[UIImageView alloc]init];
-        signImage.frame = CGRectMake(135, 1, tableView.frame.size.width - 135, cell.frame.size.height-2);
-		signImage.contentMode = UIViewContentModeScaleAspectFit;
-        signImage.tag = 444;
-        [cell addSubview:signImage];
-    }
-    
-    //Label um Rückseite zu signalisieren
-    UILabel *reverseLable = (UILabel*)[cell viewWithTag:333];
-    
-    if (reverseLable == nil) {
-        reverseLable = [[UILabel alloc]initWithFrame:CGRectMake(125, 1, tableView.frame.size.width - 135, cell.frame.size.height-2)];
-        reverseLable.textAlignment = NSTextAlignmentLeft;
-        reverseLable.backgroundColor = [UIColor clearColor];
-        reverseLable.tag = 333;
-        [cell addSubview:reverseLable];
-    }
-    reverseLable.text = [NSString stringWithFormat:@""]; //erstmal Leertext
-    
-	
-    if ([self isSiteVisibleForView:arrowOrientation WithSignOrientation:cellSign.Orientation] == true)
-    {
-		
-		signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.Name]];
-        
-        
-		
-		
-	}else{
-		
-		if (cellSign.NameRev == nil) //Fals kein RevBild hinterleg dann normal aber kennzeichnen
-		{
-            
-			signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.Name]];
-			
-            reverseLable.text = [NSString stringWithFormat:@"↷"];
-			
-			
-		}else{
-			
-			signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.NameRev]];
-			
-		}
-		
-	}
-	
-	
-	
-    return cell;
-	
-}
-
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-	[tableView setFrame:CGRectMake(0,0, tableView.frame.size.width, 50 * tableViewRows) ];
-	
-	return tableViewRows;
-    
-}
-
 
 - (UIView*)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
@@ -356,17 +191,17 @@
 	mapScrollView.contentOffset = CGPointMake( mapPosition.x - mapScrollView.frame.size.width/2  , mapPosition.y - mapScrollView.frame.size.height/2 );
 	
 	
-	//Abstand der Zeichen berechnen
-	nearSigns = [self sortSigns:allSigns byMaximumdistance:10000]; //0 = all , 10000 = 10meter
-	
-	tableViewRows = nearSigns.count;
-	//Maximal 3 Zeichen anzeigen
-	if (tableViewRows>3) {
-		tableViewRows = 3;
+	if (allSigns)
+	{
+		//Abstand der Zeichen berechnen
+		nearSigns = [self sortSigns:allSigns byMaximumdistance:10000]; //0 = all , 10000 = 10meter
+		
+		tableViewRows = nearSigns.count;
+		
+		//Zeichenanzeige aktualisieren
+		[self updateSingsViewWithDirectionOnly:false];
 	}
-	
-	//Zeichenanzeige aktualisieren
-	[signsTableView reloadData];
+
 	
 }
 
@@ -399,11 +234,6 @@
 }
 
 
-
-
-
-
-
 #pragma mark -
 #pragma mark Touches in MapView
 #pragma mark -
@@ -429,17 +259,15 @@
 
 - (void)receivedLongPress:(UIGestureRecognizer *)gestureRecognizer
 {
-	CGSize frameSize = mapScrollView.superview.superview.frame.size;
-	
 	//View erzeugen
 	if (!setPostitonView) {
-		setPostitonView = [[UIView alloc]initWithFrame:CGRectMake(frameSize.height/2 - 100, frameSize.width/2 - 50, 200, 100)];
+		setPostitonView = [[UIView alloc]initWithFrame:CGRectMake((glView.frame.size.width/2) - 100, glView.frame.size.height/2 - 50, 200, 100)];
 	}
 	
 	
 	if ([mapScrollView.superview.superview.subviews containsObject:setPostitonView] == false) {
 		
-		[setPostitonView setBackgroundColor:[UIColor lightGrayColor]];
+		[setPostitonView setBackgroundColor:[UIColor whiteColor]];
 		
 		//cancle Button
 		UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -504,42 +332,6 @@
 
 
 #pragma mark -
-#pragma mark Set Config
-#pragma mark -
-
-- (void)setConfigForPedometer: (bool)aktiv
-				   sensitvity:(CGFloat) sensitivity
-				   stepLength:(CGFloat) stepLength
-
-{
-	//Schrittlänge
-	meter = stepLength / loadedMap.scale;
-	
-	
-	//deaktivieren des Schrittzählers = gleiche Variable als wenn man das manuell per TouchFeld macht
-	if (aktiv==true)
-	{
-		searchForSign = false;
-	}else{
-		searchForSign = true;
-	}
-	
-	
-}
-
-- (void)setConfigForDetection: (bool)aktiv
-					   ration:(CGFloat) ratio
-
-{
-	//Wert setzen wenn aktiv
-	aktivateDetection = aktiv;
-	
-	//Ration übernehmen
-	devRatio = ratio;
-	
-}
-
-#pragma mark -
 #pragma mark Signs
 #pragma mark -
 
@@ -554,11 +346,11 @@
 	
     if ([theContents length] == 0) {
         NSLog(@"%@ - signs.xml cannot be found", fullPath);
+		return;
     }
     
-	// Parse the XML into a dictionary
 	
-	// Parse the XML into a dictionary
+	// Parse the XML
 	TBXML *signsXMLFile = [TBXML newTBXMLWithXMLString:theContents error:nil];;
 	TBXMLElement *signsXML = signsXMLFile.rootXMLElement;
 	
@@ -618,6 +410,7 @@
             }
 		}
 		
+		
         //Zeichen ablegen und in map zeichnen
 		if (nextSign)
         {
@@ -644,10 +437,8 @@
 	nearSigns = [self sortSigns:allSigns byMaximumdistance:0];
 	
     
-	//Zeichen auch als marker speichern für die TrackingXML
-    
-    
 	
+	//Zeichen auch als marker speichern für die TrackingXML
 	//Objecte für die spätere TrackingXML
 	NSMutableArray *markerList = [[NSMutableArray alloc]init];
 	
@@ -692,26 +483,10 @@
 			}
         }
 	}
-	
-	//------------------für tests marker aus tracking entfernen------------------
-	NSMutableArray *discardedItems = [NSMutableArray array];
-	
-	for (ARMarker *marker in markerList) {
-		if (![marker.name isEqualToString:@"RW_left.png"] && ![marker.name isEqualToString:@"RW_right.png"] && ![marker.name isEqualToString:@"RW_down.png"] && ![marker.name isEqualToString:@"FL_small.png"])
-		{
-			[discardedItems addObject:marker];
-		}
-	}
-	
-	[markerList removeObjectsInArray:discardedItems];
-	
-	//------------------für tests marker aus tracking entfernen------------------
-	
-	
+		
 	
 	//Schreiben der TrackingXML und darin laden
 	[self writeTrackingXMLforSigns:[NSArray arrayWithArray:markerList] toFile:@"TrackingSignsConfiguration.xml" withThresholdQuality:0.7];
-	
 	
 	
 }
@@ -844,6 +619,128 @@
         return false;
     }
     
+}
+
+
+#pragma mark -
+#pragma mark SignsView
+#pragma mark -
+
+-(void)initSignsView
+{
+	NSArray* signsViewArray = [[NSArray alloc]initWithArray:signsView.subviews];
+	
+	
+	
+	for (int arrayCounter = 0; arrayCounter < [signsViewArray count]; ++arrayCounter )
+	{
+	
+		UIView* currentView = [signsViewArray objectAtIndex:arrayCounter];
+		
+			//Richtung als Pfeil
+				UIImageView* directionImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 4, 48, currentView.frame.size.height-8)];
+				directionImage.tag = 111;
+				directionImage.image = [UIImage imageNamed:@"pfeil.png"];
+				directionImage.contentMode = UIViewContentModeScaleAspectFit;
+				[currentView addSubview:directionImage];
+			
+			
+			//Entfernung als Text
+				UILabel* signLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, 1, 70, currentView.frame.size.height-2)];
+				signLabel.textAlignment = NSTextAlignmentRight;
+				signLabel.tag = 222;
+				[currentView addSubview:signLabel];
+
+			
+			//Zeichen als reverseLabel
+				UILabel * reverseLable = [[UILabel alloc]initWithFrame:CGRectMake(125, 1, currentView.frame.size.width - 135, currentView.frame.size.height-2)];
+				reverseLable.textAlignment = NSTextAlignmentLeft;
+				reverseLable.backgroundColor = [UIColor clearColor];
+				reverseLable.tag = 333;
+				reverseLable.text = [NSString stringWithFormat:@"↷"];
+				[reverseLable setHidden:true];
+				[currentView addSubview:reverseLable];
+		
+		
+			//Zeichen als bild
+				UIImageView * signImage = [[UIImageView alloc]init];
+				signImage.frame = CGRectMake(135, 1, currentView.frame.size.width - 135, currentView.frame.size.height-2);
+				signImage.contentMode = UIViewContentModeScaleAspectFit;
+				signImage.tag = 444;
+				[currentView addSubview:signImage];
+	
+	
+	}
+	
+	[self updateSingsViewWithDirectionOnly:false];
+
+}
+
+
+- (void) updateSingsViewWithDirectionOnly:(BOOL)onlyDirection
+{
+	
+	NSArray* signsViewArray = [[NSArray alloc]initWithArray:signsView.subviews];
+	
+
+	for (int arrayCounter = 0; arrayCounter < [signsViewArray count]; ++arrayCounter )
+	{
+	
+		UIView* currentView = [signsViewArray objectAtIndex:arrayCounter];
+		
+		SignClass *cellSign = [nearSigns objectAtIndex:arrayCounter];
+		
+
+		//Richtung als Pfeil
+			UIImageView *directionImage = (UIImageView*)[currentView viewWithTag:111];
+					
+			//Pfeil drehen
+			CGFloat arrowOrientation = [self angleOfPoint:CGPointMake(cellSign.xPos, cellSign.yPos) toPoint:currentPosition withZeroDirection:mapDirection];
+			directionImage.transform = CGAffineTransformMakeRotation(DegreesToRadians (correctDirection(arrowOrientation)) );
+		
+		if (!onlyDirection)
+		{
+		
+			//Entfernung als Text
+				UILabel *signLabel = (UILabel*)[currentView viewWithTag:222];
+
+				CGFloat signDistance = cellSign.Distance / 1000; //Anzeige in Meter
+				signLabel.text = [NSString stringWithFormat:@"%1.2f m", signDistance];
+			
+
+			//Zeichen als bild
+				UIImageView *signImage = (UIImageView*)[currentView viewWithTag:444];
+				UILabel *reverseLable = (UILabel*)[currentView viewWithTag:333];
+			
+			
+				//Prüfen welches Bild
+				if ([self isSiteVisibleForView:arrowOrientation WithSignOrientation:cellSign.Orientation] == true)
+				{
+					
+					signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.Name]];
+					[reverseLable setHidden:true];
+					
+				}else{
+					
+					if ([cellSign.NameRev isEqualToString:@""]) //Fals kein RevBild hinterleg dann normal aber kennzeichnen
+					{
+						
+						signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.Name]];
+						[reverseLable setHidden:false];
+
+						
+						
+					}else{
+						
+						signImage.image = [UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cellSign.NameRev]];
+						[reverseLable setHidden:true];
+					}
+					
+				}
+		}
+	
+	}
+
 }
 
 #pragma mark -
@@ -1134,7 +1031,14 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	if ([CMStepCounter isStepCountingAvailable]) {
 		NSLog(@"Step Counter");
 	} else {
-		NSLog(@"No Step Counter");
+		
+		NSLog(@"no Step Counter");
+		UIButton *stepBTO = [[UIButton alloc] initWithFrame:CGRectMake(0, mapView.frame.size.height-100, 100, 100)];
+		[stepBTO setTitle:@"step" forState:UIControlStateNormal];
+		[stepBTO setBackgroundColor:[UIColor clearColor] ];
+		[stepBTO addTarget:self action:@selector(detectStep) forControlEvents:UIControlEventTouchUpInside];
+		[stepBTO setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		[mapView addSubview:stepBTO];
 	}
 	
 	if ([CMMotionActivityManager isActivityAvailable]) {
@@ -1150,7 +1054,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
         [self.cmStepCounter startStepCountingUpdatesToQueue:self.operationQueue updateOn:1 withHandler:^(NSInteger numberOfSteps, NSDate *timestamp, NSError *error)
          {
 			 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-				 [self stepDetection:numberOfSteps];
+				 [self detectStep];
 			 }];
 		 }];
     }
@@ -1161,13 +1065,11 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	
 }
 
--(void) stepDetection:(NSInteger)countedSteps
+-(void) detectStep
 {
-	
-	NSLog(@"Steps: %i",countedSteps);
-	
+		
 	//Strittzähler deaktivieren wenn nach Schild gesucht wird oder ein Schild gefunden wurde
-	if (searchForSign == true || isSignDetected == true)
+	if (isSignDetected == true)
 	{
 		return;
 	}
@@ -1465,18 +1367,19 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 - (void)initCompass
 {
 	locationManager=[[CLLocationManager alloc] init];
-	locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-	locationManager.headingFilter = 5;
+	locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+	//locationManager.headingFilter = 5;
 	locationManager.delegate=self;
-	//[locationManager startUpdatingLocation];
+	//[locationManager startUpdatingLocation]; //GPS loacation
 	[locationManager startUpdatingHeading];
 	
 }
 
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager{
-	NSLog(@"Compass Calibration");
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
+{
+	NSLog(@"Compass Calibration needed");
 	
-	return YES;
+	return YES	;
 }
 
 
@@ -1486,32 +1389,25 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 
 {
 	
-	return;
 	
 	if (isSignDetected == true)
 	{
 		return;
 	}
-	
+
 	
 	trueDirection = newHeading.trueHeading;
+		
 	
-	
-	//Umrechnen falls Landscape
-	if ([[UIDevice currentDevice] orientation]== UIDeviceOrientationLandscapeLeft) {
-		trueDirection = correctDirection(trueDirection + 90);
-	} else if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-		trueDirection = correctDirection(trueDirection + 270);
-	}
-	
-	
-	
+	//Umrechnen auf Landscape left
+	trueDirection = correctDirection(trueDirection + 90);
+
 	//Map Korrektur aufschlagen
 	mapDirection = correctDirection( trueDirection -	 loadedMap.orientation + trueNorthCorrection);
 	
 	[self drawPositionAtPoint:currentPosition withDirection:mapDirection];
 	
-	[signsTableView reloadData];
+	[self updateSingsViewWithDirectionOnly:true];
 	
 	
 }
@@ -1529,7 +1425,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 		}
 		
 		//Zeichenanzeige aktualisieren
-		[signsTableView reloadData];
+		[self updateSingsViewWithDirectionOnly:true];
 		
 	}else{
 		
@@ -1549,52 +1445,61 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	
 }
 
+
 #pragma mark -
-#pragma mark Touches
+#pragma mark Config View
 #pragma mark -
 
-- (void) isTouch: (bool) isTouched
-	  atLocation: (CGPoint) touchPoint;
+-(void)initConfigView
 {
+
+	qualityThresold = 70;
+	emptyFrame = 0;
+    detectFrame = 0;
 	
-	if (isTouched == true && CGRectContainsPoint(detectionView.frame, touchPoint))
-	{
-		
-		//Zeichenanzeige aktualisieren
-		[signsTableView reloadData];
-		
-		searchForSign = true;
-		
-		//Pedometer aus
-		
-		
-	}else
-	{
-		searchForSign = false;
-		
-		//Pedometer ein
-		
-	}
+    
+    
+	//ConfigView
+	keepMarkerForMaxFrames.text = @"12";
+	stepLengthField.text = @"800";
+	qualityThresoldField.text = @"70";
+	minQualityField.text = @"50";
+	aktivDetectionSwitch.on = true;
+	aktivPedometerSwitch.on = true;
+	distCorrection.text = @"1.28";
 	
-	//Prototyp + Return in updateHeading
+	minQuality = minQualityField.text.floatValue / 100;
 	
 	
-	if (CGRectContainsPoint(CGRectMake(1024-200, 550, 200, 500), touchPoint))
-	{
-		trueDirection = trueDirection + (45/4);
-	}else if (CGRectContainsPoint(CGRectMake(1024-200, 0, 200, 500), touchPoint))
-	{
-		
-		trueDirection = trueDirection - (45/4);
-	}
-	
-	mapDirection = correctDirection( trueDirection -	 loadedMap.orientation + trueNorthCorrection);
-	
-	[self drawPositionAtPoint:currentPosition withDirection:mapDirection];
-	
-	[signsTableView reloadData];
+	[configView setFrame:CGRectMake(glView.frame.size.width - 220, 0, 220, 680)];
+
 	
 }
+
+
+- (void)setConfigForPedometer: (bool)aktiv
+				   sensitvity:(CGFloat) sensitivity
+				   stepLength:(CGFloat) stepLength
+
+{
+	//Schrittlänge
+	meter = stepLength / loadedMap.scale;
+	
+}
+
+- (void)setConfigForDetection: (bool)aktiv
+					   ration:(CGFloat) ratio
+
+{
+	//Wert setzen wenn aktiv
+	aktivateDetection = aktiv;
+	
+	//Ration übernehmen
+	devRatio = ratio;
+	
+}
+
+
 
 #pragma mark -
 #pragma mark Actions
@@ -1676,11 +1581,6 @@ CGFloat averageOfArray(NSArray* inputArray)
     
 }
 
-
-#pragma mark -
-#pragma mark Umrechnungen
-#pragma mark -
-
 CGFloat DegreesToRadians(CGFloat degrees)
 {
 	return degrees * M_PI / 180;
@@ -1730,6 +1630,244 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 	return value;
 	
 };
+
+#pragma mark -
+#pragma mark @protocol metaioSDKDelegate
+#pragma mark -
+
+
+- (void) drawFrame
+{
+    [super drawFrame];
+	
+	// return if the metaio SDK has not been initialiyed yet
+    if( !m_metaioSDK )
+        return;
+	
+	detectedMarkerQuality = 0;
+	
+	//Alle Cos abfragen und das Cos mit der besten Qualität speichern
+	for (int i=1; i<=m_metaioSDK->getNumberOfDefinedCoordinateSystems(); i++)
+	{
+		CGFloat quality = m_metaioSDK->getTrackingValues(i).quality;
+		
+		CGFloat rotationZ = fabs(m_metaioSDK->getTrackingValues(i).rotation.getEulerAngleDegrees().z);
+		
+		if (quality > 0.5 && rotationZ < 100)
+		{
+			if (quality > detectedMarkerQuality) {
+				detectedMarkerCosID = i;
+				detectedMarkerQuality = quality;
+				
+			}
+			
+		}
+	}
+	
+	//Wenn ein Cos gefunden wurde dann Werte abfragen und übergeben
+	if (detectedMarkerQuality > (minQuality))
+	{
+		metaio::TrackingValues trackingValues = m_metaioSDK->getTrackingValues(detectedMarkerCosID);
+		
+		
+		//Namen des gefundenen markers zurückgeben
+		std::string stdString = trackingValues.cosName;
+		NSString *cosName = [NSString stringWithUTF8String:stdString.c_str()];
+		
+		//Marker in Anzeigen laden
+		[detectSignView setImage:[UIImage imageWithContentsOfFile:[ docDir stringByAppendingPathComponent:cosName]]];
+		[detectSignView setContentMode:UIViewContentModeScaleAspectFit];
+		
+		
+		//prüfen ob es sich um eine neue cosID handelt
+		if (detectedMarkerCosID == detectedMarkerCosIDSave)
+		{ //gleiche CosID
+			
+			//Winkel zum gefundenen Marker zurückgeben
+			CGFloat angle = - trackingValues.rotation.getEulerAngleDegrees().y;
+			
+			
+			//Distanze zum gefundenen Winkel zurückgeben
+			CGFloat distance = - trackingValues.translation.z;
+			
+			//Korrektur
+			distance = distance * distCorrection.text.floatValue;
+			
+			
+			if (detectFrame < 12)
+			{
+				//daten sammeln wenn vorhanden
+				if (!angle == 0 && !distance == 0) {
+					[detectedMarkerAngleAray addObject:[NSNumber numberWithFloat:angle]];
+					[detectedMarkerDistanceArray addObject:[NSNumber numberWithFloat:distance]];
+					
+					detectFrame++;
+				}
+				
+				
+				
+				
+			}else{
+				
+				detectFrame = 0;
+				
+				//mittelwert bilden
+				
+				CGFloat detectedMarkerDistance = averageOfArray([NSArray arrayWithArray:detectedMarkerDistanceArray]);
+				CGFloat detectedMarkerAngle = averageOfArray([NSArray arrayWithArray:detectedMarkerAngleAray]);
+				
+				
+				//erstes element löschen
+				[detectedMarkerAngleAray removeAllObjects];
+				[detectedMarkerDistanceArray removeAllObjects];
+				
+				
+				//Werte zurückgeben
+				[self detectMarkerNamed:cosName
+							withQuality:detectedMarkerQuality
+							 inDistance:detectedMarkerDistance
+							   andAngel:detectedMarkerAngle];
+								
+				//Logs
+				if ([glView.subviews containsObject:configView])
+				{
+					nameLabel.text = [NSString stringWithFormat:@"Name: %@",cosName];;
+					qualityLabel.text = [NSString stringWithFormat:@"Quality: %f",detectedMarkerQuality];
+					angleLabel.text = [NSString stringWithFormat:@"Angle: %f",detectedMarkerAngle];
+					distanceLabel.text = [NSString stringWithFormat:@"Distance: %f",detectedMarkerDistance];
+				}
+				
+				
+			}
+			
+			
+			
+		}
+		else //neue CosID
+		{
+			
+			detectedMarkerCosIDSave = detectedMarkerCosID;
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	//Sonst keine Marker weitergeben oder Frame hochzählen
+	else
+	{
+		//Detektieten Marker aus Anzeige löschen
+		[detectSignView setImage:nil];
+		
+		//Prüfen ob schon mal was gefunden wurde (frame > 0)
+		//Wenn schon mal was gefunden wurde und das nicht mehr als x Frames her ist dann hochzählen
+		if ((emptyFrame > 0) && (emptyFrame < keepMarkerForMaxFrames.text.floatValue))
+		{
+			emptyFrame++;
+			return;
+		}
+		
+		if (detectedMarkerCosID)
+		{
+			//sonst nichts  übergeben
+			[self detectMarkerNamed:nil  withQuality:0 inDistance:0 andAngel:0];
+			emptyFrame = 0;
+			
+			
+			//detectedMarkerCos reseten
+			detectedMarkerCosID = nil;
+            
+            
+			
+		}
+		
+		
+	}
+
+	
+}
+
+- (void) onSDKReady
+{
+    NSLog(@"The SDK is ready");
+	
+}
+
+- (void) onAnimationEnd: (metaio::IGeometry*) geometry  andName:(NSString*) animationName
+{
+    NSLog(@"animation ended %@", animationName);
+}
+
+
+- (void) onMovieEnd: (metaio::IGeometry*) geometry  andName:(NSString*) movieName
+{
+	NSLog(@"movie ended %@", movieName);
+	
+}
+
+- (void) onNewCameraFrame:(metaio::ImageStruct *)cameraFrame
+{
+    NSLog(@"a new camera frame image is delivered %f", cameraFrame->timestamp);
+	
+}
+
+- (void) onCameraImageSaved:(NSString *)filepath
+{
+    NSLog(@"a new camera frame image is saved to %@", filepath);
+}
+
+-(void) onScreenshotImage:(metaio::ImageStruct *)image
+{
+    
+    NSLog(@"screenshot image is received %f", image->timestamp);
+}
+
+- (void) onScreenshotImageIOS:(UIImage *)image
+{
+    NSLog(@"screenshot IOS image is received %@", [image description]);
+}
+
+-(void) onScreenshot:(NSString *)filepath
+{
+    NSLog(@"screenshot is saved to %@", filepath);
+}
+
+- (void) onTrackingEvent:(const metaio::stlcompat::Vector<metaio::TrackingValues>&)trackingValues
+{
+    NSLog(@"The tracking time is: %f", trackingValues[0].timeElapsed);
+}
+
+- (void) onInstantTrackingEvent:(bool)success file:(NSString*)file
+{
+    if (success)
+    {
+        NSLog(@"Instant 3D tracking is successful");
+    }
+}
+
+- (void) onVisualSearchResult:(bool)success error:(NSString *)errorMsg response:(std::vector<metaio::VisualSearchResponse>)response
+{
+    if (success)
+    {
+        NSLog(@"Visual search is successful");
+    }
+}
+
+- (void) onVisualSearchStatusChanged:(metaio::EVISUAL_SEARCH_STATE)state
+{
+    if (state == metaio::EVSS_SERVER_COMMUNICATION)
+    {
+        NSLog(@"Visual search is currently communicating with the server");
+    }
+}
+
+
+
 
 
 @end
