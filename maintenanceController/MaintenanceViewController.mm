@@ -43,35 +43,13 @@
 {
     [super viewDidLoad];
 	
-	//Dokuenten Ordner holen
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	documentsDir = [paths objectAtIndex:0];
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+	workTableViewController = nil;
 	
-	
-	[self initTrackingDataFileName:@"TrackingData"];
-	
-	
-	[self initLight];
-	[self initShaders];
-	
-	
-	[self loadObjectsInFolder:@"3D" forCosID:1];
-	
-	tableParents = [[NSMutableArray alloc]init];
-	tableModels = [[NSMutableArray alloc]init];
-	isBtoEnable = true;
-	offlineMode = false;
-	
-	[self initTabBar];
-	
-	[tabBarView addSubview:workView];
-	workView.frame = CGRectMake(0, 49, workView.frame.size.width, workView.frame.size.height);
-	
-	
-	workTableViewController.delegate = self;
-	[workTableViewController loadContent];
-	
-	
+	m_metaioSDK = nil;
 	
 }
 
@@ -461,8 +439,20 @@
 
 - (void)initTabBar
 {
-	[tabBarView setFrame:CGRectMake(0, [[UIScreen mainScreen] bounds ].size.width - 49 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
-	[glView	addSubview:tabBarView];
+	[tabBarView setFrame:CGRectMake(0, glView.frame.size.height ,tabBarView.frame.size.width    ,tabBarView.frame.size.height )];
+	
+	//tabBarView mit animation einblenden
+	
+	[UIView animateWithDuration:0.5
+						  delay:0.0
+						options: UIViewAnimationCurveEaseIn
+					 animations:^{
+						 tabBarView.frame = CGRectMake(0, glView.frame.size.height - 49 ,tabBarView.frame.size.width    ,tabBarView.frame.size.height );
+					 }
+					 completion:^(BOOL finished){
+					 }];
+	[glView addSubview:tabBarView];
+
 	   
     savedCosID = 1;
 	tabBarTag = 0;
@@ -1316,9 +1306,38 @@ toMaxScreenSize:(CGSize)sSize
 }
 
 
-- (IBAction)toogleScreen:(id)sender
-{
 
+#pragma mark -
+#pragma mark navigation toggles
+#pragma mark -
+
+-(void)backToSync
+{
+	
+	UIAlertView *alert = [[UIAlertView alloc] init];
+	[alert setTitle:@"Back to sync view"];
+	[alert setMessage:@"Return to maintenance syncronisation view ?"];
+	[alert setDelegate:self];
+	[alert addButtonWithTitle:@"YES"];
+	[alert addButtonWithTitle:@"NO"];
+	[alert show];
+	
+	
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (buttonIndex == 0)//delete report aus xml
+		[self dismissViewControllerAnimated:YES completion:nil];
+	
+}
+
+
+
+- (void)fullscreenToggle
+{
+	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:0.5];
 	
@@ -1360,12 +1379,70 @@ toMaxScreenSize:(CGSize)sSize
 	
 	
 	[UIView commitAnimations];
-		
+	
 }
 
 
+-(void)initNavButtons
+{
+	
+	
+	UIFont* textFont = [UIFont systemFontOfSize:12];
+	CGFloat textAlpha = 0.3;
+	UIColor* textColor = [UIColor whiteColor];
+	UIColor* textBackgroundColor = [UIColor blackColor] ;
+	CGFloat textWidth = 90;
+	
+	UIView* navigationButtonsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 4*(textWidth + 1), 30)];
+	navigationButtonsView.backgroundColor = [UIColor clearColor];
+	
+	
+	
+	UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, textWidth, 30)];
+	[button1 setTitle:@"full screen" forState:UIControlStateNormal];
+	[button1 setBackgroundColor:textBackgroundColor ];
+	[button1 setAlpha:textAlpha];
+	button1.titleLabel.font = textFont;
+	[button1 addTarget:self action:@selector(fullscreenToggle) forControlEvents:UIControlEventTouchUpInside];
+	[button1 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button1];
+	
+	
+	UIButton *button2 = [[UIButton alloc] initWithFrame:CGRectMake(textWidth + 1, 0, textWidth, 30)];
+	[button2 setTitle:@"sync" forState:UIControlStateNormal];
+	[button2 setBackgroundColor:textBackgroundColor ];
+	[button2 setAlpha:textAlpha];
+	button2.titleLabel.font = textFont;
+	[button2 addTarget:self action:@selector(backToSync) forControlEvents:UIControlEventTouchUpInside];
+	[button2 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button2];
 
-
+	
+	
+	
+	
+	//einblenden mit animation
+	navigationButtonsView.frame = CGRectMake(0, -navigationButtonsView.frame.size.height, navigationButtonsView.frame.size.width, navigationButtonsView.frame.size.height);
+	
+	[UIView animateWithDuration:0.5
+						  delay:0.0
+						options: UIViewAnimationCurveEaseIn
+					 animations:^{
+						 navigationButtonsView.frame = CGRectMake(0, 0, navigationButtonsView.frame.size.width, navigationButtonsView.frame.size.height);
+					 }
+					 completion:^(BOOL finished){
+					 }];
+	
+	
+	[glView addSubview:navigationButtonsView];
+	
+	
+	[glView bringSubviewToFront:navigationButtonsView];
+	
+	
+}
 
 
 
@@ -1569,6 +1646,36 @@ toMaxScreenSize:(CGSize)sSize
 - (void) onSDKReady
 {
     NSLog(@"The SDK is ready");
+	
+	//Dokuenten Ordner holen
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	documentsDir = [paths objectAtIndex:0];
+	
+	
+	[self initTrackingDataFileName:@"TrackingData"];
+	
+	
+	[self initLight];
+	[self initShaders];
+	
+	
+	[self loadObjectsInFolder:@"3D" forCosID:1];
+	
+	tableParents = [[NSMutableArray alloc]init];
+	tableModels = [[NSMutableArray alloc]init];
+	isBtoEnable = true;
+	offlineMode = false;
+	
+	[self initTabBar];
+	
+	workView.frame = CGRectMake(0, 49, workView.frame.size.width, workView.frame.size.height);
+	
+	
+	workTableViewController.delegate = self;
+	[workTableViewController loadContent];
+	
+	[self initNavButtons];
+	
 	
 }
 

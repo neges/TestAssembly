@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "maintenanceController/MaintenanceViewController.mm"
-            timestampString = "415021306.769202"
+            timestampString = "415207783.556145"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
             <Locations>
@@ -73,11 +73,11 @@
                   symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
                   moduleName = "itmAR"
                   urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "415206725.442284"
+                  timestampString = "415208318.028844"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "390"
-                  endingLineNumber = "390"
+                  startingLineNumber = "368"
+                  endingLineNumber = "368"
                   offsetFromSymbolStart = "1052">
                </Location>
                <Location
@@ -87,11 +87,11 @@
                   symbolName = "-[MaintenanceViewController tableView:didSelectRowAtIndexPath:]"
                   moduleName = "itmAR"
                   urlString = "file:///Users/mac/Entwicklung/TestAssembly/maintenanceController/MaintenanceViewController.mm"
-                  timestampString = "415206725.442452"
+                  timestampString = "415208318.029027"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "390"
-                  endingLineNumber = "390"
+                  startingLineNumber = "368"
+                  endingLineNumber = "368"
                   offsetFromSymbolStart = "2512">
                </Location>
             </Locations>

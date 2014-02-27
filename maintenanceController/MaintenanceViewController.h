@@ -68,8 +68,6 @@
 
 - (void)loadObjectsInFolder:(NSString *)oFolder forCosID:(int)oCos;
 
-- (IBAction)toogleScreen:(id)sender;
-
 
 
 @end

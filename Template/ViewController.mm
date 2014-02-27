@@ -26,7 +26,8 @@
 -(void)viewDidAppear:(BOOL)animated
 {
 	
-
+	animated = true;
+	
 	if (animated == false)
 	{
 		navigationViewController *nvc = [[navigationViewController alloc]init];
