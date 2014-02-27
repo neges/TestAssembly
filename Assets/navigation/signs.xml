@@ -163,7 +163,7 @@
 	<sign>
 		<xPos>920</xPos>
 		<yPos>7672</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>0</orientation>
@@ -171,7 +171,7 @@
 	<sign>
 		<xPos>920</xPos>
 		<yPos>7604</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>180</orientation>
@@ -179,7 +179,7 @@
 	<sign>
 		<xPos>920</xPos>
 		<yPos>3854</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>180</orientation>
@@ -187,7 +187,7 @@
 	<sign>
 		<xPos>920</xPos>
 		<yPos>3922</yPos>
-		<marker>FL_big.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>190</widthMM>
 		<heightMM>190</heightMM>
 		<orientation>0</orientation>
@@ -195,7 +195,7 @@
 	<sign>
 		<xPos>1728</xPos>
 		<yPos>3854</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>180</orientation>
@@ -203,7 +203,7 @@
 	<sign>
 		<xPos>1728</xPos>
 		<yPos>3922</yPos>
-		<marker>FL_big.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>190</widthMM>
 		<heightMM>190</heightMM>
 		<orientation>0</orientation>
@@ -211,7 +211,7 @@
 	<sign>
 		<xPos>1728</xPos>
 		<yPos>7672</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>0</orientation>
@@ -219,7 +219,7 @@
 	<sign>
 		<xPos>1728</xPos>
 		<yPos>7604</yPos>
-		<marker>FL_small.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>98</widthMM>
 		<heightMM>98</heightMM>
 		<orientation>180</orientation>
@@ -227,7 +227,7 @@
 	<sign>
 		<xPos>1130</xPos>
 		<yPos>8755</yPos>
-		<marker>FL_mid.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>140</widthMM>
 		<heightMM>140</heightMM>
 		<orientation>180</orientation>
@@ -235,7 +235,7 @@
 	<sign>
 		<xPos>1130</xPos>
 		<yPos>7271</yPos>
-		<marker>FL_mid.png</marker>
+		<marker>fire.png</marker>
 		<widthMM>140</widthMM>
 		<heightMM>140</heightMM>
 		<orientation>0</orientation>

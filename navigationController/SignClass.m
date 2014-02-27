@@ -25,6 +25,14 @@
 	if (!Deviation) {
 		Deviation = -1;
 	}
+	
+	if (!Name) {
+		Name = @"";
+	}
+	
+	if (!NameRev) {
+		NameRev	= @"";
+	}
     
     return self;
 	

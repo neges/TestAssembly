@@ -46,7 +46,7 @@
 	NSString* docDir; //Documents Ordner
 	
 	
-	IBOutlet UIImageView * detectSignView;
+	UIImageView * detectSignView;
 	
 	//config View
 	IBOutlet UIView *configView;
@@ -65,6 +65,9 @@
 	IBOutlet UILabel *angleLabel;
 	IBOutlet UILabel *distanceLabel;
 
+	//Navigation Buttons
+	UIView* navigationButtonsView;
+	
 	
 	//SignsView
 	IBOutlet UIView* signsView;
@@ -117,9 +120,6 @@
 @property (nonatomic, strong) CMStepCounter *cmStepCounter;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
-- (IBAction)showConfigView :(id)sender;
-
-- (IBAction)closeConfigView :(id)sender;
 
 - (IBAction)setLiklihoodToMid :(id)sender;
 

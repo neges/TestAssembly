@@ -31,38 +31,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-	
-	// Benutzerpfade abfragen
-	NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory,
-														 NSUserDomainMask,
-														 YES );
-	
-	// Dokumentenverzeichnis
-	navigationDirectory = [NSString stringWithFormat:@"%@/navigation",[ paths objectAtIndex: 0 ] ];
-	
-	
-	meter = 800 ;
-	devRatio = 5;
-	aktivateDetection = true;
-	
-	
-	currentPosition = CGPointMake(855, 6840);
-	
-	
-	
-	[self initMap];
-	
-	[self loadSignsFromXML:@"signs"];
-		
-	[self initCompass];
-	
-	[self initSchrittzaehler];
-	
-	[self initConfigView];
-	
-	[self initSignsView];
-	
 	
 }
 
@@ -72,11 +40,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark -
 #pragma mark Map View
 #pragma mark -
 
-- (void)initMap
+- (void)initMapView
 {
     [self loadMapFromXML:@"map"];
 	
@@ -100,8 +69,12 @@
 	loadedMap.scale =  loadedMap.scale * [[UIScreen mainScreen] scale]  ;
 
 	
+	//mapView Hauptansicht
+	mapView = [[UIView alloc]initWithFrame:CGRectMake(glView.frame.size.width-400, 0, 400, glView.frame.size.height)];
+	
+	
 	//map ScrollView init
-	mapScrollView = [[UIScrollView alloc]initWithFrame:mapView.frame];
+	mapScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, mapView.frame.size.width, mapView.frame.size.height)];
 	mapScrollView.delegate = self;
 	mapScrollView.minimumZoomScale = 0.1;
 	mapScrollView.maximumZoomScale = 100.0;
@@ -111,10 +84,18 @@
 	
 	
 	//map ImageView init
-	mapImageView = [[UIImageView alloc]init];
+	mapImageView = [[UIImageView alloc]initWithFrame:mapScrollView.frame];
 	mapImageView.image =  image	;
 	
 	[mapImageView sizeToFit];
+	
+	
+	//Detected Sign View
+	detectSignView = [[UIImageView alloc]initWithFrame:CGRectMake(10, mapView.frame.size.height-90, 120, 90)];
+	[detectSignView setBackgroundColor:[UIColor clearColor]];
+	
+	
+	
 	
 	
 	
@@ -138,11 +119,14 @@
 	//Views hinzufügen
 	[mapScrollView addSubview:mapImageView];
 	[mapView addSubview:mapScrollView];
+	[mapView addSubview:detectSignView];
+	
 	
 	
 	
 	//Anpassen der SChrittweite entprechend der Skallierung der Map
 	meter =  meter / loadedMap.scale;
+	
 	
 	//Position und Blickwinkel anzeigen
 	[self drawPositionAtPoint:currentPosition withDirection:(mapDirection)];
@@ -418,7 +402,7 @@
             
 			
 			// HARDCODED - verschiedene Farben für RW und FL - Hier flexibler machen und aus xml lesen
-			if ([nextSign.Name rangeOfString:@"FL"].location == NSNotFound) {
+			if ([nextSign.Name rangeOfString:@"fire"].location == NSNotFound) {
 				
 				[self drawSignToPoint:CGPointMake(nextSign.xPos, nextSign.yPos) withAngel:nextSign.Orientation withSize:nextSign.width/loadedMap.scale withColor:[UIColor greenColor] withLayerName:@"signs"];
 				
@@ -447,7 +431,7 @@
 	for (SignClass *nextSign in allSigns)
 	{
         NSPredicate *predicate;
-        if (nextSign.Name){
+        if (![nextSign.Name isEqualToString:@""]){
 			predicate = [NSPredicate predicateWithFormat:@"name MATCHES %@", nextSign.Name];
 			if ([[markerList filteredArrayUsingPredicate:predicate] count] == 0)
 			{
@@ -465,7 +449,7 @@
         }
 		
 		
-        if (nextSign.NameRev){
+        if (![nextSign.NameRev isEqualToString:@""]){
 			predicate = [NSPredicate predicateWithFormat:@"name MATCHES %@", nextSign.NameRev];
 			if ([[markerList filteredArrayUsingPredicate:predicate] count] == 0)
 			{
@@ -536,6 +520,8 @@
 						   toFile: (NSString*) xmlName
 			 withThresholdQuality: (CGFloat) thresholdQuality
 {
+	
+	
 	if (markerList)
 	{
 		markerListXML = markerList;
@@ -570,19 +556,21 @@
 		if( xmlFile )
 		{
 			bool success = m_metaioSDK->setTrackingConfiguration([xmlFile UTF8String]);
-			if (!success)
+			if (!success){
 				NSLog(@"Failed to load tracking configuration");
+				m_metaioSDK->pauseTracking();
+			}
+			m_metaioSDK->resumeTracking();
 			
-		}else
+		}else{
 			NSLog(@"Could not find tracking configuration file");
-		
 			m_metaioSDK->pauseTracking();
+		}
 	}
 	else
 	{
-		
 		NSLog( @"Konfiguration konnte für Metaio nicht bereitgestellt werden" );
-		
+		m_metaioSDK->pauseTracking();
 	}
 	
 }
@@ -671,6 +659,10 @@
 	
 	
 	}
+	
+	//signsView einblenden
+	[signsView setFrame:CGRectMake(glView.frame.size.width - 230, 0, 230, 132)];
+	[glView addSubview:signsView];
 	
 	[self updateSingsViewWithDirectionOnly:false];
 
@@ -1033,11 +1025,12 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	} else {
 		
 		NSLog(@"no Step Counter");
-		UIButton *stepBTO = [[UIButton alloc] initWithFrame:CGRectMake(0, mapView.frame.size.height-100, 100, 100)];
+		UIButton *stepBTO = [[UIButton alloc] initWithFrame:CGRectMake(mapView.frame.size.width-100, mapView.frame.size.height-100, 100, 100)];
 		[stepBTO setTitle:@"step" forState:UIControlStateNormal];
-		[stepBTO setBackgroundColor:[UIColor clearColor] ];
+		[stepBTO setBackgroundColor:[UIColor blackColor] ];
+		[stepBTO setAlpha:0.3];
 		[stepBTO addTarget:self action:@selector(detectStep) forControlEvents:UIControlEventTouchUpInside];
-		[stepBTO setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		[stepBTO setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[mapView addSubview:stepBTO];
 	}
 	
@@ -1379,7 +1372,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 {
 	NSLog(@"Compass Calibration needed");
 	
-	return YES	;
+	return NO	;
 }
 
 
@@ -1470,8 +1463,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	
 	minQuality = minQualityField.text.floatValue / 100;
 	
-	
-	[configView setFrame:CGRectMake(glView.frame.size.width - 220, 0, 220, 680)];
+	[configView setFrame:CGRectMake(0, 0, 220, 635)];
 
 	
 }
@@ -1500,20 +1492,243 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 }
 
 
+#pragma mark -
+#pragma mark navigation toggles
+#pragma mark -
+
+-(void)backToSync
+{
+
+	UIAlertView *alert = [[UIAlertView alloc] init];
+	[alert setTitle:@"Back to sync view"];
+	[alert setMessage:@"Return to maintenance syncronisation view ?"];
+	[alert setDelegate:self];
+	[alert addButtonWithTitle:@"YES"];
+	[alert addButtonWithTitle:@"NO"];
+	[alert show];
+	
+	
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	if (buttonIndex == 0)//delete report aus xml
+		[self dismissViewControllerAnimated:YES completion:nil];
+
+}
+
+
+
+- (void)toggleMap
+{
+	
+	if ([glView.subviews containsObject:mapView])
+	{
+		
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 mapView.frame = CGRectMake(glView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+							 [mapView removeFromSuperview];
+						 }];
+		
+		
+		
+		
+	}else{
+		//view mit animation einblenden
+		mapView.frame = CGRectMake(glView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+		
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 mapView.frame = CGRectMake(glView.frame.size.width - mapView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+						 }];
+		
+		
+		[glView addSubview:mapView];
+	}
+	
+	[glView bringSubviewToFront:signsView];
+	[glView bringSubviewToFront:navigationButtonsView];
+	
+	
+	
+}
+
+
+-(void)fullscreenToggle
+{
+	
+	if ([glView.subviews containsObject:mapView])
+	{
+		
+		[signsView setHidden:YES];
+		
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 mapView.frame = CGRectMake(glView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+							 [mapView removeFromSuperview];
+						 }];
+		
+		
+		
+		
+		
+	}else{
+		//view mit animation einblenden
+		mapView.frame = CGRectMake(glView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+		
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 mapView.frame = CGRectMake(glView.frame.size.width - mapView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+							 [signsView setHidden:false];
+						 }];
+		
+		
+		[glView addSubview:mapView];
+	}
+	
+	[glView bringSubviewToFront:signsView];
+	[glView bringSubviewToFront:navigationButtonsView];
+	
+	
+	
+}
+
+
+
+- (void)showConfigView
+{
+	
+	if ([glView.subviews containsObject:configView])
+	{
+		[self closeConfigView];
+		
+	}else{
+		//view mit animation einblenden
+		configView.frame = CGRectMake(-configView.frame.size.width, 0, configView.frame.size.width, configView.frame.size.height);
+		
+		[UIView animateWithDuration:0.5
+							  delay:0.0
+							options: UIViewAnimationCurveEaseIn
+						 animations:^{
+							 configView.frame = CGRectMake(0, 0, configView.frame.size.width, configView.frame.size.height);
+						 }
+						 completion:^(BOOL finished){
+						 }];
+		
+		
+		[glView addSubview:configView];
+	}
+}
+
+
+-(void)initNavButtons
+{
+
+
+	UIFont* textFont = [UIFont systemFontOfSize:12];
+	CGFloat textAlpha = 0.3;
+	UIColor* textColor = [UIColor whiteColor];
+	UIColor* textBackgroundColor = [UIColor blackColor] ;
+	CGFloat textWidth = 90;
+	
+	navigationButtonsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 4*(textWidth + 1), 30)];
+	navigationButtonsView.backgroundColor = [UIColor clearColor];
+	
+	
+	
+	UIButton *button1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, textWidth, 30)];
+	[button1 setTitle:@"full screen" forState:UIControlStateNormal];
+	[button1 setBackgroundColor:textBackgroundColor ];
+	[button1 setAlpha:textAlpha];
+	button1.titleLabel.font = textFont;
+	[button1 addTarget:self action:@selector(fullscreenToggle) forControlEvents:UIControlEventTouchUpInside];
+	[button1 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button1];
+	
+	
+	UIButton *button2 = [[UIButton alloc] initWithFrame:CGRectMake(textWidth + 1, 0, textWidth, 30)];
+	[button2 setTitle:@"sync" forState:UIControlStateNormal];
+	[button2 setBackgroundColor:textBackgroundColor ];
+	[button2 setAlpha:textAlpha];
+	button2.titleLabel.font = textFont;
+	[button2 addTarget:self action:@selector(backToSync) forControlEvents:UIControlEventTouchUpInside];
+	[button2 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button2];
+	
+	UIButton *button3 = [[UIButton alloc] initWithFrame:CGRectMake(3*(textWidth + 1), 0, textWidth, 30)];
+	[button3 setTitle:@"info" forState:UIControlStateNormal];
+	[button3 setBackgroundColor:textBackgroundColor ];
+	[button3 setAlpha:textAlpha];
+	button3.titleLabel.font = textFont;
+	[button3 addTarget:self action:@selector(showConfigView) forControlEvents:UIControlEventTouchUpInside];
+	[button3 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button3];
+	
+	
+	UIButton *button4 = [[UIButton alloc] initWithFrame:CGRectMake(2*(textWidth + 1), 0, textWidth, 30)];
+	[button4 setTitle:@"map" forState:UIControlStateNormal];
+	[button4 setBackgroundColor:textBackgroundColor ];
+	[button4 setAlpha:textAlpha];
+	button4.titleLabel.font = textFont;
+	[button4 addTarget:self action:@selector(toggleMap) forControlEvents:UIControlEventTouchUpInside];
+	[button4 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button4];
+	
+	
+	
+	
+	
+	//einblenden mit animation
+	navigationButtonsView.frame = CGRectMake(0, -navigationButtonsView.frame.size.height, navigationButtonsView.frame.size.width, navigationButtonsView.frame.size.height);
+	
+	[UIView animateWithDuration:0.5
+						  delay:0.0
+						options: UIViewAnimationCurveEaseIn
+					 animations:^{
+						 navigationButtonsView.frame = CGRectMake(0, 0, navigationButtonsView.frame.size.width, navigationButtonsView.frame.size.height);
+					 }
+					 completion:^(BOOL finished){
+					 }];
+	
+	
+	[glView addSubview:navigationButtonsView];
+
+	
+	[glView bringSubviewToFront:navigationButtonsView];
+
+
+}
+
+
 
 #pragma mark -
 #pragma mark Actions
 #pragma mark -
 
 
-- (IBAction)showConfigView :(id)sender
-{
-	
-	[glView addSubview:configView];
-}
-
-
-- (IBAction)closeConfigView :(id)sender
+- (void)closeConfigView
 {
 	[self setConfigForDetection:aktivDetectionSwitch.isOn ration:ratioSlider.value];
 	
@@ -1529,8 +1744,18 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	}
 	
 	
+	//view mit animation ausblenden
+	[UIView animateWithDuration:0.5
+						  delay:0.0
+						options: UIViewAnimationCurveEaseIn
+					 animations:^{
+						 configView.frame = CGRectMake(-configView.frame.size.width, 0, configView.frame.size.width, configView.frame.size.height);
+					 }
+					 completion:^(BOOL finished){
+						 [configView removeFromSuperview];
+					 }];
 	
-	[configView removeFromSuperview];
+	
 	
 }
 
@@ -1646,26 +1871,29 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 	
 	detectedMarkerQuality = 0;
 	
-	//Alle Cos abfragen und das Cos mit der besten Qualität speichern
-	for (int i=1; i<=m_metaioSDK->getNumberOfDefinedCoordinateSystems(); i++)
+	if (aktivDetectionSwitch.isOn)
 	{
-		CGFloat quality = m_metaioSDK->getTrackingValues(i).quality;
-		
-		CGFloat rotationZ = fabs(m_metaioSDK->getTrackingValues(i).rotation.getEulerAngleDegrees().z);
-		
-		if (quality > 0.5 && rotationZ < 100)
+		//Alle Cos abfragen und das Cos mit der besten Qualität speichern
+		for (int i=1; i<=m_metaioSDK->getNumberOfDefinedCoordinateSystems(); i++)
 		{
-			if (quality > detectedMarkerQuality) {
-				detectedMarkerCosID = i;
-				detectedMarkerQuality = quality;
+			CGFloat quality = m_metaioSDK->getTrackingValues(i).quality;
+			
+			CGFloat rotationZ = fabs(m_metaioSDK->getTrackingValues(i).rotation.getEulerAngleDegrees().z);
+			
+			if (quality > 0 && rotationZ < 100)
+			{
+				if (quality > detectedMarkerQuality) {
+					detectedMarkerCosID = i;
+					detectedMarkerQuality = quality;
+					
+				}
 				
 			}
-			
 		}
 	}
 	
 	//Wenn ein Cos gefunden wurde dann Werte abfragen und übergeben
-	if (detectedMarkerQuality > (minQuality))
+	if (detectedMarkerQuality > minQuality && aktivDetectionSwitch.isOn)
 	{
 		metaio::TrackingValues trackingValues = m_metaioSDK->getTrackingValues(detectedMarkerCosID);
 		
@@ -1675,7 +1903,7 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 		NSString *cosName = [NSString stringWithUTF8String:stdString.c_str()];
 		
 		//Marker in Anzeigen laden
-		[detectSignView setImage:[UIImage imageWithContentsOfFile:[ docDir stringByAppendingPathComponent:cosName]]];
+		[detectSignView setImage:[UIImage imageWithContentsOfFile:[ navigationDirectory stringByAppendingPathComponent:cosName]]];
 		[detectSignView setContentMode:UIViewContentModeScaleAspectFit];
 		
 		
@@ -1694,10 +1922,16 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 			distance = distance * distCorrection.text.floatValue;
 			
 			
-			if (detectFrame < 12)
+			if (detectFrame < 15)
 			{
 				//daten sammeln wenn vorhanden
 				if (!angle == 0 && !distance == 0) {
+					if (!detectedMarkerAngleAray)
+						detectedMarkerAngleAray = [[NSMutableArray alloc]init];
+					
+					if (!detectedMarkerDistanceArray)
+						detectedMarkerDistanceArray = [[NSMutableArray alloc]init];
+					
 					[detectedMarkerAngleAray addObject:[NSNumber numberWithFloat:angle]];
 					[detectedMarkerDistanceArray addObject:[NSNumber numberWithFloat:distance]];
 					
@@ -1707,7 +1941,7 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 				
 				
 				
-			}else{
+			}else{ //Daten über 15Frames hinweg gesammelt
 				
 				detectFrame = 0;
 				
@@ -1717,7 +1951,7 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 				CGFloat detectedMarkerAngle = averageOfArray([NSArray arrayWithArray:detectedMarkerAngleAray]);
 				
 				
-				//erstes element löschen
+				//arrays zum sammel löschen
 				[detectedMarkerAngleAray removeAllObjects];
 				[detectedMarkerDistanceArray removeAllObjects];
 				
@@ -1795,6 +2029,52 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 - (void) onSDKReady
 {
     NSLog(@"The SDK is ready");
+	
+	// Benutzerpfade abfragen
+	NSArray *paths = NSSearchPathForDirectoriesInDomains( NSDocumentDirectory,
+														 NSUserDomainMask,
+														 YES );
+	
+	// Dokumentenverzeichnis
+	navigationDirectory = [NSString stringWithFormat:@"%@/navigation",[ paths objectAtIndex: 0 ] ];
+	
+	
+	meter = 800 ;
+	devRatio = 5;
+	aktivateDetection = true;
+	
+	
+	currentPosition = CGPointMake(855, 2840);
+	
+	
+	[self initMapView];
+	
+	[self loadSignsFromXML:@"signs"];
+	
+	[self initCompass];
+	
+	[self initConfigView];
+		
+	//MapView mit animation einblenden
+	mapView.frame = CGRectMake(glView.frame.size.width, 0, 400, glView.frame.size.height);
+	
+	[UIView animateWithDuration:0.5
+						  delay:0.0
+						options: UIViewAnimationCurveEaseIn
+					 animations:^{
+						 mapView.frame = CGRectMake(glView.frame.size.width - mapView.frame.size.width, 0, mapView.frame.size.width, mapView.frame.size.height);
+					 }
+					 completion:^(BOOL finished){
+						 [self initSignsView];
+					 }];
+	[glView addSubview:mapView];
+	
+	
+	[self initSchrittzaehler];
+	
+	
+	[self initNavButtons];
+
 	
 }
 

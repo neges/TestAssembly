@@ -26,11 +26,15 @@
 -(void)viewDidAppear:(BOOL)animated
 {
 	
-	navigationViewController *nvc = [[navigationViewController alloc]init];
-	
-	[self presentViewController:nvc animated:YES completion:nil];
 
-	
+	if (animated == false)
+	{
+		navigationViewController *nvc = [[navigationViewController alloc]init];
+		
+		[self presentViewController:nvc animated:YES completion:nil];
+	}
+
+
 	
 }
 
