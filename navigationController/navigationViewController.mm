@@ -1287,7 +1287,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 		}
 		
 		
-		if (!detectedSign.xPos==0)
+		if (!(detectedSign.xPos==0))
 		{
 			
 			//detektierte Position
@@ -1925,7 +1925,7 @@ CGFloat percentOf(CGFloat inpValue, CGFloat fromValue)
 			if (detectFrame < 15)
 			{
 				//daten sammeln wenn vorhanden
-				if (!angle == 0 && !distance == 0) {
+				if (!(angle == 0) && !(distance == 0)) {
 					if (!detectedMarkerAngleAray)
 						detectedMarkerAngleAray = [[NSMutableArray alloc]init];
 					

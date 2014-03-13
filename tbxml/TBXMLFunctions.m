@@ -152,38 +152,92 @@
     
         do
         {
-            NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+			if (![[self elementName:element] isEqualToString:@"metaDataBlock"])
+			{
 			
-            if (element->firstAttribute)
-            {
-                
-                
-                TBXMLAttribute *attribute = element->firstAttribute;
-                
-                
-                
-                [tempArray addObject:[TBXML elementName:element]];
-                
-                
-                while (attribute)
-                {
-                    
-					[tempArray addObject:[TBXML attributeValue:attribute]];
-                    
-                    
-                    attribute = attribute->next;
-                    
-                }
-                
-                [elementArray addObject: tempArray];
-                
+				NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+				
+				if (element->firstAttribute)
+				{
+					
+					
+					TBXMLAttribute *attribute = element->firstAttribute;
+					
+					
+					
+					[tempArray addObject:[TBXML elementName:element]];
+					
+					
+					while (attribute)
+					{
+						
+						[tempArray addObject:[TBXML attributeValue:attribute]];
+						
+						
+						attribute = attribute->next;
+						
+					}
+					
+					[elementArray addObject: tempArray];
+					
+				}
             }
-            
             
         }while ((element = element->nextSibling));
 	
 		
 	 return elementArray;
+	
+}
+
++(NSMutableArray*)getMetaDateOfElements:(TBXMLElement*)topElement
+{
+	
+    NSMutableArray* elementArray = [[NSMutableArray alloc]init];
+    
+    if (!topElement->nextSibling)
+        return elementArray;
+    
+    
+    //Eigenschaften der Unterobjekte holen
+    TBXMLElement* element = topElement->nextSibling;
+    
+	if ([[self elementName:element] isEqualToString:@"metaDataBlock"])
+	{
+		
+		if (!element->firstChild)
+			return elementArray;
+		
+		TBXMLElement* metaDataElement = element->firstChild;
+		
+		
+		
+		while (metaDataElement)
+		
+		{
+			NSMutableArray* tempArray = [[NSMutableArray alloc]init];
+			
+			TBXMLAttribute *attribute = metaDataElement->firstAttribute;
+			
+			while (attribute)
+			{
+				
+				[tempArray addObject:[TBXML attributeValue:attribute]];
+				
+				
+				attribute = attribute->next;
+				
+			}
+			
+			[elementArray addObject: tempArray];
+				
+			
+			metaDataElement = metaDataElement->nextSibling;
+		}
+		
+	}
+	
+	return elementArray;
 	
 }
 

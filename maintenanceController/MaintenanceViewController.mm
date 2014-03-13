@@ -630,8 +630,8 @@
 		BOOL visible = [[TBXMLFunctions getAttribute:@"visible" OfElement:oElement]boolValue];
 		
 		
-		//Element hat Childs => Group
-		if (oElement->firstChild)
+		//Element is eine Group
+		if ([[TBXML elementName:oElement] isEqualToString:@"group"])
 		{
 			//leere geometrie laden als parent
 			
@@ -646,8 +646,8 @@
 		}
 		else //Element ist ein Object
 		{
-			
-			[self loadObjectFromFolder:oFolder withName:objectName andParentObject:pObject toCosID:oCos isVisible:visible];
+			if ([[TBXML elementName:oElement] isEqualToString:@"object"])
+				[self loadObjectFromFolder:oFolder withName:objectName andParentObject:pObject toCosID:oCos isVisible:visible];
 			
 		}
 		
@@ -894,6 +894,47 @@ toMaxScreenSize:(CGSize)sSize
 #pragma mark Content Getter
 #pragma mark -
 
+
+-(void)getMetaDataForObjectName:(NSString*)objectName
+{
+	
+	if (objectName == nil)
+	{
+		if ([glView.subviews containsObject:metaDataView])
+			[metaDataView removeFromSuperview];
+	}
+	else
+	{
+		TBXMLElement* metaDataElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:objectName];
+		
+		NSMutableArray* metaData = [TBXMLFunctions getMetaDateOfElements:metaDataElement];
+		
+		//String zusammenbauen
+		NSString* metaDataString = [NSString stringWithFormat:@"Part Name : %@", objectName];
+		
+		for (NSMutableArray* metaArray in metaData)
+		{
+			NSString* metaDataStringComponent;
+
+			metaDataString = [metaDataString stringByAppendingString: @"\r"];
+			
+			metaDataStringComponent = [NSString stringWithFormat:@"%@ : %@", [metaArray objectAtIndex:0], [metaArray objectAtIndex:1]];
+			
+			metaDataString = [metaDataString stringByAppendingString: [NSString stringWithFormat:@"%@", metaDataStringComponent ]];
+		}
+
+		metaDataTextView.text = metaDataString;
+		metaDataTextView.textColor = [UIColor yellowColor];
+		[metaDataTextView setTextAlignment:NSTextAlignmentRight];
+		[metaDataTextView setFont:[UIFont systemFontOfSize:16]];
+		
+		
+			if (![glView.subviews containsObject:metaDataView])
+				[glView addSubview:metaDataView];
+		
+	}
+	
+}
 - (void)getReportsForElements:(NSMutableArray*)gArray //Übergabe der Elemente für die Reports vorliegen
 {
 	
@@ -1086,16 +1127,16 @@ toMaxScreenSize:(CGSize)sSize
     
 	// ask sdk if the user picked an object
 	// the 'true' flag tells sdk to actually use the vertices for a hit-test, instead of just the bounding box
-	metaio::IGeometry* model = m_metaioSDK->getGeometryFromScreenCoordinates(loc.x * scale, loc.y * scale, true);
+	touchedModel = m_metaioSDK->getGeometryFromScreenCoordinates(loc.x * scale, loc.y * scale, true);
 	
-	if ( model )
+	if ( touchedModel )
 	{
 		//Speicher, das das Object berührt wurde
 		objectTouch = true;
 		
 		//Strukur der Tabelle neu aufbauen:
 		//Namen holen
-		NSString* touchObjectsName = [self modelnameForModel:model];
+		NSString* touchObjectsName = [self modelnameForModel:touchedModel];
 		//das structureXML element
 		TBXMLElement* touchElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:touchObjectsName];
 		//das parent davon
@@ -1107,6 +1148,9 @@ toMaxScreenSize:(CGSize)sSize
 			selectedElement = touchElementParent;
 			[structurTableView reloadData];
 		}
+		
+		//Metadaten holen und anzeigen fals vorhanden
+		[self getMetaDataForObjectName:touchObjectsName];
 		
 		//cell selektieren
 		for (NSInteger j = 0; j < [structurTableView numberOfRowsInSection:0]; ++j)
@@ -1131,6 +1175,10 @@ toMaxScreenSize:(CGSize)sSize
 		
 		[structurTableView deselectRowAtIndexPath:[structurTableView indexPathForSelectedRow] animated:YES];
 		[self select3dContentWithName:nil withUIColor:nil toGroup:true	withObjects:nil	];
+		
+		
+		//MetadatenView ausblenden
+		[self getMetaDataForObjectName:nil];
 		
 		
 		return;
@@ -1640,6 +1688,25 @@ toMaxScreenSize:(CGSize)sSize
 - (void) drawFrame
 {
     [super drawFrame];
+	
+	if (touchedModel && [glView.subviews containsObject:metaDataView])
+	{
+		
+		metaio::BoundingBox modelBounding =  touchedModel->getBoundingBox2D();
+
+		
+		NSLog(@"X = %f / %f", modelBounding.max.x, modelBounding.min.x);
+		NSLog(@"Y = %f / %f", modelBounding.max.y, modelBounding.min.y);
+		
+		NSLog(@"-------%f",modelBounding.max.x - modelBounding.min.x);
+		
+		
+		[metaDataView setFrame:CGRectMake((modelBounding.min.y/2), (modelBounding.min.x/2), metaDataView.frame.size.width, metaDataView.frame.size.height)];
+	
+	}
+	
+	
+	
 	
 }
 

@@ -28,6 +28,7 @@
 		043C976018367D5500445B73 /* MaintenanceViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C975C18367D5500445B73 /* MaintenanceViewController.mm */; };
 		043C976118367D5500445B73 /* MaintenanceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043C975D18367D5500445B73 /* MaintenanceViewController.xib */; };
 		043C9768183688D000445B73 /* WorkTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 043C9767183688D000445B73 /* WorkTableViewController.mm */; };
+		049A7FCF18D217F0005281FD /* metaDataLabel.png in Resources */ = {isa = PBXBuildFile; fileRef = 049A7FCE18D217F0005281FD /* metaDataLabel.png */; };
 		04AFAC2E18BCB7D800702A3E /* document.png in Resources */ = {isa = PBXBuildFile; fileRef = 04AFAC2D18BCB7D800702A3E /* document.png */; };
 		04AFAC4618BCF00B00702A3E /* MapClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC3B18BCF00B00702A3E /* MapClass.m */; };
 		04AFAC4818BCF00B00702A3E /* SignClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFAC3F18BCF00B00702A3E /* SignClass.m */; };
@@ -94,6 +95,7 @@
 		043C975D18367D5500445B73 /* MaintenanceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MaintenanceViewController.xib; sourceTree = "<group>"; };
 		043C9766183688D000445B73 /* WorkTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkTableViewController.h; sourceTree = "<group>"; };
 		043C9767183688D000445B73 /* WorkTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkTableViewController.mm; sourceTree = "<group>"; };
+		049A7FCE18D217F0005281FD /* metaDataLabel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = metaDataLabel.png; sourceTree = "<group>"; };
 		04AFAC2D18BCB7D800702A3E /* document.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = document.png; sourceTree = "<group>"; };
 		04AFAC3A18BCF00B00702A3E /* MapClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapClass.h; sourceTree = "<group>"; };
 		04AFAC3B18BCF00B00702A3E /* MapClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapClass.m; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 		043C973E18367CBC00445B73 /* content */ = {
 			isa = PBXGroup;
 			children = (
+				049A7FCE18D217F0005281FD /* metaDataLabel.png */,
 				04AFAC4B18BCF01800702A3E /* not-found.png */,
 				04AFAC4C18BCF01800702A3E /* pfeil.png */,
 				04AFAC4D18BCF01800702A3E /* position.png */,
@@ -456,6 +459,7 @@
 				043C974B18367CBD00445B73 /* checked@2x.png in Resources */,
 				04AFAC5018BCF01800702A3E /* position.png in Resources */,
 				04AFAC2E18BCB7D800702A3E /* document.png in Resources */,
+				049A7FCF18D217F0005281FD /* metaDataLabel.png in Resources */,
 				043C974F18367CBD00445B73 /* structure@2x.png in Resources */,
 				043C974A18367CBD00445B73 /* camON@2x.png in Resources */,
 			);
@@ -568,6 +572,10 @@
 		04F32A0B172FCE8000910751 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -581,7 +589,7 @@
 				INFOPLIST_FILE = "Template/Template-Info.plist";
 				PRODUCT_NAME = itmAR;
 				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -589,6 +597,10 @@
 		04F32A0C172FCE8000910751 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7s,
+					armv7,
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -602,7 +614,7 @@
 				INFOPLIST_FILE = "Template/Template-Info.plist";
 				PRODUCT_NAME = itmAR;
 				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

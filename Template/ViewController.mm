@@ -26,13 +26,12 @@
 -(void)viewDidAppear:(BOOL)animated
 {
 	
-	animated = true;
 	
 	if (animated == false)
 	{
-		navigationViewController *nvc = [[navigationViewController alloc]init];
+		MaintenanceViewController *mvc = [[MaintenanceViewController alloc]init];
 		
-		[self presentViewController:nvc animated:YES completion:nil];
+		[self presentViewController:mvc animated:YES completion:nil];
 	}
 
 

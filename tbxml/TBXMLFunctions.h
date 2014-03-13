@@ -35,6 +35,7 @@
 +(NSMutableArray*)getValues:(NSString*)value
 				  OfElement:(TBXMLElement*)element;
 
++(NSMutableArray*)getMetaDateOfElements:(TBXMLElement*)topElement;
 
 +(NSString*)getAttribute:(NSString*)attrib
 			   OfElement:(TBXMLElement*)element;

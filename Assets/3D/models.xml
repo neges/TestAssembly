@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<model name="agrm" visible="true">
 		<object name="frontcover" visible="true"/>
+			<metaDataBlock>
+				<metaData description="Part ID" value="7218438579"/>
+				<metaData description="Release Date" value="09.06.2013"/>
+				<metaData description="Version" value="1.8"/>
+				<metaData description="Owner" value="Matthias Neges"/>
+			</metaDataBlock>
 		<object name="backcover" visible="true"/>
+			<metaDataBlock>
+				<metaData description="Part ID" value="8200477934"/>
+				<metaData description="Release Date" value="10.08.2013"/>
+				<metaData description="Version" value="6.0"/>
+				<metaData description="Owner" value="Matthias Neges"/>
+			</metaDataBlock>
 		<object name="sealing" visible="true"/>
 		<group name="screws_TOP" visible="true">
 			<object name="screw_TOP" visible="true"/>
@@ -22,6 +34,12 @@
         <group name="parts" visible="true">
             <object name="grid_TOP" visible="true"/>
             <object name="tube" visible="true"/>
+				<metaDataBlock>
+					<metaData description="Part ID" value="5981357169"/>
+					<metaData description="Release Date" value="19.05.2013"/>
+					<metaData description="Version" value="11.5"/>
+					<metaData description="Owner" value="Matthias Neges"/>
+				</metaDataBlock>
              <group name="Covers" visible="true">
                  <object name="cover_TOP" visible="true"/>
                  <object name="cover_BOTTOM" visible="true"/>
