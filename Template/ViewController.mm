@@ -29,9 +29,10 @@
 	
 	if (animated == false)
 	{
-		MaintenanceViewController *mvc = [[MaintenanceViewController alloc]init];
+		navigationViewController *nvc = [[navigationViewController alloc]init];
 		
-		[self presentViewController:mvc animated:YES completion:nil];
+		[self presentViewController:nvc animated:YES completion:nil];
+		
 	}
 
 

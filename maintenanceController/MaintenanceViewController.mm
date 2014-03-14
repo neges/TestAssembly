@@ -1229,43 +1229,6 @@ toMaxScreenSize:(CGSize)sSize
 			m_metaioSDK->unloadGeometry(metaDataObject);
 		
 		
-		return;
-		
-		//--------Test for Exposure
-		NSArray *devices = [AVCaptureDevice devices];
-		
-		for (AVCaptureDevice *device in devices) {
-			
-			
-			
-			if ([device position] == AVCaptureDevicePositionBack) {
-				
-				
-				[device lockForConfiguration:nil];
-				if ([device exposureMode] == AVCaptureExposureModeContinuousAutoExposure)
-				{
-					[device setExposureMode:AVCaptureExposureModeLocked];
-					NSLog(@"AVCaptureExposureModeLocked");
-				}else{
-					
-					CGPoint expPoint;
-					expPoint.x = loc.x / [[UIScreen mainScreen] bounds ].size.height;
-					expPoint.y = loc.y / [[UIScreen mainScreen] bounds ].size.width;
-					
-					[device setExposurePointOfInterest:expPoint];
-					[device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
-				
-				
-					NSLog(@"Exposure Point: %f / %f - %f / %f", expPoint.x, expPoint.y, loc.x, loc.y);
-				}
-						[device unlockForConfiguration];
-			}
-			
-			
-		}
-		
-		//-------
-		
 	}
 
 	

@@ -20,6 +20,7 @@
 #import "TBXMLFunctions.h"
 #import "EAGLView.h"
 #import "MetaioSDKViewController.h"
+#import <AVFoundation/AVCaptureDevice.h>
 
 
 @interface navigationViewController : MetaioSDKViewController < UITableViewDelegate, CLLocationManagerDelegate>

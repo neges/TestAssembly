@@ -1612,7 +1612,40 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 }
 
 
+- (void)lockExposure
+{
 
+	//--------Test for Exposure
+	NSArray *devices = [AVCaptureDevice devices];
+	
+	for (AVCaptureDevice *device in devices)
+	{
+		
+		
+		
+		if ([device position] == AVCaptureDevicePositionBack)
+		{
+			
+			UIButton *btn = (UIButton*)[navigationButtonsView viewWithTag:5];
+			[device lockForConfiguration:nil];
+			if ([device exposureMode] == AVCaptureExposureModeContinuousAutoExposure)
+			{
+				[device setExposureMode:AVCaptureExposureModeLocked];
+				
+				[btn setTitle:@"exposure auto" forState:UIControlStateNormal];
+
+			}else{
+				
+				[device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+				[btn setTitle:@"exposure lock" forState:UIControlStateNormal];
+			}
+			[device unlockForConfiguration];
+		}
+	}
+	
+	
+
+}
 - (void)showConfigView
 {
 	
@@ -1649,7 +1682,7 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	UIColor* textBackgroundColor = [UIColor blackColor] ;
 	CGFloat textWidth = 90;
 	
-	navigationButtonsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 4*(textWidth + 1), 30)];
+	navigationButtonsView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 5*(textWidth + 1), 30)];
 	navigationButtonsView.backgroundColor = [UIColor clearColor];
 	
 	
@@ -1696,6 +1729,17 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 	
 	[navigationButtonsView addSubview:button4];
 	
+	UIButton *button5 = [[UIButton alloc] initWithFrame:CGRectMake(4*(textWidth + 1), 0, textWidth, 30)];
+	[button5 setTitle:@"exposure lock" forState:UIControlStateNormal];
+	[button5 setBackgroundColor:textBackgroundColor ];
+	[button5 setAlpha:textAlpha];
+	[button5 setTag:5];
+	button5.titleLabel.font = textFont;
+	[button5 addTarget:self action:@selector(lockExposure) forControlEvents:UIControlEventTouchUpInside];
+	[button5 setTitleColor:textColor forState:UIControlStateNormal];
+	
+	[navigationButtonsView addSubview:button5];
+	
 	
 	
 	
@@ -1721,6 +1765,54 @@ double DistanceBetween(CGPoint point1, CGPoint point2)
 
 }
 
+
+#pragma mark -
+#pragma mark Touches & Actions
+#pragma mark -
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	
+	// Here's how to pick a geometry
+	UITouch *touch = [touches anyObject];
+	CGPoint loc = [touch locationInView:glView];
+	
+		
+	//--------Test for Exposure
+	NSArray *devices = [AVCaptureDevice devices];
+	
+	for (AVCaptureDevice *device in devices)
+	{
+		
+		
+		
+		if ([device position] == AVCaptureDevicePositionBack)
+		{
+			
+			
+			[device lockForConfiguration:nil];
+
+				
+				CGPoint expPoint;
+				expPoint.x = loc.x / [[UIScreen mainScreen] bounds ].size.height;
+				expPoint.y = loc.y / [[UIScreen mainScreen] bounds ].size.width;
+				
+				[device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+				[device setExposurePointOfInterest:expPoint];
+				
+				
+				NSLog(@"Exposure Point: %f / %f - %f / %f", expPoint.x, expPoint.y, loc.x, loc.y);
+		
+			[device unlockForConfiguration];
+		}
+	}
+			
+			
+
+	
+	
+	
+}
 
 
 #pragma mark -

@@ -13,8 +13,7 @@
 #import "TBXMLFunctions.h"
 #import "WorkTableViewController.h"
 
-@interface MaintenanceViewController : MetaioSDKViewController <UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, WorkTableViewControllerDelegate
->
+@interface MaintenanceViewController : MetaioSDKViewController <UITableViewDelegate, UITableViewDataSource, UITabBarDelegate, WorkTableViewControllerDelegate>
 {
 	
 	NSString* documentsDir; //Pfad zum dokumenten ordner
