@@ -8,12 +8,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MaintenanceViewController">
             <connections>
                 <outlet property="glView" destination="bag-dl-obz" id="eb8-FV-J84"/>
-                <outlet property="metaDataTextView" destination="Q5I-vq-iMC" id="VXM-aQ-qpd"/>
-                <outlet property="metaDataView" destination="HGw-MT-MS0" id="Q5J-l1-vAo"/>
                 <outlet property="structurTableView" destination="w6k-jj-gIl" id="JI3-ex-e1h"/>
                 <outlet property="structureTabBar" destination="bmZ-Fw-8jp" id="P31-zW-yOo"/>
                 <outlet property="tabBarView" destination="Ds9-jE-39Q" id="zCE-ry-f2y"/>
-                <outlet property="test" destination="1jK-Jn-uzL" id="ZSh-uT-QqV"/>
                 <outlet property="view" destination="0bd-wD-cPv" id="C0j-c3-1En"/>
                 <outlet property="workTableViewController" destination="1X8-W2-4Vw" id="bCF-aS-reP"/>
                 <outlet property="workView" destination="HVE-Py-s3N" id="1uh-N9-SoJ"/>
@@ -434,34 +431,10 @@
                 <outlet property="delegate" destination="1X8-W2-4Vw" id="wSH-IN-635"/>
             </connections>
         </tableView>
-        <view contentMode="scaleToFill" id="HGw-MT-MS0" userLabel="metaDataView">
-            <rect key="frame" x="0.0" y="0.0" width="330" height="124"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="metaDataLabel.png" id="UYB-dX-VfG">
-                    <rect key="frame" x="0.0" y="0.0" width="330" height="124"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
-                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" indicatorStyle="black" editable="NO" textAlignment="right" selectable="NO" id="Q5I-vq-iMC" userLabel="metaDataTextView">
-                    <rect key="frame" x="0.0" y="0.0" width="230" height="124"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                </textView>
-            </subviews>
-        </view>
-        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1jK-Jn-uzL">
-            <rect key="frame" x="0.0" y="0.0" width="42" height="21"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-            <nil key="highlightedColor"/>
-        </label>
     </objects>
     <resources>
         <image name="camON.png" width="30" height="30"/>
         <image name="maintenance.png" width="30" height="30"/>
-        <image name="metaDataLabel.png" width="330" height="124"/>
         <image name="report.png" width="30" height="30"/>
         <image name="structure.png" width="30" height="30"/>
     </resources>

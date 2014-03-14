@@ -22,6 +22,7 @@
     metaio::IGeometry* theLoadedModel; //Temporär aktuelle Geometry
 	metaio::IGeometry* theSelectedModel; //Temporär selektierte Geometry
 	metaio::IGeometry* touchedModel; //Geometry die per touch selektiert wurde
+	metaio::IGeometry* metaDataObject;
 	bool saveVisibleBeforSelection; //Speicher ob das Object vorher sichtbar war
 	std::vector<metaio::IGeometry*> loadedModels; //Pointer zu allen geladenen models
     
@@ -60,15 +61,6 @@
 	
 	IBOutlet UIView *workView;
 	
-	
-	//MetadDateView
-	IBOutlet UITextView *metaDataTextView;
-	IBOutlet UIView *metaDataView;
-	
-	
-	IBOutlet UILabel* test;
-	
-
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *structurTableView;

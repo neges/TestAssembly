@@ -896,45 +896,88 @@ toMaxScreenSize:(CGSize)sSize
 
 
 -(void)getMetaDataForObjectName:(NSString*)objectName
+					 toPosition:(metaio::Vector3d) position
 {
 	
 	if (objectName == nil)
+		return;
+	
+	TBXMLElement* metaDataElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:objectName];
+	
+	NSMutableArray* metaData = [TBXMLFunctions getMetaDateOfElements:metaDataElement];
+	
+	//String zusammenbauen
+	NSString* metaDataString = [NSString stringWithFormat:@"Part Name : %@", objectName];
+	
+	for (NSMutableArray* metaArray in metaData)
 	{
-		if ([glView.subviews containsObject:metaDataView])
-			[metaDataView removeFromSuperview];
-	}
-	else
-	{
-		TBXMLElement* metaDataElement = [TBXMLFunctions getElement:[structureXML rootXMLElement] ByName:objectName];
-		
-		NSMutableArray* metaData = [TBXMLFunctions getMetaDateOfElements:metaDataElement];
-		
-		//String zusammenbauen
-		NSString* metaDataString = [NSString stringWithFormat:@"Part Name : %@", objectName];
-		
-		for (NSMutableArray* metaArray in metaData)
-		{
-			NSString* metaDataStringComponent;
+		NSString* metaDataStringComponent;
 
-			metaDataString = [metaDataString stringByAppendingString: @"\r"];
-			
-			metaDataStringComponent = [NSString stringWithFormat:@"%@ : %@", [metaArray objectAtIndex:0], [metaArray objectAtIndex:1]];
-			
-			metaDataString = [metaDataString stringByAppendingString: [NSString stringWithFormat:@"%@", metaDataStringComponent ]];
-		}
-
-		metaDataTextView.text = metaDataString;
-		metaDataTextView.textColor = [UIColor yellowColor];
-		[metaDataTextView setTextAlignment:NSTextAlignmentRight];
-		[metaDataTextView setFont:[UIFont systemFontOfSize:16]];
+		metaDataString = [metaDataString stringByAppendingString: @"\r"];
 		
+		metaDataStringComponent = [NSString stringWithFormat:@"%@ : %@", [metaArray objectAtIndex:0], [metaArray objectAtIndex:1]];
 		
-			if (![glView.subviews containsObject:metaDataView])
-				[glView addSubview:metaDataView];
-		
+		metaDataString = [metaDataString stringByAppendingString: [NSString stringWithFormat:@"%@", metaDataStringComponent ]];
 	}
+
+	
+
+	UIImage *viewImage = [UIImage imageNamed:@"metaDataLabel.png"];
+	viewImage = [self drawText:metaDataString inImage:viewImage atPoint:CGPointMake(0, 0)];
+	
+	m_metaioSDK->unloadGeometry(metaDataObject);
+	metaDataObject = m_metaioSDK->createGeometryFromCGImage("metaData", viewImage.CGImage, true);
+	metaDataObject->setCoordinateSystemID(1);
+	metaio::Vector3d newPosition = metaio::Vector3d(position.x - (viewImage.size.width/2), position.y + (viewImage.size.height/2), position.z);
+	metaDataObject->setTranslation(newPosition);
+
 	
 }
+
+-(UIImage*) drawText:(NSString*) text
+             inImage:(UIImage*)  image
+             atPoint:(CGPoint)   point
+{
+    UIGraphicsBeginImageContext(image.size);
+    [image drawInRect:CGRectMake(0,0,image.size.width,image.size.height)];
+    CGRect rect = CGRectMake(point.x, point.y, 220, image.size.height);
+    
+    UIFont *font = [UIFont systemFontOfSize:16];
+	UIColor *textColor = [UIColor yellowColor];
+	
+	
+    if([text respondsToSelector:@selector(drawInRect:withAttributes:)])
+    {
+        //iOS 7
+		/// Make a copy of the default paragraph style
+		NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+		/// Set line break mode
+		paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+		/// Set text alignment
+		paragraphStyle.alignment = NSTextAlignmentRight;
+
+		
+        NSDictionary *att = @{NSForegroundColorAttributeName: textColor,
+							  NSFontAttributeName:font,
+							  NSParagraphStyleAttributeName: paragraphStyle };
+
+        [text drawInRect:rect withAttributes:att];
+    }
+    else
+    {
+        //legacy support
+        [text drawInRect:CGRectIntegral(rect) withFont:font];
+    }
+	
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+	
+
+	
+    return newImage;
+}
+
+
 - (void)getReportsForElements:(NSMutableArray*)gArray //Übergabe der Elemente für die Reports vorliegen
 {
 	
@@ -1150,7 +1193,11 @@ toMaxScreenSize:(CGSize)sSize
 		}
 		
 		//Metadaten holen und anzeigen fals vorhanden
-		[self getMetaDataForObjectName:touchObjectsName];
+		metaio::Vector3d tPoint = m_metaioSDK->get3DPositionFromScreenCoordinates(1,(metaio::Vector2d(loc.x * scale,loc.y * scale)));
+
+		[self getMetaDataForObjectName:touchObjectsName toPosition: tPoint];
+
+		
 		
 		//cell selektieren
 		for (NSInteger j = 0; j < [structurTableView numberOfRowsInSection:0]; ++j)
@@ -1178,7 +1225,8 @@ toMaxScreenSize:(CGSize)sSize
 		
 		
 		//MetadatenView ausblenden
-		[self getMetaDataForObjectName:nil];
+		if (metaDataObject)
+			m_metaioSDK->unloadGeometry(metaDataObject);
 		
 		
 		return;
@@ -1688,25 +1736,6 @@ toMaxScreenSize:(CGSize)sSize
 - (void) drawFrame
 {
     [super drawFrame];
-	
-	if (touchedModel && [glView.subviews containsObject:metaDataView])
-	{
-		
-		metaio::BoundingBox modelBounding =  touchedModel->getBoundingBox2D();
-
-		
-		NSLog(@"X = %f / %f", modelBounding.max.x, modelBounding.min.x);
-		NSLog(@"Y = %f / %f", modelBounding.max.y, modelBounding.min.y);
-		
-		NSLog(@"-------%f",modelBounding.max.x - modelBounding.min.x);
-		
-		
-		[metaDataView setFrame:CGRectMake((modelBounding.min.y/2), (modelBounding.min.x/2), metaDataView.frame.size.width, metaDataView.frame.size.height)];
-	
-	}
-	
-	
-	
 	
 }
 
